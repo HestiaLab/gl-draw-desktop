@@ -4,6 +4,9 @@
 
 Accepted.
 
+**Date**: 2026-06-05
+**Last Modified**: 2026-06-05
+
 ## Context
 
 GLDraw supports built-in and future extensible object and tool behavior. The

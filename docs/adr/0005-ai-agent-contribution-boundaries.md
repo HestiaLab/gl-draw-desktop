@@ -4,6 +4,9 @@
 
 Accepted.
 
+**Date**: 2026-06-05
+**Last Modified**: 2026-06-05
+
 ## Context
 
 AI agents can accelerate repository maintenance, tests, documentation, and

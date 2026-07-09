@@ -13,19 +13,19 @@ Before changing files, an AI agent should read:
 
 * AGENTS.md
 * CONTRIBUTING.md
-* doc/testing.md
+* docs/testing.md
 * This document
 
 For architecture-sensitive work, also read:
 
-* doc/adr/README.md
+* docs/adr/README.md
 * The ADRs that match the touched area
 * The source entry points listed in AGENTS.md
 
 For release, packaging, CI, or dependency work, also read:
 
-* doc/build.md
-* doc/release.md
+* docs/build.md
+* docs/release.md
 * SECURITY.md when dependency or vulnerability handling is involved
 
 

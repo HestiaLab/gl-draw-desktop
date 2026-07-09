@@ -9,7 +9,7 @@ General Workflow
 ----------------
 
 1. Read AGENTS.md and the task issue.
-2. Read CONTRIBUTING.md, doc/ai-agents.md, and doc/testing.md.
+2. Read CONTRIBUTING.md, docs/ai-agents.md, and docs/testing.md.
 3. Inspect the smallest relevant set of files before editing.
 4. State or record the intended scope.
 5. Make focused changes.
@@ -86,7 +86,7 @@ Release or Packaging
 
 Use this for release scripts, package layouts, or workflow publishing.
 
-1. Read doc/build.md and doc/release.md.
+1. Read docs/build.md and docs/release.md.
 2. Preserve the documented package asset names and installed layout unless the
    task explicitly changes them.
 3. Run release smoke checks locally or through GitHub Actions when practical.

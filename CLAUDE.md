@@ -126,9 +126,9 @@ UI frame construction is split across focused `src/ui/` modules such as
 
 Repository-local docs are intentionally short:
 
-* `doc/README.md` - documentation entrypoint.
-* `doc/build.md` - build, run, dependencies, and troubleshooting.
-* `doc/controls.md` - default shortcuts and pointer behavior.
+* `docs/README.md` - documentation entrypoint.
+* `docs/build.md` - build, run, dependencies, and troubleshooting.
+* `docs/controls.md` - default shortcuts and pointer behavior.
 
 Architecture and source navigation are maintained through Zread:
 https://zread.ai/wubing7755/GLDraw

@@ -4,6 +4,9 @@
 
 Accepted.
 
+**Date**: 2026-06-05
+**Last Modified**: 2026-06-05
+
 ## Context
 
 GLDraw currently commits GLAD and Nuklear directly under the normal source and
@@ -33,7 +36,7 @@ Nuklear.
 * No source files move in this ADR.
 * CMake include paths, package layouts, static-analysis suppressions, and local
   check scripts remain stable.
-* `doc/dependencies.md` records current dependency locations and the checklist
+* `docs/dependencies.md` records current dependency locations and the checklist
   for future moves.
 * A future `third_party/` migration should happen in its own PR and must update
   CMake modules, check scripts, CI exclusions, documentation, and license notes

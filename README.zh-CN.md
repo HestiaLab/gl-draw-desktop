@@ -42,24 +42,15 @@ build.bat
 build\Release\bin\GLDraw.exe
 ```
 
-更多构建方式：[doc/build.md](doc/build.md)
+更多构建方式：[docs/build.md](docs/build.md)
 
 
 文档
 ----
 
-* 构建和运行：[doc/build.md](doc/build.md)
-* 快捷键和基本操作：[doc/controls.md](doc/controls.md)
-* 贡献指南：[CONTRIBUTING.md](CONTRIBUTING.md)
-* 依赖说明：[doc/dependencies.md](doc/dependencies.md)
-* 测试策略：[doc/testing.md](doc/testing.md)
-* 发布流程：[doc/release.md](doc/release.md)
-* AI agent 策略：[doc/ai-agents.md](doc/ai-agents.md)
-* AI agent 流程：[doc/agent-playbooks.md](doc/agent-playbooks.md)
-* 变更记录：[CHANGELOG.md](CHANGELOG.md)
-* 安全策略：[SECURITY.md](SECURITY.md)
-* 本地文档入口：[doc/README.md](doc/README.md)
-* 架构和源码导览：https://zread.ai/wubing7755/GLDraw
+完整文档：[docs/](docs/) — 构建、操作、测试、贡献指南等。
+
+架构与源码导览：[zread.ai/wubing7755/GLDraw](https://zread.ai/wubing7755/GLDraw)
 
 
 许可证

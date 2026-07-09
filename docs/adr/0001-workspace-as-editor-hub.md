@@ -4,6 +4,9 @@
 
 Accepted.
 
+**Date**: 2026-06-05
+**Last Modified**: 2026-06-05
+
 ## Context
 
 GLDraw coordinates document state, editing commands, tools, UI state, save/load

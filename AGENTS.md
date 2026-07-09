@@ -8,22 +8,22 @@ Before making changes, read:
 
 * `CONTRIBUTING.md` - contributor workflow, PR expectations, and architecture
   boundaries.
-* `doc/ai-agents.md` - AI agent policy, restrictions, review, and disclosure
+* `docs/ai-agents.md` - AI agent policy, restrictions, review, and disclosure
   rules.
-* `doc/agent-playbooks.md` - task-specific AI workflows.
-* `doc/testing.md` - test layers, regression expectations, and manual
+* `docs/agent-playbooks.md` - task-specific AI workflows.
+* `docs/testing.md` - test layers, regression expectations, and manual
   verification.
 
 For architecture-sensitive work, also read:
 
-* `doc/adr/README.md`
-* Relevant ADR files in `doc/adr/`
+* `docs/adr/README.md`
+* Relevant ADR files in `docs/adr/`
 
 For build, CI, packaging, release, dependency, or security work, also read:
 
-* `doc/build.md`
-* `doc/dependencies.md`
-* `doc/release.md`
+* `docs/build.md`
+* `docs/dependencies.md`
+* `docs/release.md`
 * `SECURITY.md` when dependency or vulnerability handling is involved.
 
 ## Project Shape
@@ -153,14 +153,14 @@ UI frame construction is split across focused `src/ui/` modules such as
 
 Repository-local docs are intentionally short:
 
-* `doc/README.md` - documentation entrypoint.
-* `doc/build.md` - build, run, dependencies, and troubleshooting.
-* `doc/controls.md` - default shortcuts and pointer behavior.
-* `doc/dependencies.md` - dependency locations and update policy.
-* `doc/testing.md` - testing policy and expectations.
-* `doc/ai-agents.md` - AI agent policy.
-* `doc/agent-playbooks.md` - AI-assisted task workflows.
-* `doc/archive/` - historical notes retained for reference only.
+* `docs/README.md` - documentation entrypoint.
+* `docs/build.md` - build, run, dependencies, and troubleshooting.
+* `docs/controls.md` - default shortcuts and pointer behavior.
+* `docs/dependencies.md` - dependency locations and update policy.
+* `docs/testing.md` - testing policy and expectations.
+* `docs/ai-agents.md` - AI agent policy.
+* `docs/agent-playbooks.md` - AI-assisted task workflows.
+* `docs/archive/` - historical notes retained for reference only.
 
 Architecture and source navigation are maintained through Zread:
 https://zread.ai/wubing7755/GLDraw
