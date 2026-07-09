@@ -42,7 +42,7 @@ src/glad.c
 ```
 
 This avoids a noisy include-path migration while the source tree is still being
-organized. See `doc/adr/0006-third-party-source-layout.md` for the decision.
+organized. See `docs/adr/0006-third-party-source-layout.md` for the decision.
 
 
 When Updating Dependencies
@@ -57,7 +57,7 @@ When dependency versions, paths, or ownership change, update:
 * `scripts/check.sh`
 * `scripts/check.ps1`
 * `.github/workflows/static-analysis.yml`
-* `doc/build.md`
+* `docs/build.md`
 * This file
 * Release packaging scripts when installed files or runtime assets change
 

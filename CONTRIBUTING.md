@@ -19,7 +19,7 @@ build.bat
 build.bat debug
 ```
 
-Manual CMake and packaging details are documented in [doc/build.md](doc/build.md).
+Manual CMake and packaging details are documented in [docs/build.md](docs/build.md).
 Optional CMake presets are available for contributors with a recent CMake:
 
 ```sh
@@ -89,7 +89,7 @@ feedback should point back to the shared formatting rules where possible.
 
 AI-assisted contributions are welcome when they are scoped, reviewable, and
 verified like any other change. Before editing, AI agents should read AGENTS.md,
-doc/ai-agents.md, doc/agent-playbooks.md, and the documents required by the task
+docs/ai-agents.md, docs/agent-playbooks.md, and the documents required by the task
 area.
 
 When meaningful AI assistance was used:
@@ -105,6 +105,10 @@ replace maintainer review. Use the AI agent task issue template when preparing
 work that should be handed to an agent.
 
 ## Architecture Boundaries
+
+When modifying core documentation (build, controls, testing), also update the
+corresponding Chinese translation under `docs/zh-CN/` if the change affects
+user-visible instructions or policy.
 
 Keep changes aligned with the current ownership model:
 

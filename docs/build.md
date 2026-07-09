@@ -7,6 +7,18 @@ The recommended path is to use the repository build scripts. Manual CMake
 commands and optional CMake presets are available when a specific generator or
 output layout is needed.
 
+## Contents
+
+- [Requirements](#requirements)
+- [Quick Start](#quick-start)
+- [Build Scripts](#build-scripts)
+- [CMake Presets](#cmake-presets)
+- [Manual CMake](#manual-cmake)
+- [Testing](#testing)
+- [Release Packaging](#release-packaging)
+- [CMake Project Layout](#cmake-project-layout)
+- [Troubleshooting](#troubleshooting)
+
 
 Requirements
 ------------

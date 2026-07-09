@@ -42,24 +42,15 @@ build.bat
 build\Release\bin\GLDraw.exe
 ```
 
-More build options: [doc/build.md](doc/build.md)
+More build options: [docs/build.md](docs/build.md)
 
 
 Documentation
 -------------
 
-* Build and run: [doc/build.md](doc/build.md)
-* Controls: [doc/controls.md](doc/controls.md)
-* Contributing: [CONTRIBUTING.md](CONTRIBUTING.md)
-* Dependencies: [doc/dependencies.md](doc/dependencies.md)
-* Testing: [doc/testing.md](doc/testing.md)
-* Release process: [doc/release.md](doc/release.md)
-* AI agent policy: [doc/ai-agents.md](doc/ai-agents.md)
-* AI agent playbooks: [doc/agent-playbooks.md](doc/agent-playbooks.md)
-* Changelog: [CHANGELOG.md](CHANGELOG.md)
-* Security policy: [SECURITY.md](SECURITY.md)
-* Local documentation index: [doc/README.md](doc/README.md)
-* Architecture and source guide: https://zread.ai/wubing7755/GLDraw
+Full documentation: [docs/](docs/) — build, controls, testing, contributing, and more.
+
+Architecture and source guide: [zread.ai/wubing7755/GLDraw](https://zread.ai/wubing7755/GLDraw)
 
 
 License

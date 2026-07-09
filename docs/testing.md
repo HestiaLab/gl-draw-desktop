@@ -4,6 +4,14 @@ Testing GLDraw
 GLDraw uses CTest for automated tests. CI is the source of truth for platform
 coverage, while local checks should focus on the modules touched by a change.
 
+## Contents
+
+- [Quick Commands](#quick-commands)
+- [Test Layers](#test-layers)
+- [Regression Expectations](#regression-expectations)
+- [Coverage](#coverage)
+- [Manual Verification](#manual-verification)
+
 
 Quick Commands
 --------------

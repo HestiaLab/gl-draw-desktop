@@ -4,6 +4,9 @@
 
 Accepted.
 
+**Date**: 2026-06-05
+**Last Modified**: 2026-06-05
+
 ## Context
 
 GLDraw's UI is built with Nuklear and split across focused `src/ui/` modules.

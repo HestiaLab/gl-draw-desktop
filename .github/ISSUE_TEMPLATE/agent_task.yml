@@ -42,22 +42,22 @@ body:
           required: true
         - label: CONTRIBUTING.md
           required: true
-        - label: doc/ai-agents.md
+        - label: docs/ai-agents.md
           required: true
-        - label: doc/agent-playbooks.md
+        - label: docs/agent-playbooks.md
           required: true
-        - label: doc/testing.md
+        - label: docs/testing.md
           required: true
-        - label: Relevant ADRs in doc/adr/
+        - label: Relevant ADRs in docs/adr/
           required: false
-        - label: doc/build.md or doc/release.md for build, CI, packaging, or release work
+        - label: docs/build.md or docs/release.md for build, CI, packaging, or release work
           required: false
   - type: textarea
     id: affected-areas
     attributes:
       label: Expected affected areas
       description: Which files, modules, or ownership boundaries are likely involved?
-      placeholder: Example: src/commands/, tests/, doc/testing.md
+      placeholder: "Example: src/commands/, tests/, docs/testing.md"
     validations:
       required: true
   - type: textarea

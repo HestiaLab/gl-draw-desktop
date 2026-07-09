@@ -4,6 +4,15 @@ Release Process
 This document defines the release workflow used by maintainers. Build commands
 and package layouts are documented in build.md.
 
+## Contents
+
+- [Versioning](#versioning)
+- [Preflight](#preflight)
+- [Publishing](#publishing)
+- [Smoke Validation](#smoke-validation)
+- [Hotfixes](#hotfixes)
+- [Legacy Releases](#legacy-releases)
+
 
 Versioning
 ----------
@@ -15,7 +24,7 @@ a pushed tag such as `v0.0.3` or a manual workflow dispatch version such as
 Before tagging:
 
 * Update CHANGELOG.md with user-visible changes.
-* Confirm README and doc/build.md still match the packaged layout.
+* Confirm README and docs/build.md still match the packaged layout.
 * Confirm release notes use the short format documented in build.md.
 * Run the release smoke workflow for packaging changes.
 
