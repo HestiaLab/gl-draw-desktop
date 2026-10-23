@@ -184,13 +184,13 @@ static void select_tool_key_down(Tool* tool, ToolContext* context, int key, int 
 }
 
 static const ToolDescriptor g_select_tool_descriptor = {
-    TOOL_ID_SELECT,            /* id */
-    "Select",                  /* name */
-    "tool.select",             /* command_id */
-    "Select and edit objects", /* tooltip */
-    "Select",                  /* icon */
-    "V",                       /* default_shortcut */
-    0,                         /* requires_editable_layer */
+    TOOL_ID_SELECT,   /* id */
+    "选择",           /* name */
+    "tool.select",    /* command_id */
+    "选择和编辑对象", /* tooltip */
+    "选择",           /* icon */
+    "V",              /* default_shortcut */
+    0,                /* requires_editable_layer */
     select_tool_create,
     select_tool_destroy,
     NULL, /* activate */

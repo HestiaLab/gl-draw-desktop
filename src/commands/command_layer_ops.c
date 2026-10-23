@@ -453,7 +453,7 @@ Command* command_create_create_layer(const char* name)
     snprintf(command->layer.name,
              sizeof(command->layer.name),
              "%s",
-             (name && name[0] != '\0') ? name : "Layer");
+             (name && name[0] != '\0') ? name : "图层");
     command->layer.visible = 1;
     command->layer.locked = 0;
     command->layer.blend_mode = DOCUMENT_LAYER_BLEND_NORMAL;

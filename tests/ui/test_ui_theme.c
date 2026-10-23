@@ -57,17 +57,17 @@ static void test_builtin_theme_lookup_and_fallback(void)
     int dark_index = -1;
 
     EXPECT_TRUE(ui_theme_count() >= 3);
-    EXPECT_STR_EQ(ui_theme_default_id(), "gldraw-light");
+    EXPECT_STR_EQ(ui_theme_default_id(), "gldrawdesktop-light");
 
     default_index = ui_theme_index_of_id(ui_theme_default_id());
     EXPECT_INT_EQ(default_index, 0);
 
     default_descriptor = ui_theme_descriptor_at(default_index);
     EXPECT_TRUE(default_descriptor != NULL);
-    EXPECT_STR_EQ(default_descriptor->id, "gldraw-light");
+    EXPECT_STR_EQ(default_descriptor->id, "gldrawdesktop-light");
     EXPECT_TRUE(default_descriptor->label != NULL);
 
-    dark_index = ui_theme_index_of_id("gldraw-dark-plus");
+    dark_index = ui_theme_index_of_id("gldrawdesktop-dark-plus");
     EXPECT_TRUE(dark_index >= 0);
     EXPECT_TRUE(ui_theme_descriptor_at(dark_index) != NULL);
 
@@ -134,7 +134,7 @@ static void test_external_theme_load_error_and_clamp_behavior(void)
                                 "{\n"
                                 "  \"id\": \"test-clamped-theme\",\n"
                                 "  \"label\": \"Test Clamped Theme\",\n"
-                                "  \"base_theme\": \"gldraw-dark-plus\",\n"
+                                "  \"base_theme\": \"gldrawdesktop-dark-plus\",\n"
                                 "  \"primary\": \"#11223344\",\n"
                                 "  \"background\": \"#abcdef\",\n"
                                 "  \"row_height\": 2,\n"
@@ -178,13 +178,13 @@ static void test_selected_theme_id_load_save(void)
     EXPECT_TRUE(test_temp_make_dir(directory, sizeof(directory), "ui-theme-settings"));
     EXPECT_TRUE(
         test_temp_join_path(settings_path, sizeof(settings_path), directory, "settings.json"));
-    EXPECT_TRUE(ui_theme_save_selected_id(settings_path, "gldraw-dark-plus"));
+    EXPECT_TRUE(ui_theme_save_selected_id(settings_path, "gldrawdesktop-dark-plus"));
     EXPECT_TRUE(ui_theme_load_selected_id(settings_path, loaded_theme_id, sizeof(loaded_theme_id)));
-    EXPECT_STR_EQ(loaded_theme_id, "gldraw-dark-plus");
+    EXPECT_STR_EQ(loaded_theme_id, "gldrawdesktop-dark-plus");
 
-    EXPECT_TRUE(write_text_file(settings_path, "{ \"theme\": \"gldraw-high-contrast\" }\n"));
+    EXPECT_TRUE(write_text_file(settings_path, "{ \"theme\": \"gldrawdesktop-high-contrast\" }\n"));
     EXPECT_TRUE(ui_theme_load_selected_id(settings_path, loaded_theme_id, sizeof(loaded_theme_id)));
-    EXPECT_STR_EQ(loaded_theme_id, "gldraw-high-contrast");
+    EXPECT_STR_EQ(loaded_theme_id, "gldrawdesktop-high-contrast");
 
     cleanup_theme_test_files(directory);
 }

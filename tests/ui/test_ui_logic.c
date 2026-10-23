@@ -151,7 +151,7 @@ static void test_editor_viewmodel_builds_selection_properties(void)
     EXPECT_INT_EQ(view_model.summary.object_count, 3);
     EXPECT_INT_EQ(view_model.summary.selection_count, 1);
     EXPECT_TRUE(view_model.has_selection);
-    EXPECT_STR_EQ(view_model.summary.selection_type_name, "Rectangle");
+    EXPECT_STR_EQ(view_model.summary.selection_type_name, "矩形");
     EXPECT_TRUE(view_model.property_count >= 4);
     EXPECT_STR_EQ(view_model.tools[0].id, "select");
     EXPECT_TRUE(view_model.tools[0].active);
@@ -175,7 +175,7 @@ static void test_editor_viewmodel_builds_selection_properties(void)
     EXPECT_TRUE(editor_viewmodel_command_available(&view_model, EDITOR_COMMAND_EDIT_UNDO) == 0);
     EXPECT_STR_EQ(
         editor_viewmodel_command_unavailable_reason(&view_model, EDITOR_COMMAND_EDIT_UNDO),
-        "Nothing to undo.");
+        "没有可撤销的操作。");
 
     EXPECT_TRUE(document_set_layer_locked(&workspace.core.document, overlay_layer, 1));
     EXPECT_TRUE(editor_viewmodel_build(&view_model, &workspace));
@@ -192,10 +192,10 @@ static void test_editor_viewmodel_builds_selection_properties(void)
     EXPECT_TRUE(view_model.tools[4].available == 0);
     EXPECT_STR_EQ(
         editor_viewmodel_command_unavailable_reason(&view_model, tool_command("tool.rect")),
-        "Active layer is locked.");
-    EXPECT_SUBSTR(view_model.tools[2].tooltip, "Active layer is locked.");
-    EXPECT_SUBSTR(view_model.tools[3].tooltip, "Active layer is locked.");
-    EXPECT_SUBSTR(view_model.tools[4].tooltip, "Active layer is locked.");
+        "当前图层已锁定。");
+    EXPECT_SUBSTR(view_model.tools[2].tooltip, "当前图层已锁定。");
+    EXPECT_SUBSTR(view_model.tools[3].tooltip, "当前图层已锁定。");
+    EXPECT_SUBSTR(view_model.tools[4].tooltip, "当前图层已锁定。");
 
     editor_viewmodel_shutdown(&view_model);
     shutdown_workspace(&workspace);
@@ -285,7 +285,7 @@ static void test_command_dispatcher_routes_actions(void)
     EXPECT_INT_EQ(workspace.session.selection.count, 0);
     action = editor_action_make_modify_property(1u, "width", 40.0f);
     EXPECT_TRUE(command_dispatcher_dispatch(&dispatcher, &action) == 0);
-    EXPECT_STR_EQ(workspace.session.status_message, "Target object is on a locked layer.");
+    EXPECT_STR_EQ(workspace.session.status_message, "目标对象位于锁定图层。");
     EXPECT_TRUE(object_get_scalar(object, "width", &width));
     EXPECT_FLOAT_EQ(width, 10.0f);
 
@@ -416,15 +416,15 @@ static void test_dialog_commands_route_to_workspace_dialogs(void)
 
     EXPECT_TRUE(command_registry_execute(&workspace, &context, EDITOR_COMMAND_HELP_SHORTCUTS));
     EXPECT_INT_EQ(workspace.session.active_dialog.kind, UI_DIALOG_SHORTCUTS);
-    EXPECT_SUBSTR(workspace.session.active_dialog.message, "Tools");
-    EXPECT_SUBSTR(workspace.session.active_dialog.message, "Toggle This Dialog");
+    EXPECT_SUBSTR(workspace.session.active_dialog.message, "工具");
+    EXPECT_SUBSTR(workspace.session.active_dialog.message, "切换此对话框");
     EXPECT_TRUE(command_registry_execute(&workspace, &context, EDITOR_COMMAND_HELP_SHORTCUTS));
     EXPECT_INT_EQ(workspace.session.active_dialog.kind, UI_DIALOG_NONE);
 
     EXPECT_TRUE(command_registry_execute(&workspace, &context, EDITOR_COMMAND_HELP_ABOUT));
     EXPECT_INT_EQ(workspace.session.active_dialog.kind, UI_DIALOG_INFO);
-    EXPECT_STR_EQ(workspace.session.active_dialog.title, "About GLDraw");
-    EXPECT_SUBSTR(workspace.session.active_dialog.message, "Canvas-oriented");
+    EXPECT_STR_EQ(workspace.session.active_dialog.title, "关于 GL Draw Desktop");
+    EXPECT_SUBSTR(workspace.session.active_dialog.message, "画布绘图编辑器");
     workspace_dialog_close(&workspace);
 
     workspace.session.document_dirty = 1;
@@ -579,11 +579,11 @@ static void test_command_registry_respects_locked_layers(void)
     EXPECT_TRUE(document_set_active_layer(&workspace.core.document, locked_layer));
     EXPECT_TRUE(command_availability_is_available(&workspace, tool_command("tool.rect")) == 0);
     EXPECT_STR_EQ(command_availability_unavailable_reason(&workspace, tool_command("tool.rect")),
-                  "Active layer is locked.");
+                  "当前图层已锁定。");
     EXPECT_TRUE(command_registry_execute(&workspace, &context, tool_command("tool.rect")) == 0);
     EXPECT_TRUE(command_availability_is_available(&workspace, EDITOR_COMMAND_EDIT_PASTE) == 0);
     EXPECT_STR_EQ(command_availability_unavailable_reason(&workspace, EDITOR_COMMAND_EDIT_PASTE),
-                  "Active layer is locked.");
+                  "当前图层已锁定。");
 
     shutdown_workspace(&workspace);
 }

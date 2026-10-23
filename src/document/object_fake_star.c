@@ -189,7 +189,7 @@ static const GraphicPropertyDef g_fake_star_schema[] = {
 static const GraphicObjectDescriptor g_fake_star_descriptor = {
     GRAPHIC_OBJECT_INVALID, /* auto-assigned by registry */
     "fake_star",
-    "Fake Star",
+    "星星",
     fake_star_create,
     fake_star_clone,
     fake_star_destroy,

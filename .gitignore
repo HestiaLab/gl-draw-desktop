@@ -109,3 +109,7 @@ Thumbs.db
 /document.json
 /*.settings.json
 /*.keymap.json
+
+# Python cache
+__pycache__/
+*.pyc

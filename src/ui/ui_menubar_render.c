@@ -34,11 +34,11 @@ typedef struct UiTopMenuDef {
 } UiTopMenuDef;
 
 static const UiTopMenuDef g_top_menus[] = {
-    { "File", MENU_ID_FILE, { 210.0f, 300.0f }, 58.0f },
-    { "Edit", MENU_ID_EDIT, { 210.0f, 300.0f }, 58.0f },
-    { "View", MENU_ID_VIEW, { 220.0f, 300.0f }, 62.0f },
-    { "Theme", MENU_PARENT_THEME, { 260.0f, 280.0f }, 76.0f },
-    { "Help", MENU_ID_HELP, { 220.0f, 220.0f }, 62.0f },
+    { "文件", MENU_ID_FILE, { 210.0f, 300.0f }, 58.0f },
+    { "编辑", MENU_ID_EDIT, { 210.0f, 300.0f }, 58.0f },
+    { "视图", MENU_ID_VIEW, { 220.0f, 300.0f }, 62.0f },
+    { "主题", MENU_PARENT_THEME, { 260.0f, 280.0f }, 76.0f },
+    { "帮助", MENU_ID_HELP, { 220.0f, 220.0f }, 62.0f },
 };
 
 typedef struct UiQuickActionDef {
@@ -49,14 +49,14 @@ typedef struct UiQuickActionDef {
 } UiQuickActionDef;
 
 static const UiQuickActionDef g_quick_actions[] = {
-    { "New", MENU_ID_FILE_NEW, 48.0f, "Create new document (Ctrl+N)" },
-    { "Open", MENU_ID_FILE_OPEN, 52.0f, "Open document (Ctrl+O)" },
-    { "Save", MENU_ID_FILE_SAVE, 52.0f, "Save document (Ctrl+S)" },
-    { "Undo", MENU_ID_EDIT_UNDO, 52.0f, "Undo (Ctrl+Z)" },
-    { "Redo", MENU_ID_EDIT_REDO, 52.0f, "Redo (Ctrl+Y)" },
-    { "+", MENU_ID_VIEW_ZOOM_IN, 30.0f, "Zoom in (Ctrl++)" },
-    { "-", MENU_ID_VIEW_ZOOM_OUT, 30.0f, "Zoom out (Ctrl+-)" },
-    { "Fit", MENU_ID_VIEW_ZOOM_FIT, 40.0f, "Zoom to fit (Ctrl+0)" },
+    { "新建", MENU_ID_FILE_NEW, 48.0f, "新建文档（Ctrl+N）" },
+    { "打开", MENU_ID_FILE_OPEN, 52.0f, "打开文档（Ctrl+O）" },
+    { "保存", MENU_ID_FILE_SAVE, 52.0f, "保存文档（Ctrl+S）" },
+    { "撤销", MENU_ID_EDIT_UNDO, 52.0f, "撤销（Ctrl+Z）" },
+    { "重做", MENU_ID_EDIT_REDO, 52.0f, "重做（Ctrl+Y）" },
+    { "+", MENU_ID_VIEW_ZOOM_IN, 30.0f, "放大（Ctrl++）" },
+    { "-", MENU_ID_VIEW_ZOOM_OUT, 30.0f, "缩小（Ctrl+-）" },
+    { "适应", MENU_ID_VIEW_ZOOM_FIT, 40.0f, "适应窗口（Ctrl+0）" },
 };
 
 static void ui_build_menu_item_text(const EditorViewModel* view_model,
@@ -189,11 +189,11 @@ static int ui_render_theme_dropdown(UiMenuBar* menubar)
     }
 
     if (!menubar->themes || menubar->theme_count <= 0) {
-        nk_label(ctx, "No themes available", NK_TEXT_LEFT);
+        nk_label(ctx, "没有可用主题", NK_TEXT_LEFT);
         return -1;
     }
 
-    if (nk_menu_item_label(ctx, "Reload Themes", NK_TEXT_LEFT)) {
+    if (nk_menu_item_label(ctx, "重新加载主题", NK_TEXT_LEFT)) {
         menubar->requested_theme_reload = 1;
     }
     nk_labelf(ctx, NK_TEXT_CENTERED, "----------------");
@@ -201,8 +201,7 @@ static int ui_render_theme_dropdown(UiMenuBar* menubar)
     for (int i = 0; i < menubar->theme_count; ++i) {
         const UiThemeDescriptor* theme = &menubar->themes[i];
         char item_label[128];
-        const char* label =
-            (theme->label && theme->label[0] != '\0') ? theme->label : "Unnamed Theme";
+        const char* label = (theme->label && theme->label[0] != '\0') ? theme->label : "未命名主题";
         const char* marker = (i == menubar->active_theme_index) ? "[x]" : "[ ]";
 
         snprintf(item_label, sizeof(item_label), "%s %s", marker, label);

@@ -6,12 +6,46 @@
 
 #include <math.h>
 #include <stdio.h>
+#include <string.h>
 
-static const char* UI_INSPECTOR_EMPTY_HINTS[] = { "No selection",
-                                                  "Shortcuts: V H L R E",
-                                                  "Document: Ctrl+S save, Ctrl+O load",
-                                                  "Wheel zooms at cursor",
-                                                  "Delete removes selection" };
+static const char* UI_INSPECTOR_EMPTY_HINTS[] = { "未选择对象",
+                                                  "快捷键：V H L R E",
+                                                  "文档：Ctrl+S 保存，Ctrl+O 打开",
+                                                  "滚轮以光标为中心缩放",
+                                                  "Delete 删除所选对象" };
+
+static const char* ui_property_label(const char* key)
+{
+    static const struct {
+        const char* key;
+        const char* label;
+    } kLabels[] = {
+        { "x", "X 坐标" },
+        { "y", "Y 坐标" },
+        { "width", "宽度" },
+        { "height", "高度" },
+        { "x1", "起点 X" },
+        { "y1", "起点 Y" },
+        { "x2", "终点 X" },
+        { "y2", "终点 Y" },
+        { "stroke_r", "描边红" },
+        { "stroke_g", "描边绿" },
+        { "stroke_b", "描边蓝" },
+        { "stroke_a", "描边透明度" },
+        { "stroke_width", "描边宽度" },
+    };
+    size_t index = 0u;
+
+    if (!key) {
+        return "";
+    }
+    for (index = 0u; index < sizeof(kLabels) / sizeof(kLabels[0]); ++index) {
+        if (strcmp(key, kLabels[index].key) == 0) {
+            return kLabels[index].label;
+        }
+    }
+    return key;
+}
 
 static void ui_inspector_empty_hint(struct nk_context* ctx)
 {
@@ -30,8 +64,8 @@ static void ui_inspector_overview(struct nk_context* ctx, const EditorViewModel*
     }
 
     nk_layout_row_dynamic(ctx, 20.0f, 1);
-    nk_labelf(ctx, NK_TEXT_LEFT, "Type: %s", view_model->summary.selection_type_name);
-    nk_labelf(ctx, NK_TEXT_LEFT, "Selected: %d", view_model->summary.selection_count);
+    nk_labelf(ctx, NK_TEXT_LEFT, "类型：%s", view_model->summary.selection_type_name);
+    nk_labelf(ctx, NK_TEXT_LEFT, "已选：%d", view_model->summary.selection_count);
 }
 
 static void ui_property_apply_float(UiSystem* ui,
@@ -46,15 +80,18 @@ static void ui_property_apply_float(UiSystem* ui,
     }
 
     if (!property_view->editable) {
-        snprintf(
-            value_text, sizeof(value_text), "%s: %.2f", property_view->name, property_view->value);
+        snprintf(value_text,
+                 sizeof(value_text),
+                 "%s: %.2f",
+                 ui_property_label(property_view->name),
+                 property_view->value);
         nk_label(ctx, value_text, NK_TEXT_LEFT);
         return;
     }
 
     value = property_view->value;
     nk_property_float(ctx,
-                      property_view->name,
+                      ui_property_label(property_view->name),
                       property_view->min_value,
                       &value,
                       property_view->max_value,
@@ -77,7 +114,7 @@ ui_inspector_properties(UiSystem* ui, struct nk_context* ctx, const EditorViewMo
     }
 
     nk_layout_row_dynamic(ctx, 20.0f, 1);
-    nk_label(ctx, "Properties", NK_TEXT_LEFT);
+    nk_label(ctx, "属性", NK_TEXT_LEFT);
     nk_layout_row_dynamic(ctx, 24.0f, 1);
 
     for (i = 0; i < view_model->property_count; ++i) {
@@ -95,7 +132,7 @@ void ui_selection_panel(UiSystem* ui, const EditorViewModel* view_model, RectF b
     }
 
     if (nk_begin(ctx,
-                 "Inspector",
+                 "检查器",
                  nk_rect(bounds.x, bounds.y, bounds.w, bounds.h),
                  NK_WINDOW_BORDER | NK_WINDOW_TITLE | NK_WINDOW_SCROLL_AUTO_HIDE)) {
         if (ui->modal_active) {

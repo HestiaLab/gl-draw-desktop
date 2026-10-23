@@ -209,7 +209,7 @@ LayerId document_create_layer(Document* document, const char* name)
     layer->visible = 1;
     layer->locked = 0;
     layer->blend_mode = DOCUMENT_LAYER_BLEND_NORMAL;
-    snprintf(layer->name, sizeof(layer->name), "%s", (name && name[0] != '\0') ? name : "Layer");
+    snprintf(layer->name, sizeof(layer->name), "%s", (name && name[0] != '\0') ? name : "图层");
     document->revision++;
     document_spatial_invalidate(document);
     return layer->id;
@@ -230,7 +230,7 @@ LayerId document_create_layer_with_id(Document* document, const char* name, Laye
     layer.visible = 1;
     layer.locked = 0;
     layer.blend_mode = DOCUMENT_LAYER_BLEND_NORMAL;
-    snprintf(layer.name, sizeof(layer.name), "%s", (name && name[0] != '\0') ? name : "Layer");
+    snprintf(layer.name, sizeof(layer.name), "%s", (name && name[0] != '\0') ? name : "图层");
 
     if (!document_insert_layer_at(document, &layer, document->layer_count)) {
         return 0u;

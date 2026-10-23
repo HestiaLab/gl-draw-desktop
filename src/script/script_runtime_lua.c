@@ -58,7 +58,7 @@ script_runtime_execute_command(ScriptRuntime* runtime, Command* command, const c
 
     if (!runtime->ports.execute_command(runtime->ports.user, command, runtime->document)) {
         if (out_error) {
-            *out_error = "Command execution failed.";
+            *out_error = "命令执行失败。";
         }
         return 0;
     }
@@ -146,7 +146,7 @@ static int script_api_document_add_object(lua_State* state)
     command = command_create_create_object(object);
     if (!command || !script_runtime_execute_command(runtime, command, &error_message)) {
         lua_pushnil(state);
-        lua_pushstring(state, error_message ? error_message : "Command creation failed.");
+        lua_pushstring(state, error_message ? error_message : "创建命令失败。");
         return 2;
     }
 

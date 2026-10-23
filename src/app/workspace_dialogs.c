@@ -14,15 +14,15 @@ static int workspace_dialog_resolve_info(Workspace* workspace, UiDialogResult re
 static int workspace_dialog_resolve_save_as(Workspace* workspace, UiDialogResult result);
 
 static const UiDialogButtonDefinition UI_DIALOG_BUTTONS_CONFIRM_UNSAVED[] = {
-    { "Save", UI_DIALOG_RESULT_PRIMARY, 1 },
-    { "Don't Save", UI_DIALOG_RESULT_SECONDARY, 0 },
-    { "Cancel", UI_DIALOG_RESULT_CANCEL, 0 }
+    { "保存", UI_DIALOG_RESULT_PRIMARY, 1 },
+    { "不保存", UI_DIALOG_RESULT_SECONDARY, 0 },
+    { "取消", UI_DIALOG_RESULT_CANCEL, 0 }
 };
 
 static const UiDialogDefinition UI_DIALOG_DEFINITION_CONFIRM_UNSAVED = {
     { UI_DIALOG_CONFIRM_UNSAVED,
-      "Unsaved Changes",
-      "You have unsaved changes.\nDo you want to save before continuing?",
+      "未保存的更改",
+      "存在未保存的更改。\n是否先保存再继续？",
       360.0f,
       170.0f,
       1 },
@@ -32,33 +32,33 @@ static const UiDialogDefinition UI_DIALOG_DEFINITION_CONFIRM_UNSAVED = {
 };
 
 static const UiDialogButtonDefinition UI_DIALOG_BUTTONS_SHORTCUTS[] = {
-    { "Close", UI_DIALOG_RESULT_CANCEL, 1 }
+    { "关闭", UI_DIALOG_RESULT_CANCEL, 1 }
 };
 
 static const UiDialogDefinition UI_DIALOG_DEFINITION_SHORTCUTS = {
-    { UI_DIALOG_SHORTCUTS, "Keyboard Shortcuts", "", 520.0f, 420.0f, 1 },
+    { UI_DIALOG_SHORTCUTS, "键盘快捷键", "", 520.0f, 420.0f, 1 },
     UI_DIALOG_BUTTONS_SHORTCUTS,
     (int)(sizeof(UI_DIALOG_BUTTONS_SHORTCUTS) / sizeof(UI_DIALOG_BUTTONS_SHORTCUTS[0])),
     workspace_dialog_resolve_shortcuts
 };
 
 static const UiDialogButtonDefinition UI_DIALOG_BUTTONS_INFO[] = {
-    { "OK", UI_DIALOG_RESULT_PRIMARY, 1 }
+    { "确定", UI_DIALOG_RESULT_PRIMARY, 1 }
 };
 
 static const UiDialogDefinition UI_DIALOG_DEFINITION_INFO = {
-    { UI_DIALOG_INFO, "Information", "", 420.0f, 190.0f, 1 },
+    { UI_DIALOG_INFO, "提示", "", 420.0f, 190.0f, 1 },
     UI_DIALOG_BUTTONS_INFO,
     (int)(sizeof(UI_DIALOG_BUTTONS_INFO) / sizeof(UI_DIALOG_BUTTONS_INFO[0])),
     workspace_dialog_resolve_info
 };
 
 static const UiDialogButtonDefinition UI_DIALOG_BUTTONS_SAVE_AS[] = {
-    { "Save", UI_DIALOG_RESULT_PRIMARY, 1 }, { "Cancel", UI_DIALOG_RESULT_CANCEL, 0 }
+    { "保存", UI_DIALOG_RESULT_PRIMARY, 1 }, { "取消", UI_DIALOG_RESULT_CANCEL, 0 }
 };
 
 static const UiDialogDefinition UI_DIALOG_DEFINITION_SAVE_AS = {
-    { UI_DIALOG_SAVE_AS, "Save As", "", 460.0f, 220.0f, 1 },
+    { UI_DIALOG_SAVE_AS, "另存为", "", 460.0f, 220.0f, 1 },
     UI_DIALOG_BUTTONS_SAVE_AS,
     (int)(sizeof(UI_DIALOG_BUTTONS_SAVE_AS) / sizeof(UI_DIALOG_BUTTONS_SAVE_AS[0])),
     workspace_dialog_resolve_save_as
@@ -97,7 +97,7 @@ static int workspace_dialog_resolve_confirm_unsaved(Workspace* workspace, UiDial
         return workspace_dialog_execute_action_now(workspace, action);
     case UI_DIALOG_RESULT_CANCEL:
         workspace_dialog_close(workspace);
-        workspace_set_status_message(workspace, "Action cancelled.");
+        workspace_set_status_message(workspace, "操作已取消。");
         return 1;
     case UI_DIALOG_RESULT_NONE:
     default:
@@ -158,7 +158,7 @@ static int workspace_dialog_resolve_save_as(Workspace* workspace, UiDialogResult
         return 1;
     case UI_DIALOG_RESULT_CANCEL:
         workspace_dialog_close(workspace);
-        workspace_set_status_message(workspace, "Save As cancelled.");
+        workspace_set_status_message(workspace, "已取消另存为。");
         return 1;
     case UI_DIALOG_RESULT_NONE:
     case UI_DIALOG_RESULT_SECONDARY:
@@ -408,7 +408,7 @@ int workspace_dialog_open_save_as(Workspace* workspace,
     workspace_dialog_apply_template(&dialog, &UI_DIALOG_DEFINITION_SAVE_AS.dialog_template);
     snprintf(dialog.message,
              sizeof(dialog.message),
-             "Enter a new filename.\nThe file will be saved in the same directory:\n%s",
+             "请输入新文件名。\n文件将保存在同一目录：\n%s",
              directory);
     if (initial_filename && initial_filename[0] != '\0') {
         snprintf(dialog.payload.text, sizeof(dialog.payload.text), "%s", initial_filename);

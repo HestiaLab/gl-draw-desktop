@@ -169,10 +169,10 @@ static void shape_tool_key_down(Tool* tool, ToolContext* context, int key, int m
 }
 
 static const ToolDescriptor g_line_tool_descriptor = { TOOL_ID_LINE, /* id */
-                                                       "Line",       /* name */
+                                                       "直线",       /* name */
                                                        "tool.line",  /* command_id */
-                                                       "Draw line",  /* tooltip */
-                                                       "Line",       /* icon */
+                                                       "绘制直线",   /* tooltip */
+                                                       "直线",       /* icon */
                                                        "L",          /* default_shortcut */
                                                        1,            /* requires_editable_layer */
                                                        shape_tool_create,
@@ -186,13 +186,13 @@ static const ToolDescriptor g_line_tool_descriptor = { TOOL_ID_LINE, /* id */
                                                        default_draw_overlay,
                                                        &g_line_shape_config };
 
-static const ToolDescriptor g_rect_tool_descriptor = { TOOL_ID_RECT,     /* id */
-                                                       "Rectangle",      /* name */
-                                                       "tool.rect",      /* command_id */
-                                                       "Draw rectangle", /* tooltip */
-                                                       "Rect",           /* icon */
-                                                       "R",              /* default_shortcut */
-                                                       1, /* requires_editable_layer */
+static const ToolDescriptor g_rect_tool_descriptor = { TOOL_ID_RECT, /* id */
+                                                       "矩形",       /* name */
+                                                       "tool.rect",  /* command_id */
+                                                       "绘制矩形",   /* tooltip */
+                                                       "Rect",       /* icon */
+                                                       "R",          /* default_shortcut */
+                                                       1,            /* requires_editable_layer */
                                                        shape_tool_create,
                                                        default_tool_destroy,
                                                        NULL, /* activate */
@@ -205,10 +205,10 @@ static const ToolDescriptor g_rect_tool_descriptor = { TOOL_ID_RECT,     /* id *
                                                        &g_rect_shape_config };
 
 static const ToolDescriptor g_ellipse_tool_descriptor = { TOOL_ID_ELLIPSE, /* id */
-                                                          "Ellipse",       /* name */
+                                                          "椭圆",          /* name */
                                                           "tool.ellipse",  /* command_id */
-                                                          "Draw ellipse",  /* tooltip */
-                                                          "Ellipse",       /* icon */
+                                                          "绘制椭圆",      /* tooltip */
+                                                          "椭圆",          /* icon */
                                                           "E",             /* default_shortcut */
                                                           1, /* requires_editable_layer */
                                                           shape_tool_create,

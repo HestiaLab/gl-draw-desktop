@@ -5,9 +5,9 @@
 #include <stddef.h>
 
 static const UiThemeDescriptor g_builtin_theme_descriptors[] = {
-    { "gldraw-light", "GLDraw Light" },
-    { "gldraw-dark-plus", "GLDraw Dark+" },
-    { "gldraw-high-contrast", "GLDraw High Contrast" },
+    { "gldrawdesktop-light", "GL Draw Desktop 浅色" },
+    { "gldrawdesktop-dark-plus", "GL Draw Desktop 深色+" },
+    { "gldrawdesktop-high-contrast", "GL Draw Desktop 高对比" },
 };
 
 static UiThemeTokens ui_theme_light_tokens(void)

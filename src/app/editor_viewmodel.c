@@ -454,12 +454,12 @@ static void editor_viewmodel_build_summary(EditorViewModel* view_model,
                        sizeof(view_model->summary.current_document_path),
                        context->document_path && context->document_path[0] != '\0'
                            ? context->document_path
-                           : "(default)");
+                           : "（默认）");
     editor_copy_string(view_model->summary.status_message,
                        sizeof(view_model->summary.status_message),
                        context->status_message && context->status_message[0] != '\0'
                            ? context->status_message
-                           : "Ready");
+                           : "就绪");
     editor_copy_string(view_model->summary.active_tool_label,
                        sizeof(view_model->summary.active_tool_label),
                        context->tools ? tool_controller_active_label(context->tools) : "");

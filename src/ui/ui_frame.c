@@ -55,7 +55,7 @@ static void ui_system_build_menu_region(UiSystem* ui, const EditorViewModel* vie
         requested_theme = ui_theme_descriptor_at(requested_theme_index);
         if (requested_theme && ui_system_set_theme(ui, requested_theme->id, 1)) {
             ui_system_emit_status(ui,
-                                  "Theme: %s",
+                                  "主题：%s",
                                   requested_theme->label ? requested_theme->label
                                                          : requested_theme->id);
         }

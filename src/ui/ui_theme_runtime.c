@@ -13,12 +13,12 @@ static const char* ui_theme_reload_reason_label(UiThemeReloadReason reason)
 {
     switch (reason) {
     case UI_THEME_RELOAD_REASON_MANUAL:
-        return "manually";
+        return "手动";
     case UI_THEME_RELOAD_REASON_AUTO:
-        return "auto";
+        return "自动";
     case UI_THEME_RELOAD_REASON_STARTUP:
     default:
-        return "startup";
+        return "启动";
     }
 }
 
@@ -117,10 +117,10 @@ void ui_system_reload_themes(UiSystem* ui, int notify_status, UiThemeReloadReaso
             ui_theme_external_signature(ui_system_theme_directory_path(ui));
         if (notify_status) {
             const char* error_summary = ui_theme_last_reload_error();
-            ui_system_emit_status(
-                ui,
-                "Theme reload failed: %s",
-                (error_summary && error_summary[0] != '\0') ? error_summary : "invalid theme file");
+            ui_system_emit_status(ui,
+                                  "主题重新加载失败：%s",
+                                  (error_summary && error_summary[0] != '\0') ? error_summary
+                                                                              : "主题文件无效");
         }
         return;
     }
@@ -132,14 +132,13 @@ void ui_system_reload_themes(UiSystem* ui, int notify_status, UiThemeReloadReaso
     if (notify_status) {
         const char* reason_label = ui_theme_reload_reason_label(reason);
         if (fallback_to_default) {
-            ui_system_emit_status(
-                ui,
-                "Themes %s reloaded (%d custom), active theme missing -> fallback",
-                reason_label,
-                custom_theme_count);
+            ui_system_emit_status(ui,
+                                  "主题已%s重新加载（%d 个自定义），当前主题缺失，已回退",
+                                  reason_label,
+                                  custom_theme_count);
         } else {
             ui_system_emit_status(
-                ui, "Themes %s reloaded (%d custom)", reason_label, custom_theme_count);
+                ui, "主题已%s重新加载（%d 个自定义）", reason_label, custom_theme_count);
         }
     }
 }

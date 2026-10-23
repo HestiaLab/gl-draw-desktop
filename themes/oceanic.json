@@ -1,7 +1,7 @@
 {
   "id": "oceanic-night",
-  "label": "Oceanic Night",
-  "base_theme": "gldraw-dark-plus",
+  "label": "海洋之夜",
+  "base_theme": "gldrawdesktop-dark-plus",
 
   "primary": "#4FC3F7",
   "primary_hover": "#81D4FA",

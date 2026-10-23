@@ -42,6 +42,9 @@
 #include <ui/ui_menubar.h>
 #include <ui/ui_theme.h>
 
+/* 加载随包分发的中文字体；失败时返回 NULL 并输出中文诊断。 */
+struct nk_font* ui_font_load_default(struct nk_font_atlas* atlas);
+
 #define UI_THEME_ID_CAPACITY 64
 #define UI_THEME_DESCRIPTOR_CACHE_MAX 64
 #define UI_THEME_SETTINGS_PATH "gldrawdesktop.settings.json"

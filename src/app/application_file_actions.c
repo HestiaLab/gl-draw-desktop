@@ -110,11 +110,9 @@ int application_save_as_document(Application* app)
     input = workspace_dialog_input_text(app->workspace);
     if (!path_utils_copy_trimmed(input, filename, sizeof(filename)) ||
         !path_utils_is_safe_filename(filename)) {
-        workspace_set_status_message(app->workspace, "Save As failed: invalid filename");
+        workspace_set_status_message(app->workspace, "另存为失败：文件名无效");
         application_dialog_actions_update_save_as_message(
-            app,
-            "Invalid filename. Use a simple file name without path separators or reserved "
-            "characters.");
+            app, "文件名无效。请使用不含路径分隔符或保留字符的简单文件名。");
         return 0;
     }
 
@@ -123,9 +121,8 @@ int application_save_as_document(Application* app)
                                         ".json",
                                         target_path,
                                         sizeof(target_path))) {
-        workspace_set_status_message(app->workspace, "Save As failed: path too long");
-        application_dialog_actions_update_save_as_message(
-            app, "Invalid filename. The resulting path is too long.");
+        workspace_set_status_message(app->workspace, "另存为失败：路径过长");
+        application_dialog_actions_update_save_as_message(app, "文件名无效。生成的路径过长。");
         return 0;
     }
 
@@ -196,12 +193,12 @@ int application_request_export_png(Application* app)
 
     if (!application_copy_png_export_path(
             selected_path, app->pending_export_png_path, sizeof(app->pending_export_png_path))) {
-        workspace_set_status_message(app->workspace, "Export PNG failed: path too long.");
+        workspace_set_status_message(app->workspace, "导出 PNG 失败：路径过长。");
         return 0;
     }
 
     app->pending_export_png = 1;
-    workspace_set_statusf(app->workspace, "Export PNG queued: %s", app->pending_export_png_path);
+    workspace_set_statusf(app->workspace, "已排队导出 PNG：%s", app->pending_export_png_path);
     return 1;
 }
 
@@ -219,13 +216,13 @@ void application_flush_pending_export_png(Application* app)
 
     if (render_system_export_png(
             app->renderer, editor_controller_canvas(app->workspace), export_path)) {
-        workspace_set_statusf(app->workspace, "Exported PNG: %s", export_path);
-        LOG_INFO("Exported PNG: %s", export_path);
+        workspace_set_statusf(app->workspace, "已导出 PNG：%s", export_path);
+        LOG_INFO("已导出 PNG：%s", export_path);
         return;
     }
 
-    workspace_set_statusf(app->workspace, "Export PNG failed: %s", export_path);
-    LOG_ERROR("Export PNG failed: %s", export_path);
+    workspace_set_statusf(app->workspace, "导出 PNG 失败：%s", export_path);
+    LOG_ERROR("导出 PNG 失败：%s", export_path);
 }
 
 void application_open_startup_document(Application* app)
@@ -244,5 +241,5 @@ void application_open_startup_document(Application* app)
         return;
     }
 
-    workspace_set_status_message(app->workspace, "New empty document");
+    workspace_set_status_message(app->workspace, "新建空白文档");
 }

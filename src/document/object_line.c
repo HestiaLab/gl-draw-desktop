@@ -239,7 +239,7 @@ static const GraphicPropertyDef g_line_schema[] = {
 static const GraphicObjectDescriptor g_line_descriptor = {
     GRAPHIC_OBJECT_INVALID, /* auto-assigned by registry */
     "line",
-    "Line",
+    "直线",
     line_create,
     line_clone,
     line_destroy,

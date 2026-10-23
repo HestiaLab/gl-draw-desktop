@@ -230,7 +230,7 @@ static const GraphicPropertyDef g_ellipse_schema[] = {
 static const GraphicObjectDescriptor g_ellipse_descriptor = {
     GRAPHIC_OBJECT_INVALID, /* auto-assigned by registry */
     "ellipse",
-    "Ellipse",
+    "椭圆",
     ellipse_create,
     ellipse_clone,
     ellipse_destroy,

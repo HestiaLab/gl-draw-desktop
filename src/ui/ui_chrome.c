@@ -70,7 +70,7 @@ void ui_tool_rail(UiSystem* ui, const EditorViewModel* view_model, RectF bounds)
     }
 
     if (nk_begin(ctx,
-                 "Tool Rail",
+                 "工具栏",
                  nk_rect(bounds.x, bounds.y, bounds.w, bounds.h),
                  NK_WINDOW_NO_SCROLLBAR | NK_WINDOW_BORDER | NK_WINDOW_TITLE)) {
         if (ui->modal_active) {
@@ -121,7 +121,7 @@ void ui_tool_rail(UiSystem* ui, const EditorViewModel* view_model, RectF bounds)
 
         nk_layout_row_dynamic(ctx, ui->theme.row_height * 0.9f, 1);
         nk_label(ctx, "", NK_TEXT_LEFT);
-        nk_labelf(ctx, NK_TEXT_LEFT, "Active:");
+        nk_labelf(ctx, NK_TEXT_LEFT, "当前：");
         nk_label(ctx, view_model->summary.active_tool_label, NK_TEXT_LEFT);
 
         if (ui->modal_active) {
@@ -154,29 +154,29 @@ void ui_status_bar(UiSystem* ui,
         return;
     }
 
-    snprintf(zoom_text, sizeof(zoom_text), "Zoom: %.0f%%", view_model->summary.zoom_percent);
+    snprintf(zoom_text, sizeof(zoom_text), "缩放：%.0f%%", view_model->summary.zoom_percent);
 
     if (nk_begin(
             ctx,
-            "Status",
+            "状态",
             nk_rect(
                 ui->status_bounds.x, ui->status_bounds.y, ui->status_bounds.w, ui->status_bounds.h),
             NK_WINDOW_NO_SCROLLBAR | NK_WINDOW_BORDER)) {
         nk_layout_row_begin(ctx, NK_DYNAMIC, status_row_h, 5);
         nk_layout_row_push(ctx, 0.12f);
-        nk_labelf(ctx, NK_TEXT_LEFT, "Objects: %d", view_model->summary.object_count);
+        nk_labelf(ctx, NK_TEXT_LEFT, "对象：%d", view_model->summary.object_count);
         nk_layout_row_push(ctx, 0.13f);
         nk_label(ctx, zoom_text, NK_TEXT_LEFT);
         nk_layout_row_push(ctx, 0.35f);
         nk_labelf(ctx,
                   NK_TEXT_LEFT,
-                  "File: %s%s",
+                  "文件：%s%s",
                   view_model->summary.current_document_path,
                   view_model->summary.document_dirty ? " *" : "");
         nk_layout_row_push(ctx, 0.18f);
         nk_labelf(ctx,
                   NK_TEXT_LEFT,
-                  "Undo:%d Redo:%d",
+                  "撤销：%d 重做：%d",
                   view_model->summary.undo_count,
                   view_model->summary.redo_count);
         nk_layout_row_push(ctx, 0.22f);

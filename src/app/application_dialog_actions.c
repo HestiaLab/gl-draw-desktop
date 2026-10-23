@@ -26,7 +26,7 @@ void application_dialog_actions_update_save_as_message(Application* app, const c
 
         snprintf(message,
                  sizeof(message),
-                 "%s\n\nEnter a new filename.\nThe file will be saved in the same directory:\n%s",
+                 "%s\n\n请输入新文件名。\n文件将保存在同一目录：\n%s",
                  error_text,
                  directory);
         workspace_dialog_set_message(app->workspace, message);
@@ -36,10 +36,8 @@ void application_dialog_actions_update_save_as_message(Application* app, const c
     {
         char message[1024];
 
-        snprintf(message,
-                 sizeof(message),
-                 "Enter a new filename.\nThe file will be saved in the same directory:\n%s",
-                 directory);
+        snprintf(
+            message, sizeof(message), "请输入新文件名。\n文件将保存在同一目录：\n%s", directory);
         workspace_dialog_set_message(app->workspace, message);
     }
 }
@@ -50,7 +48,7 @@ void application_dialog_actions_report_startup_load_failure(Application* app, co
         return;
     }
 
-    workspace_set_statusf(app->workspace, "Startup load failed: %s", path);
+    workspace_set_statusf(app->workspace, "启动加载失败：%s", path);
 }
 
 void application_dialog_actions_report_open_cancelled(Application* app)
@@ -59,7 +57,7 @@ void application_dialog_actions_report_open_cancelled(Application* app)
         return;
     }
 
-    workspace_set_status_message(app->workspace, "Open cancelled.");
+    workspace_set_status_message(app->workspace, "已取消打开。");
 }
 
 void application_dialog_actions_report_open_picker_error(Application* app)
@@ -68,7 +66,7 @@ void application_dialog_actions_report_open_picker_error(Application* app)
         return;
     }
 
-    workspace_set_status_message(app->workspace, "Open failed: file picker unavailable or failed.");
+    workspace_set_status_message(app->workspace, "打开失败：文件选择器不可用或操作失败。");
 }
 
 void application_dialog_actions_report_export_cancelled(Application* app)
@@ -77,7 +75,7 @@ void application_dialog_actions_report_export_cancelled(Application* app)
         return;
     }
 
-    workspace_set_status_message(app->workspace, "Export PNG cancelled.");
+    workspace_set_status_message(app->workspace, "已取消导出 PNG。");
 }
 
 void application_dialog_actions_report_export_picker_error(Application* app)
@@ -86,6 +84,5 @@ void application_dialog_actions_report_export_picker_error(Application* app)
         return;
     }
 
-    workspace_set_status_message(app->workspace,
-                                 "Export PNG failed: save dialog unavailable or failed.");
+    workspace_set_status_message(app->workspace, "导出 PNG 失败：保存对话框不可用或操作失败。");
 }

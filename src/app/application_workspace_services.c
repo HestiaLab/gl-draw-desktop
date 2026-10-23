@@ -10,7 +10,7 @@ static int app_exit_application(Application* app)
     }
 
     platform_window_set_should_close(&app->window, 1);
-    workspace_set_status_message(app->workspace, "Closing application");
+    workspace_set_status_message(app->workspace, "正在关闭应用");
     return 1;
 }
 

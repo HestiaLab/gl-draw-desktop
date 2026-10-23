@@ -66,32 +66,30 @@ void ui_layers_panel(UiSystem* ui, struct nk_context* ctx, const EditorViewModel
     }
 
     nk_layout_row_dynamic(ctx, 20.0f, 1);
-    nk_label(ctx, "Layers", NK_TEXT_LEFT);
+    nk_label(ctx, "图层", NK_TEXT_LEFT);
     nk_layout_row_begin(ctx, NK_DYNAMIC, 24.0f, 2);
     nk_layout_row_push(ctx, 0.72f);
-    nk_label(ctx, "Active layer controls", NK_TEXT_LEFT);
+    nk_label(ctx, "当前图层控制", NK_TEXT_LEFT);
     nk_layout_row_push(ctx, 0.28f);
-    if (nk_button_label(ctx, "+ Layer") && !ui->modal_active) {
-        EditorAction action = editor_action_make_create_layer("Layer");
+    if (nk_button_label(ctx, "+ 图层") && !ui->modal_active) {
+        EditorAction action = editor_action_make_create_layer("图层");
         ui_system_emit_action(ui, &action);
     }
     nk_layout_row_end(ctx);
 
     if (active_layer) {
         nk_layout_row_dynamic(ctx, 20.0f, 1);
-        nk_labelf(ctx, NK_TEXT_LEFT, "Active: %s", active_layer->name);
+        nk_labelf(ctx, NK_TEXT_LEFT, "当前：%s", active_layer->name);
 
         nk_layout_row_begin(ctx, NK_DYNAMIC, 24.0f, 4);
         nk_layout_row_push(ctx, 0.16f);
-        if (nk_button_label(ctx, active_layer->visible ? "Visible" : "Hidden") &&
-            !ui->modal_active) {
+        if (nk_button_label(ctx, active_layer->visible ? "可见" : "隐藏") && !ui->modal_active) {
             EditorAction action = editor_action_make_set_layer_visibility(
                 active_layer->id, active_layer->visible ? 0 : 1);
             ui_system_emit_action(ui, &action);
         }
         nk_layout_row_push(ctx, 0.16f);
-        if (nk_button_label(ctx, active_layer->locked ? "Locked" : "Unlocked") &&
-            !ui->modal_active) {
+        if (nk_button_label(ctx, active_layer->locked ? "已锁定" : "未锁定") && !ui->modal_active) {
             EditorAction action =
                 editor_action_make_set_layer_locked(active_layer->id, active_layer->locked ? 0 : 1);
             ui_system_emit_action(ui, &action);
@@ -111,7 +109,7 @@ void ui_layers_panel(UiSystem* ui, struct nk_context* ctx, const EditorViewModel
             nk_label(ctx, ui->layer_name_buffer, NK_TEXT_LEFT);
         }
         nk_layout_row_push(ctx, 0.20f);
-        if (nk_button_label(ctx, "Apply") && !ui->modal_active) {
+        if (nk_button_label(ctx, "应用") && !ui->modal_active) {
             ui_submit_layer_rename(ui, active_layer);
         }
         nk_layout_row_end(ctx);
@@ -121,8 +119,8 @@ void ui_layers_panel(UiSystem* ui, struct nk_context* ctx, const EditorViewModel
         const EditorLayerView* layer_view = &view_model->layers[i];
         char label[96];
         char count_label[24];
-        const char* eye = layer_view->visible ? "Hide" : "Show";
-        const char* lock = layer_view->locked ? "Unlock" : "Lock";
+        const char* eye = layer_view->visible ? "隐藏" : "显示";
+        const char* lock = layer_view->locked ? "解锁" : "锁定";
 
         snprintf(label, sizeof(label), "%s%s", layer_view->active ? "* " : "", layer_view->name);
         snprintf(count_label, sizeof(count_label), "%d", layer_view->object_count);
@@ -148,12 +146,12 @@ void ui_layers_panel(UiSystem* ui, struct nk_context* ctx, const EditorViewModel
         nk_layout_row_push(ctx, 0.12f);
         nk_label(ctx, count_label, NK_TEXT_RIGHT);
         nk_layout_row_push(ctx, 0.10f);
-        if (nk_button_label(ctx, "Up") && !ui->modal_active && i > 0) {
+        if (nk_button_label(ctx, "上移") && !ui->modal_active && i > 0) {
             EditorAction action = editor_action_make_move_layer(layer_view->id, i - 1);
             ui_system_emit_action(ui, &action);
         }
         nk_layout_row_push(ctx, 0.10f);
-        if (nk_button_label(ctx, "Dn") && !ui->modal_active && i + 1 < view_model->layer_count) {
+        if (nk_button_label(ctx, "下移") && !ui->modal_active && i + 1 < view_model->layer_count) {
             EditorAction action = editor_action_make_move_layer(layer_view->id, i + 1);
             ui_system_emit_action(ui, &action);
         }

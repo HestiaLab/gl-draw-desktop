@@ -208,7 +208,7 @@ static const GraphicPropertyDef g_rect_schema[] = {
 static const GraphicObjectDescriptor g_rect_descriptor = {
     GRAPHIC_OBJECT_INVALID, /* auto-assigned by registry */
     "rect",
-    "Rectangle",
+    "矩形",
     rect_create,
     rect_clone,
     rect_destroy,

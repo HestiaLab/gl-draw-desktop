@@ -41,13 +41,13 @@ static int app_init(Application* app)
     RectF viewport = { 0.0f, 0.0f, 1440.0f, 900.0f };
 
     if (platform_window_init(&app->window, 1440, 900, "GL Draw Desktop 画布编辑器") != 0) {
-        LOG_ERROR("%s", "Failed to create window");
+        LOG_ERROR("%s", "创建窗口失败");
         return -1;
     }
 
     app->workspace = workspace_create(viewport, APP_KEYMAP_SETTINGS_PATH);
     if (!app->workspace) {
-        LOG_ERROR("%s", "Failed to initialize workspace");
+        LOG_ERROR("%s", "初始化工作区失败");
         return -1;
     }
     workspace_service_set_document_path(app->workspace,
@@ -55,8 +55,9 @@ static int app_init(Application* app)
     application_register_workspace_services(app);
     command_dispatcher_init(&app->dispatcher, app->workspace);
     workspace_mark_saved(app->workspace);
-    workspace_set_status_message(app->workspace, "Initializing editor");
-    app->cursor_screen = vec2_make(app->window.width * 0.5f, app->window.height * 0.5f);
+    workspace_set_status_message(app->workspace, "正在初始化编辑器");
+    app->cursor_screen =
+        vec2_make((float)app->window.width * 0.5f, (float)app->window.height * 0.5f);
     app->cursor_inside_canvas = 1;
 
     {
@@ -67,13 +68,13 @@ static int app_init(Application* app)
         }
     }
     if (!app->renderer) {
-        LOG_ERROR("%s", "Failed to initialize renderer");
+        LOG_ERROR("%s", "初始化渲染器失败");
         return -1;
     }
 
     app->ui = ui_system_create(&app->window);
     if (!app->ui) {
-        LOG_ERROR("%s", "Failed to initialize UI");
+        LOG_ERROR("%s", "初始化界面失败");
         return -1;
     }
     {
@@ -133,7 +134,7 @@ int app_run(void)
     Application* app = (Application*)calloc(1, sizeof(*app));
 
     if (!app) {
-        LOG_ERROR("%s", "Failed to allocate application state");
+        LOG_ERROR("%s", "分配应用状态失败");
         return -1;
     }
 

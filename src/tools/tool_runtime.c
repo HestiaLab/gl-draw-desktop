@@ -182,7 +182,7 @@ const char* tool_controller_active_label(const ToolController* controller)
     if (!controller || controller->active_index < 0 ||
         controller->active_index >= controller->tool_count ||
         !controller->tools[controller->active_index].descriptor) {
-        return "Unknown";
+        return "未知";
     }
     return controller->tools[controller->active_index].descriptor->name;
 }

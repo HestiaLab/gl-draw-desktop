@@ -519,7 +519,7 @@ static void test_command_can_execute_reports_capability(void)
     command->vtable->destroy(command);
 
     EXPECT_TRUE(strcmp(command_execute_check_message(COMMAND_EXECUTE_CHECK_TARGET_LAYER_LOCKED),
-                       "Active layer is locked.") == 0);
+                       "当前图层已锁定。") == 0);
 
     selection_set_shutdown(&selection);
     document_shutdown(&document);

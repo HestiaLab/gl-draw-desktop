@@ -133,7 +133,7 @@ static int test_new_document_resets_workspace_state(Workspace* workspace)
     EXPECT_UINT_EQ(workspace->core.document.active_layer_id, 1u);
     EXPECT_TRUE(expect_runtime_state_cleared(workspace));
     EXPECT_TRUE(workspace->session.current_document_path[0] == '\0');
-    EXPECT_STR_EQ(workspace->session.status_message, "New empty document");
+    EXPECT_STR_EQ(workspace->session.status_message, "新建空白文档");
     EXPECT_FLOAT_EQ(canvas_view_center(&workspace->core.canvas).x, 0.0f);
     EXPECT_FLOAT_EQ(canvas_view_center(&workspace->core.canvas).y, 0.0f);
     EXPECT_FLOAT_EQ(canvas_view_zoom(&workspace->core.canvas), 1.0f);
@@ -156,7 +156,7 @@ static int test_load_document_resets_runtime_state(Workspace* workspace)
     EXPECT_TRUE(expect_runtime_state_cleared(workspace));
     EXPECT_STR_EQ(workspace_service_document_path(workspace), k_temp_document_path);
     EXPECT_STR_EQ(workspace->session.status_message,
-                  "Loaded document: gldraw_workspace_service_test.json");
+                  "已加载文档：gldraw_workspace_service_test.json");
     return 0;
 }
 

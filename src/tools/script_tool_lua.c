@@ -84,10 +84,10 @@ static void script_tool_pointer_up(Tool* tool, ToolContext* context, const ToolE
 }
 
 static const ToolDescriptor G_SCRIPT_TOOL_DESCRIPTOR = { "script",
-                                                         "Script",
+                                                         "脚本",
                                                          NULL,
-                                                         "Execute Lua tool script",
-                                                         "Script",
+                                                         "执行 Lua 工具脚本",
+                                                         "脚本",
                                                          NULL,
                                                          0,
                                                          script_tool_create,

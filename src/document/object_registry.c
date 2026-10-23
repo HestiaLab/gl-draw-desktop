@@ -137,7 +137,7 @@ const GraphicObjectDescriptor* object_registry_at(int index)
 const char* object_type_name(GraphicObjectType type)
 {
     const GraphicObjectDescriptor* descriptor = object_registry_lookup_by_type(type);
-    return descriptor ? descriptor->name : "Unknown";
+    return descriptor ? descriptor->name : "未知";
 }
 
 GraphicObject* object_create(const char* type_id, const void* init_data, GraphicStyle style)

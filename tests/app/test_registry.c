@@ -177,7 +177,7 @@ static void test_dynamic_tool_shortcut_and_availability(void)
             found_tool = 1;
             EXPECT_TRUE(view_model.tools[i].available == 0);
             EXPECT_STR_EQ(view_model.tools[i].shortcut, "F");
-            EXPECT_STR_EQ(view_model.tools[i].unavailable_reason, "Active layer is locked.");
+            EXPECT_STR_EQ(view_model.tools[i].unavailable_reason, "当前图层已锁定。");
             break;
         }
     }

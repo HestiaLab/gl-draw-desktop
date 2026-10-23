@@ -55,7 +55,7 @@ int workspace_dialog_command_toggle_shortcuts(Workspace* workspace)
     }
 
     content[0] = '\0';
-    snprintf(content + strlen(content), sizeof(content) - strlen(content), "Tools\n");
+    snprintf(content + strlen(content), sizeof(content) - strlen(content), "工具\n");
     for (i = 0; i < tool_registry_count(); ++i) {
         const ToolDescriptor* descriptor = tool_registry_at(i);
         if (!descriptor || !descriptor->command_id || !descriptor->name) {
@@ -69,45 +69,41 @@ int workspace_dialog_command_toggle_shortcuts(Workspace* workspace)
                                                       descriptor->name);
     }
 
-    snprintf(content + strlen(content), sizeof(content) - strlen(content), "\nFile\n");
+    snprintf(content + strlen(content), sizeof(content) - strlen(content), "\n文件\n");
     workspace_dialog_command_append_shortcut_line(
-        content, sizeof(content), workspace, "file.new", KEY_SCOPE_GLOBAL, "New Document");
+        content, sizeof(content), workspace, "file.new", KEY_SCOPE_GLOBAL, "新建文档");
     workspace_dialog_command_append_shortcut_line(
-        content, sizeof(content), workspace, "file.open", KEY_SCOPE_GLOBAL, "Open Document");
+        content, sizeof(content), workspace, "file.open", KEY_SCOPE_GLOBAL, "打开文档");
     workspace_dialog_command_append_shortcut_line(
-        content, sizeof(content), workspace, "file.save", KEY_SCOPE_GLOBAL, "Save Document");
+        content, sizeof(content), workspace, "file.save", KEY_SCOPE_GLOBAL, "保存文档");
 
-    snprintf(content + strlen(content), sizeof(content) - strlen(content), "\nEdit\n");
+    snprintf(content + strlen(content), sizeof(content) - strlen(content), "\n编辑\n");
     workspace_dialog_command_append_shortcut_line(
-        content, sizeof(content), workspace, "edit.undo", KEY_SCOPE_GLOBAL, "Undo");
+        content, sizeof(content), workspace, "edit.undo", KEY_SCOPE_GLOBAL, "撤销");
     workspace_dialog_command_append_shortcut_line(
-        content, sizeof(content), workspace, "edit.redo", KEY_SCOPE_GLOBAL, "Redo");
+        content, sizeof(content), workspace, "edit.redo", KEY_SCOPE_GLOBAL, "重做");
     workspace_dialog_command_append_shortcut_line(
-        content, sizeof(content), workspace, "edit.cut", KEY_SCOPE_GLOBAL, "Cut");
+        content, sizeof(content), workspace, "edit.cut", KEY_SCOPE_GLOBAL, "剪切");
     workspace_dialog_command_append_shortcut_line(
-        content, sizeof(content), workspace, "edit.copy", KEY_SCOPE_GLOBAL, "Copy");
+        content, sizeof(content), workspace, "edit.copy", KEY_SCOPE_GLOBAL, "复制");
     workspace_dialog_command_append_shortcut_line(
-        content, sizeof(content), workspace, "edit.paste", KEY_SCOPE_GLOBAL, "Paste");
+        content, sizeof(content), workspace, "edit.paste", KEY_SCOPE_GLOBAL, "粘贴");
     workspace_dialog_command_append_shortcut_line(
-        content, sizeof(content), workspace, "edit.delete", KEY_SCOPE_GLOBAL, "Delete Selection");
+        content, sizeof(content), workspace, "edit.delete", KEY_SCOPE_GLOBAL, "删除所选");
     workspace_dialog_command_append_shortcut_line(
-        content, sizeof(content), workspace, "edit.select_all", KEY_SCOPE_GLOBAL, "Select All");
+        content, sizeof(content), workspace, "edit.select_all", KEY_SCOPE_GLOBAL, "全选");
 
-    snprintf(content + strlen(content), sizeof(content) - strlen(content), "\nView\n");
+    snprintf(content + strlen(content), sizeof(content) - strlen(content), "\n视图\n");
     workspace_dialog_command_append_shortcut_line(
-        content, sizeof(content), workspace, "view.zoom_fit", KEY_SCOPE_GLOBAL, "Zoom to Fit");
+        content, sizeof(content), workspace, "view.zoom_fit", KEY_SCOPE_GLOBAL, "适应窗口");
     workspace_dialog_command_append_shortcut_line(
-        content, sizeof(content), workspace, "view.zoom_in", KEY_SCOPE_GLOBAL, "Zoom In");
+        content, sizeof(content), workspace, "view.zoom_in", KEY_SCOPE_GLOBAL, "放大");
     workspace_dialog_command_append_shortcut_line(
-        content, sizeof(content), workspace, "view.zoom_out", KEY_SCOPE_GLOBAL, "Zoom Out");
+        content, sizeof(content), workspace, "view.zoom_out", KEY_SCOPE_GLOBAL, "缩小");
 
-    snprintf(content + strlen(content), sizeof(content) - strlen(content), "\nHelp\n");
-    workspace_dialog_command_append_shortcut_line(content,
-                                                  sizeof(content),
-                                                  workspace,
-                                                  "help.shortcuts",
-                                                  KEY_SCOPE_GLOBAL,
-                                                  "Toggle This Dialog");
+    snprintf(content + strlen(content), sizeof(content) - strlen(content), "\n帮助\n");
+    workspace_dialog_command_append_shortcut_line(
+        content, sizeof(content), workspace, "help.shortcuts", KEY_SCOPE_GLOBAL, "切换此对话框");
 
     return workspace_dialog_open_shortcuts(workspace, content);
 }
@@ -116,9 +112,9 @@ int workspace_dialog_command_open_about(Workspace* workspace)
 {
     return workspace_dialog_open_info(
         workspace,
-        "About GLDraw",
-        "GLDraw\nCanvas-oriented OpenGL drawing editor.\n\nCurrent build includes core document "
-        "editing, undo/redo, persistence, and themeable UI.");
+        "关于 GL Draw Desktop",
+        "GL Draw Desktop\n基于 OpenGL 的画布绘图编辑器。\n\n当前版本包含核心文档编辑、"
+        "撤销/重做、持久化与可换主题界面。");
 }
 
 int workspace_dialog_command_confirm(Workspace* workspace)

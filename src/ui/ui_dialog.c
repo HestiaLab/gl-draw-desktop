@@ -81,7 +81,7 @@ ui_dialog_show(struct nk_context* ctx, UiDialogState* dialog, int window_width, 
                      dialog_width,
                      dialog_height);
     full_bounds = nk_rect(0.0f, 0.0f, (float)window_width, (float)window_height);
-    window_title = dialog->title[0] != '\0' ? dialog->title : "Dialog";
+    window_title = dialog->title[0] != '\0' ? dialog->title : "对话框";
 
     if (dialog->modal) {
         blocker_background = nk_style_item_color(nk_rgba(0, 0, 0, 96));
@@ -112,7 +112,7 @@ ui_dialog_show(struct nk_context* ctx, UiDialogState* dialog, int window_width, 
         ui_dialog_render_message_lines(ctx, dialog);
         if (dialog->kind == UI_DIALOG_SAVE_AS) {
             nk_layout_row_dynamic(ctx, 20.0f, 1);
-            nk_label(ctx, "Filename", NK_TEXT_LEFT);
+            nk_label(ctx, "文件名", NK_TEXT_LEFT);
             nk_layout_row_dynamic(ctx, 28.0f, 1);
             nk_edit_string_zero_terminated(ctx,
                                            NK_EDIT_FIELD,

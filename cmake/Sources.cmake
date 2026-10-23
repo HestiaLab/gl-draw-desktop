@@ -108,6 +108,7 @@ set(PLATFORM_GLFW_SOURCES
 )
 
 set(UI_NUKLEAR_GLFW_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/ui_font.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/ui_chrome.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/ui_context_menu.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/ui_context_menu_render.c

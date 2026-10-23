@@ -90,11 +90,11 @@ static const char* command_availability_selection_unavailable_reason(const Works
     const SelectionSet* selection = workspace_get_selection_const(workspace);
 
     if (!selection || selection->count <= 0) {
-        return "Selection is empty.";
+        return "未选择对象。";
     }
 
     if (command_availability_editable_selection_count(workspace) <= 0) {
-        return "Selection is on locked layers.";
+        return "所选对象位于锁定图层。";
     }
 
     return "";
@@ -149,7 +149,7 @@ const char* command_availability_unavailable_reason(const Workspace* workspace,
         }
         if (!command_availability_tool_is_available(workspace, command) &&
             tool->requires_editable_layer) {
-            return "Active layer is locked.";
+            return "当前图层已锁定。";
         }
         return "";
     }
@@ -163,19 +163,19 @@ const char* command_availability_unavailable_reason(const Workspace* workspace,
     case EDITOR_COMMAND_EDIT_DELETE:
         return command_availability_selection_unavailable_reason(workspace);
     case EDITOR_COMMAND_EDIT_COPY:
-        return (!selection || selection->count <= 0) ? "Selection is empty." : "";
+        return (!selection || selection->count <= 0) ? "未选择对象。" : "";
     case EDITOR_COMMAND_EDIT_PASTE:
         if (!workspace) {
-            return "Workspace is unavailable.";
+            return "工作区不可用。";
         }
         if (!command_availability_active_layer_editable(workspace)) {
-            return "Active layer is locked.";
+            return "当前图层已锁定。";
         }
         return "";
     case EDITOR_COMMAND_EDIT_UNDO:
-        return "Nothing to undo.";
+        return "没有可撤销的操作。";
     case EDITOR_COMMAND_EDIT_REDO:
-        return "Nothing to redo.";
+        return "没有可重做的操作。";
     default:
         return "";
     }

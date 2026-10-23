@@ -62,13 +62,13 @@ static void pan_tool_key_down(Tool* tool, ToolContext* context, int key, int mod
 }
 
 static const ToolDescriptor g_pan_tool_descriptor = {
-    TOOL_ID_PAN,       /* id */
-    "Hand",            /* name */
-    "tool.pan",        /* command_id */
-    "Pan canvas view", /* tooltip */
-    "Hand",            /* icon */
-    "H",               /* default_shortcut */
-    0,                 /* requires_editable_layer */
+    TOOL_ID_PAN,    /* id */
+    "平移",         /* name */
+    "tool.pan",     /* command_id */
+    "平移画布视图", /* tooltip */
+    "平移",         /* icon */
+    "H",            /* default_shortcut */
+    0,              /* requires_editable_layer */
     pan_tool_create,
     default_tool_destroy,
     NULL, /* activate */

@@ -86,7 +86,7 @@ int editor_action_handler_dispatch(Workspace* workspace, const EditorAction* act
                                                       action->payload.modify_property.value);
 
         if (!command) {
-            editor_action_handler_set_status(workspace, "Property edit could not be prepared.");
+            editor_action_handler_set_status(workspace, "无法准备属性编辑。");
             return 0;
         }
         check = command_check_execute(command, document);
@@ -96,7 +96,7 @@ int editor_action_handler_dispatch(Workspace* workspace, const EditorAction* act
             return 0;
         }
         if (!editor_action_handler_execute_command(workspace, command)) {
-            editor_action_handler_set_status(workspace, "Property edit failed during execution.");
+            editor_action_handler_set_status(workspace, "执行属性编辑失败。");
             return 0;
         }
 

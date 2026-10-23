@@ -144,7 +144,7 @@ static int parse_document_root(JsonParser* parser, Document* document)
     if (version == 1 || !got_layers || document->layer_count <= 0) {
         document->layer_count = 1;
         document->layers[0].id = 1u;
-        snprintf(document->layers[0].name, sizeof(document->layers[0].name), "%s", "Layer 1");
+        snprintf(document->layers[0].name, sizeof(document->layers[0].name), "%s", "图层 1");
         document->layers[0].visible = 1;
         document->layers[0].locked = 0;
         document->layers[0].blend_mode = DOCUMENT_LAYER_BLEND_NORMAL;

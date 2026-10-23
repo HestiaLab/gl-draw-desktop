@@ -156,7 +156,7 @@ static int ui_context_menu_build_tools(UiSystem* ui,
 
     ui_context_menu_separator(ui);
     nk_layout_row_dynamic(ui->ctx, ui->theme.row_height, 1);
-    if (ui_context_menu_item(ui, "Zoom to Fit", EDITOR_COMMAND_VIEW_ZOOM_FIT, view_model, sink)) {
+    if (ui_context_menu_item(ui, "适应窗口", EDITOR_COMMAND_VIEW_ZOOM_FIT, view_model, sink)) {
         return 1;
     }
 
@@ -164,7 +164,7 @@ static int ui_context_menu_build_tools(UiSystem* ui,
     nk_layout_row_dynamic(ui->ctx, ui->theme.row_height, 1);
     if (editor_viewmodel_command_available(view_model, EDITOR_COMMAND_VIEW_TOGGLE_GRID)) {
         if (ui_context_menu_item(
-                ui, "Toggle Grid", EDITOR_COMMAND_VIEW_TOGGLE_GRID, view_model, sink)) {
+                ui, "显示/隐藏网格", EDITOR_COMMAND_VIEW_TOGGLE_GRID, view_model, sink)) {
             return 1;
         }
     }
@@ -177,13 +177,13 @@ static int ui_context_menu_build_selection(UiSystem* ui,
                                            const EditorActionSink* sink)
 {
     nk_layout_row_dynamic(ui->ctx, ui->theme.row_height, 1);
-    if (ui_context_menu_item(ui, "Copy", EDITOR_COMMAND_EDIT_COPY, view_model, sink)) {
+    if (ui_context_menu_item(ui, "复制", EDITOR_COMMAND_EDIT_COPY, view_model, sink)) {
         return 1;
     }
-    if (ui_context_menu_item(ui, "Paste", EDITOR_COMMAND_EDIT_PASTE, view_model, sink)) {
+    if (ui_context_menu_item(ui, "粘贴", EDITOR_COMMAND_EDIT_PASTE, view_model, sink)) {
         return 1;
     }
-    if (ui_context_menu_item(ui, "Delete", EDITOR_COMMAND_EDIT_DELETE, view_model, sink)) {
+    if (ui_context_menu_item(ui, "删除", EDITOR_COMMAND_EDIT_DELETE, view_model, sink)) {
         return 1;
     }
 
@@ -226,14 +226,11 @@ void ui_context_menu_build(UiSystem* ui,
     nk_popup_bounds = nk_rect(0.0f, 0.0f, popup_bounds.w, popup_bounds.h);
 
     if (nk_begin(ui->ctx,
-                 "Canvas Context Host",
+                 "画布上下文宿主",
                  nk_host_bounds,
                  NK_WINDOW_NO_SCROLLBAR | NK_WINDOW_BACKGROUND | NK_WINDOW_NO_INPUT)) {
-        is_open = nk_popup_begin(ui->ctx,
-                                 NK_POPUP_DYNAMIC,
-                                 "Canvas Context Menu",
-                                 NK_WINDOW_NO_SCROLLBAR,
-                                 nk_popup_bounds);
+        is_open = nk_popup_begin(
+            ui->ctx, NK_POPUP_DYNAMIC, "画布上下文菜单", NK_WINDOW_NO_SCROLLBAR, nk_popup_bounds);
         if (is_open) {
             if (ui->context_menu.close_requested) {
                 nk_popup_close(ui->ctx);

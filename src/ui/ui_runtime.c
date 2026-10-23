@@ -60,6 +60,7 @@ UiSystem* ui_system_create(PlatformWindow* window)
 {
     UiSystem* ui = (UiSystem*)calloc(1, sizeof(*ui));
     struct nk_font_atlas* atlas = NULL;
+    struct nk_font* font = NULL;
 
     if (!ui) {
         return NULL;
@@ -72,7 +73,15 @@ UiSystem* ui_system_create(PlatformWindow* window)
     }
 
     platform_window_nuklear_font_stash_begin(&ui->glfw, &atlas);
+    font = ui_font_load_default(atlas);
     platform_window_nuklear_font_stash_end(&ui->glfw);
+
+    if (!font) {
+        platform_window_nuklear_shutdown(&ui->glfw);
+        free(ui);
+        return NULL;
+    }
+    nk_style_set_font(ui->ctx, &font->handle);
 
     snprintf(
         ui->theme_settings_path, sizeof(ui->theme_settings_path), "%s", UI_THEME_SETTINGS_PATH);

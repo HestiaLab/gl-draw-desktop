@@ -23,7 +23,7 @@ typedef enum CommandAvailabilityRule {
 #define GLDRAW_STABLE_COMMANDS(X)                                                                  \
     X(EDITOR_COMMAND_FILE_NEW,                                                                     \
       "file.new",                                                                                  \
-      "New",                                                                                       \
+      "新建",                                                                                      \
       KEY_SCOPE_GLOBAL,                                                                            \
       MENU_ID_FILE_NEW,                                                                            \
       NULL,                                                                                        \
@@ -32,7 +32,7 @@ typedef enum CommandAvailabilityRule {
       workspace_file_new_document)                                                                 \
     X(EDITOR_COMMAND_FILE_OPEN,                                                                    \
       "file.open",                                                                                 \
-      "Open",                                                                                      \
+      "打开",                                                                                      \
       KEY_SCOPE_GLOBAL,                                                                            \
       MENU_ID_FILE_OPEN,                                                                           \
       NULL,                                                                                        \
@@ -41,7 +41,7 @@ typedef enum CommandAvailabilityRule {
       workspace_file_open_document)                                                                \
     X(EDITOR_COMMAND_FILE_SAVE,                                                                    \
       "file.save",                                                                                 \
-      "Save",                                                                                      \
+      "保存",                                                                                      \
       KEY_SCOPE_GLOBAL,                                                                            \
       MENU_ID_FILE_SAVE,                                                                           \
       NULL,                                                                                        \
@@ -50,7 +50,7 @@ typedef enum CommandAvailabilityRule {
       workspace_file_save_document)                                                                \
     X(EDITOR_COMMAND_FILE_SAVE_AS,                                                                 \
       "file.save_as",                                                                              \
-      "Save As",                                                                                   \
+      "另存为",                                                                                    \
       KEY_SCOPE_GLOBAL,                                                                            \
       MENU_ID_FILE_SAVE_AS,                                                                        \
       NULL,                                                                                        \
@@ -59,7 +59,7 @@ typedef enum CommandAvailabilityRule {
       workspace_file_save_document_as)                                                             \
     X(EDITOR_COMMAND_FILE_EXPORT_PNG,                                                              \
       "file.export_png",                                                                           \
-      "Export as PNG",                                                                             \
+      "导出为 PNG",                                                                                \
       KEY_SCOPE_GLOBAL,                                                                            \
       MENU_ID_FILE_EXPORT_PNG,                                                                     \
       NULL,                                                                                        \
@@ -68,7 +68,7 @@ typedef enum CommandAvailabilityRule {
       workspace_file_export_png)                                                                   \
     X(EDITOR_COMMAND_FILE_EXIT,                                                                    \
       "file.exit",                                                                                 \
-      "Exit",                                                                                      \
+      "退出",                                                                                      \
       KEY_SCOPE_GLOBAL,                                                                            \
       MENU_ID_FILE_EXIT,                                                                           \
       NULL,                                                                                        \
@@ -77,7 +77,7 @@ typedef enum CommandAvailabilityRule {
       workspace_file_exit_application)                                                             \
     X(EDITOR_COMMAND_EDIT_UNDO,                                                                    \
       "edit.undo",                                                                                 \
-      "Undo",                                                                                      \
+      "撤销",                                                                                      \
       KEY_SCOPE_GLOBAL,                                                                            \
       MENU_ID_EDIT_UNDO,                                                                           \
       NULL,                                                                                        \
@@ -86,7 +86,7 @@ typedef enum CommandAvailabilityRule {
       workspace_edit_undo)                                                                         \
     X(EDITOR_COMMAND_EDIT_REDO,                                                                    \
       "edit.redo",                                                                                 \
-      "Redo",                                                                                      \
+      "重做",                                                                                      \
       KEY_SCOPE_GLOBAL,                                                                            \
       MENU_ID_EDIT_REDO,                                                                           \
       NULL,                                                                                        \
@@ -95,7 +95,7 @@ typedef enum CommandAvailabilityRule {
       workspace_edit_redo)                                                                         \
     X(EDITOR_COMMAND_EDIT_CUT,                                                                     \
       "edit.cut",                                                                                  \
-      "Cut",                                                                                       \
+      "剪切",                                                                                      \
       KEY_SCOPE_GLOBAL,                                                                            \
       MENU_ID_EDIT_CUT,                                                                            \
       NULL,                                                                                        \
@@ -104,7 +104,7 @@ typedef enum CommandAvailabilityRule {
       workspace_clipboard_cut_selection)                                                           \
     X(EDITOR_COMMAND_EDIT_COPY,                                                                    \
       "edit.copy",                                                                                 \
-      "Copy",                                                                                      \
+      "复制",                                                                                      \
       KEY_SCOPE_GLOBAL,                                                                            \
       MENU_ID_EDIT_COPY,                                                                           \
       NULL,                                                                                        \
@@ -113,7 +113,7 @@ typedef enum CommandAvailabilityRule {
       workspace_clipboard_copy_selection)                                                          \
     X(EDITOR_COMMAND_EDIT_PASTE,                                                                   \
       "edit.paste",                                                                                \
-      "Paste",                                                                                     \
+      "粘贴",                                                                                      \
       KEY_SCOPE_GLOBAL,                                                                            \
       MENU_ID_EDIT_PASTE,                                                                          \
       NULL,                                                                                        \
@@ -122,7 +122,7 @@ typedef enum CommandAvailabilityRule {
       workspace_clipboard_paste)                                                                   \
     X(EDITOR_COMMAND_EDIT_DELETE,                                                                  \
       "edit.delete",                                                                               \
-      "Delete",                                                                                    \
+      "删除",                                                                                      \
       KEY_SCOPE_GLOBAL,                                                                            \
       MENU_ID_EDIT_DELETE,                                                                         \
       NULL,                                                                                        \
@@ -131,7 +131,7 @@ typedef enum CommandAvailabilityRule {
       workspace_edit_delete_selection)                                                             \
     X(EDITOR_COMMAND_EDIT_SELECT_ALL,                                                              \
       "edit.select_all",                                                                           \
-      "Select All",                                                                                \
+      "全选",                                                                                      \
       KEY_SCOPE_GLOBAL,                                                                            \
       MENU_ID_EDIT_SELECT_ALL,                                                                     \
       NULL,                                                                                        \
@@ -140,7 +140,7 @@ typedef enum CommandAvailabilityRule {
       workspace_edit_select_all)                                                                   \
     X(EDITOR_COMMAND_VIEW_ZOOM_IN,                                                                 \
       "view.zoom_in",                                                                              \
-      "Zoom In",                                                                                   \
+      "放大",                                                                                      \
       KEY_SCOPE_GLOBAL,                                                                            \
       MENU_ID_VIEW_ZOOM_IN,                                                                        \
       NULL,                                                                                        \
@@ -149,7 +149,7 @@ typedef enum CommandAvailabilityRule {
       workspace_view_zoom_in)                                                                      \
     X(EDITOR_COMMAND_VIEW_ZOOM_OUT,                                                                \
       "view.zoom_out",                                                                             \
-      "Zoom Out",                                                                                  \
+      "缩小",                                                                                      \
       KEY_SCOPE_GLOBAL,                                                                            \
       MENU_ID_VIEW_ZOOM_OUT,                                                                       \
       NULL,                                                                                        \
@@ -158,7 +158,7 @@ typedef enum CommandAvailabilityRule {
       workspace_view_zoom_out)                                                                     \
     X(EDITOR_COMMAND_VIEW_ZOOM_FIT,                                                                \
       "view.zoom_fit",                                                                             \
-      "Zoom to Fit",                                                                               \
+      "适应窗口",                                                                                  \
       KEY_SCOPE_GLOBAL,                                                                            \
       MENU_ID_VIEW_ZOOM_FIT,                                                                       \
       NULL,                                                                                        \
@@ -167,7 +167,7 @@ typedef enum CommandAvailabilityRule {
       workspace_view_zoom_to_fit)                                                                  \
     X(EDITOR_COMMAND_VIEW_TOGGLE_GRID,                                                             \
       "view.toggle_grid",                                                                          \
-      "Toggle Grid",                                                                               \
+      "显示/隐藏网格",                                                                             \
       KEY_SCOPE_GLOBAL,                                                                            \
       MENU_ID_VIEW_TOGGLE_GRID,                                                                    \
       NULL,                                                                                        \
@@ -176,7 +176,7 @@ typedef enum CommandAvailabilityRule {
       workspace_view_toggle_grid)                                                                  \
     X(EDITOR_COMMAND_VIEW_TOGGLE_INSPECTOR,                                                        \
       "view.toggle_inspector",                                                                     \
-      "Toggle Inspector",                                                                          \
+      "显示/隐藏检查器",                                                                           \
       KEY_SCOPE_GLOBAL,                                                                            \
       MENU_ID_VIEW_TOGGLE_INSPECTOR,                                                               \
       NULL,                                                                                        \
@@ -185,7 +185,7 @@ typedef enum CommandAvailabilityRule {
       workspace_view_toggle_inspector)                                                             \
     X(EDITOR_COMMAND_HELP_SHORTCUTS,                                                               \
       "help.shortcuts",                                                                            \
-      "Keyboard Shortcuts",                                                                        \
+      "键盘快捷键",                                                                                \
       KEY_SCOPE_GLOBAL,                                                                            \
       MENU_ID_HELP_SHORTCUTS,                                                                      \
       NULL,                                                                                        \
@@ -194,7 +194,7 @@ typedef enum CommandAvailabilityRule {
       workspace_dialog_command_toggle_shortcuts)                                                   \
     X(EDITOR_COMMAND_HELP_ABOUT,                                                                   \
       "help.about",                                                                                \
-      "About",                                                                                     \
+      "关于",                                                                                      \
       KEY_SCOPE_GLOBAL,                                                                            \
       MENU_ID_HELP_ABOUT,                                                                          \
       NULL,                                                                                        \
@@ -203,7 +203,7 @@ typedef enum CommandAvailabilityRule {
       workspace_dialog_command_open_about)                                                         \
     X(EDITOR_COMMAND_MODAL_CONFIRM,                                                                \
       "modal.confirm",                                                                             \
-      "Confirm",                                                                                   \
+      "确定",                                                                                      \
       KEY_SCOPE_MODAL,                                                                             \
       -1,                                                                                          \
       NULL,                                                                                        \
@@ -212,7 +212,7 @@ typedef enum CommandAvailabilityRule {
       workspace_dialog_command_confirm)                                                            \
     X(EDITOR_COMMAND_MODAL_CANCEL,                                                                 \
       "modal.cancel",                                                                              \
-      "Cancel",                                                                                    \
+      "取消",                                                                                      \
       KEY_SCOPE_MODAL,                                                                             \
       -1,                                                                                          \
       NULL,                                                                                        \

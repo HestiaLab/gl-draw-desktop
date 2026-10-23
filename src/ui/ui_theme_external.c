@@ -233,7 +233,7 @@ int ui_theme_reload_external(const char* directory_path)
                 if (g_last_reload_error[0] == '\0') {
                     snprintf(g_last_reload_error,
                              sizeof(g_last_reload_error),
-                             "Failed parsing theme file: %.200s",
+                             "解析主题文件失败：%.200s",
                              file_path);
                 }
             }
@@ -270,7 +270,7 @@ int ui_theme_reload_external(const char* directory_path)
                 if (g_last_reload_error[0] == '\0') {
                     snprintf(g_last_reload_error,
                              sizeof(g_last_reload_error),
-                             "Failed parsing theme file: %.200s",
+                             "解析主题文件失败：%.200s",
                              file_path);
                 }
             }
@@ -286,7 +286,7 @@ int ui_theme_reload_external(const char* directory_path)
         if (g_last_reload_error[0] == '\0') {
             snprintf(g_last_reload_error,
                      sizeof(g_last_reload_error),
-                     "Theme reload failed (%d json files scanned)",
+                     "主题重新加载失败（扫描 %d 个 JSON 文件）",
                      scanned_json_files);
         }
         LOG_ERROR("[theme][reload] %s", g_last_reload_error);
