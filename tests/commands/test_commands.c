@@ -331,7 +331,7 @@ static void test_memory_budget_set_prunes_history_in_bulk(void)
     int i = 0;
 
     document_init(&document);
-    EXPECT_TRUE(command_executor_init_with_budget(&executor, 1024u * 1024u));
+    EXPECT_TRUE(command_executor_init_with_budget(&executor, (size_t)1024u * 1024u));
 
     for (i = 0; i < 5; ++i) {
         EXPECT_TRUE(command_executor_execute(

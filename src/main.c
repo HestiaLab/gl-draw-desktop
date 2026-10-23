@@ -18,8 +18,8 @@ int main(int argc, char** argv)
 {
     const char* program = (argc > 0 && argv[0] != NULL) ? argv[0] : "gl-draw-desktop";
 
-    for (int i = 1; i < argc; ++i) {
-        const char* arg = argv[i];
+    if (argc > 1) {
+        const char* arg = argv[1];
         if (strcmp(arg, "-h") == 0 || strcmp(arg, "--help") == 0) {
             print_usage(stdout, program);
             return 0;

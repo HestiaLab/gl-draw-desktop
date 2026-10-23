@@ -52,8 +52,10 @@ static void delete_selection_destroy(void* cmd)
         return;
     }
 
-    for (i = 0; i < command->object_count; ++i) {
-        object_destroy(command->objects[i]);
+    if (command->objects) {
+        for (i = 0; i < command->object_count; ++i) {
+            object_destroy(command->objects[i]);
+        }
     }
     g_allocator.free_fn(command->objects);
     g_allocator.free_fn(command->original_indices);

@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 static const char* layer_blend_mode_name(DocumentLayerBlendMode blend_mode)
 {
@@ -22,15 +23,18 @@ static const char* layer_blend_mode_name(DocumentLayerBlendMode blend_mode)
 
 static int write_json_string(FILE* file, const char* text)
 {
-    const unsigned char* cursor = (const unsigned char*)(text ? text : "");
+    size_t length = text ? strlen(text) : 0u;
+    size_t index = 0u;
 
     if (!file) {
         return 0;
     }
 
     fputc('"', file);
-    while (*cursor) {
-        switch (*cursor) {
+    for (index = 0u; index < length; ++index) {
+        unsigned char current = (unsigned char)text[index];
+
+        switch (current) {
         case '"':
             fputs("\\\"", file);
             break;
@@ -53,14 +57,13 @@ static int write_json_string(FILE* file, const char* text)
             fputs("\\t", file);
             break;
         default:
-            if (*cursor < 0x20u) {
-                fprintf(file, "\\u%04x", (unsigned int)*cursor);
+            if (current < 0x20u) {
+                fprintf(file, "\\u%04x", (unsigned int)current);
             } else {
-                fputc((int)*cursor, file);
+                fputc((int)current, file);
             }
             break;
         }
-        cursor++;
     }
     fputc('"', file);
     return ferror(file) == 0;

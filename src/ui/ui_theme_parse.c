@@ -210,13 +210,18 @@ static int ui_parse_hex_byte(const char* text, unsigned char* out_value)
 {
     int hi = 0;
     int lo = 0;
+    size_t length = 0u;
 
     if (!text || !out_value) {
         return 0;
     }
+    length = strlen(text);
+    if (length < 2u) {
+        return 0;
+    }
 
     hi = ui_hex_digit_value(text[0]);
-    lo = ui_hex_digit_value(text[1]);
+    lo = ui_hex_digit_value(text[1]); // NOLINT(clang-analyzer-core.CallAndMessage)
     if (hi < 0 || lo < 0) {
         return 0;
     }

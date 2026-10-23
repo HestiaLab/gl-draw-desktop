@@ -410,6 +410,9 @@ canvas_view_pick_object(const CanvasView* canvas, Vec2 screen_point, float toler
             return NULL;
         }
     }
+    if (!indices) {
+        return NULL;
+    }
 
     candidate_count = document_query_point_indices(
         canvas->document, world_point, tolerance_world, indices, object_count);

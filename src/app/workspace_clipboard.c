@@ -152,7 +152,7 @@ int workspace_clipboard_paste(Workspace* workspace)
 {
     SelectionSet pasted_selection = { 0 };
     Command* command = NULL;
-    Vec2 paste_delta = vec2_make(0.0f, 0.0f);
+    Vec2 paste_delta;
     float world_offset = 0.0f;
     int paste_count = 0;
 

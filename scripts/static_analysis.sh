@@ -34,6 +34,16 @@ REQUIRE_TOOLS=0
 FIX=0
 MODE=""
 
+SCRIPTING_ON=0
+
+filter_optional_sources() {
+  if [ "$SCRIPTING_ON" -eq 0 ]; then
+    grep -v -E '/(script_runtime_lua|script_tool_lua|test_script_runtime)\.c$' || true
+  else
+    cat
+  fi
+}
+
 show_usage() {
   echo "Usage: $0 {format-check|tidy|cppcheck} [--build-dir <dir>] [--require-tools] [--fix]"
 }
@@ -54,6 +64,10 @@ while [ "$#" -gt 0 ]; do
 done
 
 if [ -z "$MODE" ]; then show_usage >&2; exit 2; fi
+
+if grep -q 'GLDRAWDESKTOP_ENABLE_SCRIPTING:BOOL=ON' "$BUILD_DIR/CMakeCache.txt" 2>/dev/null; then
+  SCRIPTING_ON=1
+fi
 
 tool_missing() {
   # $1 = tool name
@@ -89,7 +103,7 @@ case "$MODE" in
     find src tests \
       \( -path tests/package_smoke -o -path tests/subproject_smoke -o -path tests/vendor \) \
       -prune -o -type f -name '*.c' -print \
-      | sort > .static-analysis-files.txt
+      | sort | filter_optional_sources > .static-analysis-files.txt
     if [ ! -s .static-analysis-files.txt ]; then
       echo "ERROR: clang-tidy scan surface is empty (no .c found)" >&2
       rm -f .static-analysis-files.txt
@@ -111,7 +125,7 @@ case "$MODE" in
   cppcheck)
     command -v cppcheck >/dev/null 2>&1 || tool_missing cppcheck
     find src tests \( -path tests/vendor \) -prune -o -type f -name '*.c' -print \
-      | sort > .static-analysis-files.txt
+      | sort | filter_optional_sources > .static-analysis-files.txt
     if [ ! -s .static-analysis-files.txt ]; then
       echo "ERROR: cppcheck scan surface is empty (no .c found)" >&2
       rm -f .static-analysis-files.txt

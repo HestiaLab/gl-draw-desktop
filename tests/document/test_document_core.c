@@ -84,7 +84,10 @@ static void test_document_selection_and_deletion(void)
 
     EXPECT_TRUE(selection_set_add(&selection, 2u));
     ids = (ObjectId*)calloc((size_t)selection.count, sizeof(ids[0]));
-    EXPECT_TRUE(ids != NULL);
+    if (!ids) {
+        TEST_FAIL_MESSAGE("内存分配失败");
+        return;
+    }
     for (i = 0; i < selection.count; ++i) {
         ids[i] = selection.ids[i];
     }
@@ -451,7 +454,10 @@ static void test_layer_visibility_and_spatial_query(void)
     EXPECT_TRUE(document_add_object(&document, visible));
 
     indices = (int*)calloc((size_t)document.count, sizeof(indices[0]));
-    EXPECT_TRUE(indices != NULL);
+    if (!indices) {
+        TEST_FAIL_MESSAGE("内存分配失败");
+        return;
+    }
     count = document_query_visible_indices(
         &document, (RectF){ -10.0f, -10.0f, 200.0f, 200.0f }, indices, document.count);
     EXPECT_INT_EQ(count, 1);
@@ -469,11 +475,11 @@ static void test_stress_5000_objects_and_undo_redo(void)
     int i = 0;
 
     document_init(&document);
-    EXPECT_TRUE(command_executor_init_with_budget(&executor, 32u * 1024u * 1024u));
+    EXPECT_TRUE(command_executor_init_with_budget(&executor, (size_t)32u * 1024u * 1024u));
 
     for (i = 0; i < 5000; ++i) {
         float x = (float)(i % 100) * 12.0f;
-        float y = (float)(i / 100) * 12.0f;
+        float y = ((float)i / 100.0f) * 12.0f;
         EXPECT_TRUE(document_add_object(&document, create_rect(x, y, 10.0f, 10.0f)));
     }
     EXPECT_INT_EQ(document.count, 5000);

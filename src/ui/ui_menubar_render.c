@@ -259,7 +259,7 @@ static int ui_render_quick_action(UiMenuBar* menubar,
         return -1;
     }
 
-    descriptor = command_catalog_find_by_menu_id(quick_action->menu_id);
+    descriptor = command_catalog_find_by_menu_id((int)quick_action->menu_id);
     enabled = ui_menu_is_action_available(view_model, quick_action->menu_id);
     nk_layout_row_push(ctx, quick_action->width);
     if (!enabled) {
@@ -270,7 +270,7 @@ static int ui_render_quick_action(UiMenuBar* menubar,
         if (!enabled) {
             nk_widget_disable_end(ctx);
         }
-        return quick_action->menu_id;
+        return (int)quick_action->menu_id;
     }
     hovered = nk_input_is_mouse_hovering_rect(&ctx->input, widget_bounds);
     tooltip[0] = '\0';

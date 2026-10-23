@@ -185,11 +185,13 @@ if(GLDRAWDESKTOP_BUILD_APP)
         )
     endif()
 
-    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/scripts")
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/scripts/star_wreath.lua")
         add_custom_command(TARGET gldrawdesktop POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_directory
-                "${CMAKE_CURRENT_SOURCE_DIR}/scripts"
+            COMMAND ${CMAKE_COMMAND} -E make_directory
                 "$<TARGET_FILE_DIR:gldrawdesktop>/scripts"
+            COMMAND ${CMAKE_COMMAND} -E copy
+                "${CMAKE_CURRENT_SOURCE_DIR}/scripts/star_wreath.lua"
+                "$<TARGET_FILE_DIR:gldrawdesktop>/scripts/star_wreath.lua"
         )
     endif()
 

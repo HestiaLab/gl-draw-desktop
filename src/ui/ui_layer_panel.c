@@ -98,7 +98,7 @@ void ui_layers_panel(UiSystem* ui, struct nk_context* ctx, const EditorViewModel
         if (!ui->modal_active) {
             nk_flags edit_result = nk_edit_string_zero_terminated(
                 ctx,
-                NK_EDIT_FIELD | NK_EDIT_SIG_ENTER | NK_EDIT_CLIPBOARD,
+                (nk_flags)NK_EDIT_FIELD | (nk_flags)NK_EDIT_SIG_ENTER | (nk_flags)NK_EDIT_CLIPBOARD,
                 ui->layer_name_buffer,
                 (int)sizeof(ui->layer_name_buffer) - 1,
                 nk_filter_default);

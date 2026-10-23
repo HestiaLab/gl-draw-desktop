@@ -20,8 +20,8 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/themes")
     )
 endif()
 
-if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/scripts")
-    install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/scripts/"
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/scripts/star_wreath.lua")
+    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/scripts/star_wreath.lua"
         DESTINATION "${CMAKE_INSTALL_DATADIR}/gldrawdesktop/scripts"
     )
 endif()

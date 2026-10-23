@@ -129,7 +129,7 @@ static int gl_render_upload_and_draw(GLRenderDevice* device,
     buffer_pool_bind_vertex_stream(&device->stroke_stream);
     glBufferSubData(GL_ARRAY_BUFFER,
                     0,
-                    (GLsizeiptr)(vertex_count * GL_RENDER_VERTEX_STRIDE_FLOATS *
+                    (GLsizeiptr)((size_t)vertex_count * GL_RENDER_VERTEX_STRIDE_FLOATS *
                                  sizeof(device->vertex_buffer[0])),
                     device->vertex_buffer);
     glLineWidth((material->line_width > 0.5f) ? material->line_width : 1.0f);
@@ -368,12 +368,14 @@ RenderDevice* gl_render_device_create(PlatformWindow* window)
     if (!shader_manager_load_program(
             &device->shader_manager, &basic_program_desc, &device->basic_program)) {
         gl_render_destroy(&device->base);
+        // cppcheck-suppress memleak
         return NULL;
     }
 
     if (!buffer_pool_create_vertex_stream(
             &device->buffer_pool, &STROKE_STREAM_DESC, &device->stroke_stream)) {
         gl_render_destroy(&device->base);
+        // cppcheck-suppress memleak
         return NULL;
     }
 
@@ -385,6 +387,7 @@ RenderDevice* gl_render_device_create(PlatformWindow* window)
                           window->framebuffer_width,
                           window->framebuffer_height)) {
         gl_render_destroy(&device->base);
+        // cppcheck-suppress memleak
         return NULL;
     }
 

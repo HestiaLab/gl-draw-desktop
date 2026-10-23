@@ -90,6 +90,7 @@ def measure_coverage(build_dir: Path, repo_root: Path) -> tuple[int, int]:
     if gcov is None:
         raise RuntimeError("gcov not found on PATH")
 
+    build_dir = build_dir.resolve()
     src_root = (repo_root / "src").resolve()
     covered = total = 0
     with tempfile.TemporaryDirectory(prefix="coverage-ratchet-") as tmp:

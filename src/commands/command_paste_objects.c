@@ -72,8 +72,10 @@ static void paste_objects_destroy(void* cmd)
         return;
     }
 
-    for (i = 0; i < command->object_count; ++i) {
-        object_destroy(command->object_snapshots[i]);
+    if (command->object_snapshots) {
+        for (i = 0; i < command->object_count; ++i) {
+            object_destroy(command->object_snapshots[i]);
+        }
     }
     g_allocator.free_fn(command->object_snapshots);
     g_allocator.free_fn(command->object_ids);

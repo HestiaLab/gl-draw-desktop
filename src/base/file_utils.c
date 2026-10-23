@@ -18,6 +18,7 @@ char* file_utils_read_text_file(const char* path)
     char* buffer = NULL;
     long size = 0;
     size_t read_size = 0u;
+    size_t capacity = 0u;
 
     if (!path || path[0] == '\0') {
         return NULL;
@@ -38,14 +39,20 @@ char* file_utils_read_text_file(const char* path)
         return NULL;
     }
 
-    buffer = (char*)malloc((size_t)size + 1u);
+    capacity = (size_t)size + 1u;
+    buffer = (char*)malloc(capacity);
     if (!buffer) {
         fclose(file);
         return NULL;
     }
 
-    read_size = fread(buffer, 1u, (size_t)size, file);
-    if (read_size != (size_t)size && ferror(file)) {
+    read_size = fread(buffer, 1u, capacity - 1u, file);
+    if (read_size >= capacity) {
+        free(buffer);
+        fclose(file);
+        return NULL;
+    }
+    if (read_size != capacity - 1u && ferror(file)) {
         free(buffer);
         fclose(file);
         return NULL;

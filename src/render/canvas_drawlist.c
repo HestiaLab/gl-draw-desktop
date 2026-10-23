@@ -91,8 +91,8 @@ static int canvas_drawlist_append_stroke(CanvasDrawList* draw_list,
         Vec2* out_points = draw_list->points + write_offset;
 
         for (i = 0; i < point_count - 1; ++i) {
-            out_points[i * 2] = points[i];
-            out_points[i * 2 + 1] = points[i + 1];
+            out_points[(size_t)i * 2u] = points[i];
+            out_points[(size_t)i * 2u + 1u] = points[i + 1];
         }
     } else {
         memcpy(draw_list->points + write_offset,
@@ -144,6 +144,7 @@ static int canvas_drawlist_append_grid(CanvasDrawList* draw_list, const CanvasVi
     Vec2 axis_points[4];
     Vec2* points = NULL;
     int index = 0;
+    int line = 0;
 
     if (point_count > 0) {
         points = (Vec2*)render_arena_alloc(
@@ -152,12 +153,14 @@ static int canvas_drawlist_append_grid(CanvasDrawList* draw_list, const CanvasVi
             return 0;
         }
 
-        for (float x = start_x; x <= end_x + spacing * 0.5f; x += spacing) {
+        for (line = 0; line < vertical_count; ++line) {
+            float x = start_x + spacing * (float)line;
             points[index++] = canvas_view_world_to_screen(canvas, vec2_make(x, visible.y));
             points[index++] =
                 canvas_view_world_to_screen(canvas, vec2_make(x, visible.y + visible.h));
         }
-        for (float y = start_y; y <= end_y + spacing * 0.5f; y += spacing) {
+        for (line = 0; line < horizontal_count; ++line) {
+            float y = start_y + spacing * (float)line;
             points[index++] = canvas_view_world_to_screen(canvas, vec2_make(visible.x, y));
             points[index++] =
                 canvas_view_world_to_screen(canvas, vec2_make(visible.x + visible.w, y));
@@ -311,6 +314,10 @@ int canvas_drawlist_build(CanvasDrawList* draw_list,
         for (i = 0; i < visible_count; ++i) {
             visible_indices[i] = i;
         }
+    }
+
+    if (visible_count > 0 && !visible_indices) {
+        goto cleanup;
     }
 
     for (layer_index = 0; layer_index < document_layer_count(document); ++layer_index) {
