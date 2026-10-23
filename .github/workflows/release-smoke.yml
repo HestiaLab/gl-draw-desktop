@@ -108,7 +108,7 @@ jobs:
           tar -tzf "$tarball" | grep -F "share/gldrawdesktop/fonts/NotoSansSC-Regular.ttf"
 
       - name: Upload smoke artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: release-smoke-${{ matrix.platform }}
           path: |
