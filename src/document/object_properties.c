@@ -187,5 +187,7 @@ GraphicObject* default_clone_object(const GraphicObject* object)
         return NULL;
     }
 
+    // 回调只读取属性包并返回新对象，不会返回指向局部属性包的指针。
+    // cppcheck-suppress returnDanglingLifetime
     return object->descriptor->deserialize(&properties, object->style);
 }
