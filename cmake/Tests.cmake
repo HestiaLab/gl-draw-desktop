@@ -209,6 +209,14 @@ if(TARGET gldrawdesktop)
     set_tests_properties(gldrawdesktop_version_consistency PROPERTIES DEPENDS gldrawdesktop)
 endif()
 
+# 文档门禁：相对链接、锚点、代码围栏与 README 索引覆盖。
+add_test(NAME gldrawdesktop_docs_check
+    COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/scripts/check_docs.py
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        --mode all)
+set_tests_properties(gldrawdesktop_docs_check PROPERTIES LABELS "documentation")
+
 if(GLDRAWDESKTOP_INSTALL)
     add_test(NAME gldrawdesktop_cpack_config
         COMMAND ${Python3_EXECUTABLE}

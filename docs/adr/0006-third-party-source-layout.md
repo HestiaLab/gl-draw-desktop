@@ -1,43 +1,38 @@
-# ADR 0006: Third-Party Source Layout
+# ADR 0006：第三方源码布局
 
-## Status
+## 状态
 
-Accepted.
+已接受，取代 2026-06-05 的初版决定。
 
-**Date**: 2026-06-05
-**Last Modified**: 2026-06-05
+**日期**：2026-06-05
+**最后修改**：2026-10-23
 
-## Context
+## 背景
 
-GLDraw currently commits GLAD and Nuklear directly under the normal source and
-include roots:
+初版决定把 GLAD、KHR 与 Nuklear 保留在常规源码与 include 根目录下，以避免
+一次性迁移带来的噪声。随着项目对齐 `c-project-standard`，质量门禁需要明确的
+第三方扫描面，include 根目录也不再适合混放 vendored 头文件。
+
+## 决策
+
+第三方源码统一迁移到 `third_party/`：
 
 ```text
-include/glad/
-include/KHR/
-include/nuklear/
-src/glad.c
+third_party/glad/include/glad/glad.h
+third_party/glad/src/glad.c
+third_party/KHR/khrplatform.h
+third_party/nuklear/include/nuklear/nuklear.h
+third_party/nuklear/include/nuklear/nuklear_glfw_gl3.h
+third_party/nuklear/nuklear_impl.c
 ```
 
-This layout is simple for the current CMake targets, but it mixes third-party
-headers with project-owned headers. Moving these files to `third_party/` would
-make ownership clearer, but it would also touch include paths, static-analysis
-exclusions, formatting exclusions, packaging assumptions, and review history.
+vendored 代码由独立的 `gldrawdesktop_vendor` 静态目标编译，不施加项目警告；
+质量门禁扫描面保持 `include/ src/ tests/`，因此 `third_party/` 天然不在
+clang-format、clang-tidy 与 cppcheck 范围内。
 
-## Decision
+## 后果
 
-Keep the current third-party file locations for now. Document the dependency
-ownership and revisit a `third_party/` migration only when there is a concrete
-maintenance need, such as adding another vendored dependency or updating GLAD or
-Nuklear.
-
-## Consequences
-
-* No source files move in this ADR.
-* CMake include paths, package layouts, static-analysis suppressions, and local
-  check scripts remain stable.
-* `docs/dependencies.md` records current dependency locations and the checklist
-  for future moves.
-* A future `third_party/` migration should happen in its own PR and must update
-  CMake modules, check scripts, CI exclusions, documentation, and license notes
-  together.
+- 所有目标通过 SYSTEM include 目录引用第三方头文件，警告不来自 vendored 代码。
+- 依赖升级单独提交，并在 `third_party/README.md` 记录版本与许可证。
+- 常规功能改动不得顺带重写 vendored 代码。
+- 新增第三方依赖时同步更新 CMake、门禁脚本、文档与许可证说明。

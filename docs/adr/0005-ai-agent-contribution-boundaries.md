@@ -1,32 +1,28 @@
-# ADR 0005: AI Agent Contribution Boundaries
+# ADR 0005：AI 代理贡献边界
 
-## Status
+## 状态
 
-Accepted.
+已接受。
 
-**Date**: 2026-06-05
-**Last Modified**: 2026-06-05
+**日期**：2026-06-05
+**最后修改**：2026-10-23
 
-## Context
+## 背景
 
-AI agents can accelerate repository maintenance, tests, documentation, and
-implementation work. They can also make broad changes quickly, miss project
-context, or bypass architecture boundaries if the rules are not explicit.
+AI 代理可以加速仓库维护、测试、文档与实现工作，也可能快速做出大范围改动、
+遗漏项目上下文或绕过架构边界。
 
-## Decision
+## 决策
 
-AI-assisted contributions are allowed, but they must follow the same repository
-rules as human-authored contributions. AGENTS.md is the required entry point for
-AI agents. AI agent policy, playbooks, issue templates, and PR disclosure are
-used to make agent work reviewable and auditable.
+允许 AI 辅助贡献，但必须遵循与人类贡献相同的仓库规则。`AGENTS.md` 是 AI
+代理的必读入口；代理政策、playbook、Issue 模板与 PR 披露用于让代理工作可评审、
+可追溯。
 
-## Consequences
+## 后果
 
-* AI agents must read the required repository context before editing.
-* AI-generated code must preserve Workspace, CommandExecutor, tool, UI, render,
-  and document ownership boundaries.
-* Pull requests should disclose meaningful AI assistance and human verification.
-* Agent-suitable issues should define goals, non-goals, acceptance criteria, and
-  required checks.
-* Maintainers may reject AI-assisted changes that are too broad, weakly tested,
-  or not traceable to the task context.
+- AI 代理编辑前必须阅读必读仓库上下文。
+- AI 生成代码必须保持 Workspace、CommandExecutor、工具、UI、渲染与文档的
+  所有权边界。
+- PR 应披露实质性 AI 辅助与人工验证。
+- 适合代理的 Issue 应定义目标、非目标、验收标准与必需检查。
+- 维护者可以拒绝范围过大、测试不足或无法追溯到任务上下文的改动。

@@ -23,5 +23,5 @@
 /src/app/ @wubing7755
 /tests/ @wubing7755
 /docs/ @wubing7755
-/docs/ai-agents.md @wubing7755
-/docs/agent-playbooks.md @wubing7755
+/docs/guides/ @wubing7755
+/docs/adr/ @wubing7755

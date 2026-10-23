@@ -1,27 +1,23 @@
-# ADR 0002: CommandExecutor for Durable Mutations
+# ADR 0002：持久变更通过 CommandExecutor
 
-## Status
+## 状态
 
-Accepted.
+已接受。
 
-**Date**: 2026-06-05
-**Last Modified**: 2026-06-05
+**日期**：2026-06-05
+**最后修改**：2026-10-23
 
-## Context
+## 背景
 
-GLDraw supports undo and redo. Durable document changes need consistent history,
-dirty-state, selection, and persistence behavior.
+项目支持撤销与重做。持久文档变更需要一致的历史、脏状态、选择与持久化行为。
 
-## Decision
+## 决策
 
-Durable document mutations should go through `CommandExecutor`. Commands are the
-unit of undoable editing behavior.
+持久文档变更通过 `CommandExecutor`。命令是可撤销编辑行为的单位。
 
-## Consequences
+## 后果
 
-* Tools and UI actions should emit commands for durable edits.
-* Direct document mutation is appropriate only for document-owned internals,
-  loading, tests, or narrowly scoped setup code.
-* Command changes should include tests for success paths, unavailable states, and
-  undo/redo behavior when document state changes.
-* Preview and overlay state may remain outside command history until committed.
+- 工具与 UI action 为持久编辑发出命令。
+- 直接修改文档仅适用于文档内部实现、加载、测试或窄范围初始化代码。
+- 命令改动应包含成功路径、不可用状态与撤销/重做测试。
+- 预览与 overlay 状态在提交前可以不入历史。

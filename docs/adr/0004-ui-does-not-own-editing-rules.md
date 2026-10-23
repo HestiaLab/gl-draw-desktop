@@ -1,30 +1,25 @@
-# ADR 0004: UI Does Not Own Editing Rules
+# ADR 0004：UI 不拥有编辑规则
 
-## Status
+## 状态
 
-Accepted.
+已接受。
 
-**Date**: 2026-06-05
-**Last Modified**: 2026-06-05
+**日期**：2026-06-05
+**最后修改**：2026-10-23
 
-## Context
+## 背景
 
-GLDraw's UI is built with Nuklear and split across focused `src/ui/` modules.
-Editing behavior must remain consistent across menus, shortcuts, context menus,
-dialogs, tools, and future automation.
+UI 使用 Nuklear 构建，并拆分在聚焦的 `src/ui/` 模块中。编辑行为必须在菜单、
+快捷键、上下文菜单、对话框、工具与未来自动化之间保持一致。
 
-## Decision
+## 决策
 
-UI code should present state and dispatch actions. Editing rules belong in
-workspace commands, tool runtime, document modules, or services depending on the
-behavior.
+UI 代码只呈现状态并分发 action。编辑规则根据行为归属放在 workspace 命令、
+工具运行时、文档模块或服务中。
 
-## Consequences
+## 后果
 
-* UI modules should consume workspace query state, view-model data, or command
-  availability.
-* Menu items, toolbar controls, dialogs, and context menus should converge on the
-  same command/action paths.
-* Business rules should not be hidden inside widget event branches.
-* UI tests should focus on state derivation and action routing rather than
-  duplicating document or command tests.
+- UI 模块消费 workspace 查询状态、view-model 数据或命令可用性。
+- 菜单、工具栏、对话框与上下文菜单收敛到同一命令/action 路径。
+- 业务规则不得隐藏在控件事件分支中。
+- UI 测试聚焦状态推导与 action 路由，不重复文档或命令测试。

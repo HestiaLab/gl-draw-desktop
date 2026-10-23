@@ -1,39 +1,34 @@
-# Security Policy
+# 安全策略
 
-## Supported Versions
+## 支持的版本
 
-Security fixes target the current `main` branch and the latest published
-release when a backport is practical. Older releases may receive fixes when the
-impact is high and the patch can be applied safely.
+安全修复面向当前 `main` 分支与最新已发布版本（在可回移植时）。较旧版本仅在
+影响重大且补丁可安全应用时接收修复。
 
-## Reporting a Vulnerability
+## 报告漏洞
 
-Do not publish exploit details in a public issue.
+不要在公开 Issue 中披露利用细节。
 
-Preferred reporting path:
+首选报告路径：
 
-1. Use GitHub private vulnerability reporting if it is enabled for the
-   repository.
-2. If private reporting is not available, open a minimal public issue asking for
-   a private maintainer contact and omit sensitive details.
+1. 如果仓库启用了 GitHub 私密漏洞报告，请使用该入口。
+2. 如果私密报告不可用，请创建一个最小化的公开 Issue，请求维护者私下联系，
+   并省略敏感细节。
 
-Please include:
+请包含：
 
-* Affected version, commit, or release asset.
-* Operating system and toolchain.
-* Reproduction steps or a proof of concept.
-* Impact assessment.
-* Whether the issue affects source builds, packaged releases, or both.
+- 受影响版本、提交或发布制品。
+- 操作系统与工具链。
+- 复现步骤或概念验证。
+- 影响评估。
+- 问题影响源码构建、发布包还是两者。
 
-## Dependency Security
+## 依赖安全
 
-GLDraw uses CMake, GLFW, GLAD, Nuklear, OpenGL platform libraries, and packaging
-tools. Dependency updates should go through normal pull request review and CI.
-Security-driven dependency updates may be handled outside the regular release
-cadence when the risk justifies it.
+项目使用 CMake、GLFW、GLAD、Nuklear、OpenGL 平台库与打包工具。依赖更新应经过
+常规 PR 评审与 CI。当风险足够高时，安全驱动的依赖更新可以不遵循常规发布节奏。
 
-## Disclosure
+## 披露
 
-Maintainers should acknowledge reports as soon as practical, coordinate a fix in
-a private branch or security advisory when available, and publish release notes
-once users have a patched version or clear mitigation.
+维护者应尽快确认报告，在可用时通过私有分支或安全公告协调修复，并在用户获得
+补丁版本或明确缓解措施后发布说明。

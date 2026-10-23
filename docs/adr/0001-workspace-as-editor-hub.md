@@ -1,31 +1,26 @@
-# ADR 0001: Workspace as the Editor Hub
+# ADR 0001：Workspace 作为编辑器枢纽
 
-## Status
+## 状态
 
-Accepted.
+已接受。
 
-**Date**: 2026-06-05
-**Last Modified**: 2026-06-05
+**日期**：2026-06-05
+**最后修改**：2026-10-23
 
-## Context
+## 背景
 
-GLDraw coordinates document state, editing commands, tools, UI state, save/load
-services, and rendering state. These areas need one integration point, but they
-should not freely reach into each other's internals.
+项目需要协调文档状态、编辑命令、工具、UI 状态、保存/加载服务与渲染状态。
+这些区域需要一个集成点，但不应该随意访问彼此的内部实现。
 
-## Decision
+## 决策
 
-`Workspace` remains the editor hub. It owns the editor core, editor session, and
-editor services integration, while public workspace and controller APIs are the
-preferred access path for other modules.
+`Workspace` 继续作为编辑器枢纽，拥有 editor core、editor session 与 editor
+services 的集成；其他模块优先通过公共 workspace 与 controller API 访问。
 
-## Consequences
+## 后果
 
-* New top-level editor behavior should normally enter through workspace,
-  controller, service, or command APIs.
-* Direct access to workspace internals should stay inside workspace
-  implementation files.
-* Tests may include internal headers only when they are explicitly verifying
-  internal lifecycle behavior.
-* UI, tools, rendering, and platform code should not become alternate editor
-  hubs.
+- 新的顶层编辑行为通常应通过 workspace、controller、service 或 command API
+  进入。
+- 直接访问 workspace 内部状态应留在 workspace 实现文件中。
+- 测试仅在明确验证内部生命周期行为时包含内部头文件。
+- UI、工具、渲染与平台代码不得成为替代的编辑器枢纽。

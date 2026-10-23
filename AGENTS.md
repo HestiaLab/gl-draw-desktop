@@ -1,35 +1,31 @@
 # AGENTS.md
 
-This file gives Codex repository-specific guidance for GLDraw.
+面向在 GL Draw Desktop 项目中工作的 AI 代理。代理改动与其他贡献一样受范围、
+评审与验证约束。
 
-## Required Reading For AI Agents
+## 必读
 
-Before making changes, read:
+修改文件之前，先阅读：
 
-* `CONTRIBUTING.md` - contributor workflow, PR expectations, and architecture
-  boundaries.
-* `docs/ai-agents.md` - AI agent policy, restrictions, review, and disclosure
-  rules.
-* `docs/agent-playbooks.md` - task-specific AI workflows.
-* `docs/testing.md` - test layers, regression expectations, and manual
-  verification.
+- `CONTRIBUTING.md`
+- `docs/guides/testing.md`
+- `docs/guides/cmake.md`
 
-For architecture-sensitive work, also read:
+涉及架构或结构变化的改动，还需阅读：
 
-* `docs/adr/README.md`
-* Relevant ADR files in `docs/adr/`
+- `docs/adr/README.md`
+- 与改动区域相关的 ADR
 
-For build, CI, packaging, release, dependency, or security work, also read:
+涉及依赖、打包或安全的工作，还需阅读：
 
-* `docs/build.md`
-* `docs/dependencies.md`
-* `docs/release.md`
-* `SECURITY.md` when dependency or vulnerability handling is involved.
+- `third_party/README.md`
+- `SECURITY.md`
+- `docs/guides/release.md`
+- `docs/guides/dependencies.md`
 
-## Project Shape
+## 项目形状
 
-GLDraw is a C11 canvas drawing editor built with CMake, GLFW, GLAD, Nuklear,
-and OpenGL 3.3. The runtime is centered on `Workspace`:
+C11 + CMake + OpenGL 3.3 + Nuklear 的纯桌面应用：
 
 ```text
 Workspace
@@ -38,132 +34,108 @@ Workspace
   -> EditorServices: save, load, export, and top-level action callbacks
 ```
 
-Treat `Workspace` as the editor hub, but prefer public workspace and controller
-APIs over direct access to internals.
+`Workspace` 是编辑器枢纽，但优先使用公共 workspace 与 controller API，而不是
+直接访问内部状态。
 
-## Build And Verification
+```text
+include/                    公共头文件
+src/                        实现；模块目录与 include/ 同名
+third_party/                vendored GLAD/KHR/Nuklear（不参与项目警告）
+tests/                      CTest 测试（Unity）
+cmake/                      构建模块
+scripts/                    本地引导、检查与质量门禁
+docs/                       中文文档
+assets/                     截图与界面字体
+```
 
-Use the scripts for normal local builds:
+## 入口点
+
+- `src/main.c`：进程入口，解析 `--help` / `--version` 后调用 `gldrawdesktop_run()`。
+- `include/gldrawdesktop/app.h`：最小公共 API。
+- `src/app/application.c`：应用生命周期与帧序列。
+- `src/app/application_callbacks.c`：平台回调注册。
+- `src/app/application_workspace_services.c`：应用层保存/加载/导出回调。
+- `include/app/workspace.h`：公共 workspace API。
+- `include/app/editor_controller.h`：输入与渲染场景状态门面。
+- `src/app/registration_manifest.c`：内置注册顺序。
+- `src/app/extension_manifest.c`：内置对象注册。
+- `src/app/tool_manifest.c`：内置工具注册。
+- `src/app/command_registry.c`：公共命令执行入口。
+- `src/commands/command_executor.c`：撤销/重做历史与命令执行。
+- `src/render/render_system.c`：渲染系统生命周期与场景提交。
+- `src/tools/tool_runtime.c`：活动工具生命周期与分发。
+- `src/ui/`：聚焦的 UI 模块。
+- `CMakeLists.txt` 与 `cmake/`：构建入口与模块。
+
+## 构建与验证
 
 ```sh
-./build.sh
-./build.sh debug
-./build.sh clean
+cmake --preset ninja-debug
+cmake --build --preset ninja-debug
+ctest --preset ninja-debug --output-on-failure
 ```
 
-On Windows CMD with MinGW/MSYS2:
-
-```bat
-build.bat
-build.bat debug
-build.bat clean
-```
-
-Manual CMake references:
+Windows PowerShell 使用 `./scripts/check.ps1`，Linux/macOS 使用
+`./scripts/check.sh`。提交前运行带 clang-tidy 的完整检查：
 
 ```sh
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build --parallel
-ctest --test-dir build --output-on-failure
+./scripts/check.sh --enable-tidy
 ```
 
-```bat
-cmake -S . -B build-mingw -G "MinGW Makefiles"
-cmake --build build-mingw --parallel
+```powershell
+./scripts/check.ps1 -EnableTidy
 ```
 
-```bat
-cmake -S . -B build -G "Visual Studio 17 2022" -A x64
-cmake --build build --config Release
-```
+涉及窗口、字体或渲染的改动，必须启动应用并截图核验中文显示；CTest 不覆盖 GUI。
+截图工具必须 DPI-aware，否则坐标会错位。
 
-Dependencies: GLFW 3.3.9 is fetched by CMake, GLAD is committed, and Nuklear is
-header-only. Tests are expected mainly in Linux/macOS CI.
+## 所有权规则
 
-## Current Entry Points
+- 持久文档变更通过 `CommandExecutor`。
+- 对象存储、图层、ID、修订与空间查询属于 `document/`。
+- 选择、剪贴板、对话框、脏状态与布局属于 workspace/session。
+- 工具输入通过 `editor_controller` 与 `tool_runtime`，不要从控件直接驱动。
+- UI 消费 view-model 或 workspace 查询状态并发出 action，不拥有编辑规则。
+- 渲染消费 `RenderSceneDesc` 或编辑器渲染场景状态，不定义文档行为。
+- 平台输入值在 app/input 边界转换。
+- 着色器、主题、脚本与字体查找使用 `base/resource_path`。
+- 除 workspace 实现文件外，不新增 `workspace_internal.h` 依赖；仅当测试明确
+  验证内部生命周期行为时例外。
 
-Start code reading here:
+## 扩展模式
 
-* `src/main.c` - process entrypoint, calls `app_run()`.
-* `src/app/application.c` - application lifecycle and frame sequencing.
-* `src/app/application_callbacks.c` - platform callback registration targets.
-* `src/app/application_workspace_services.c` - app-owned save/load/export callbacks.
-* `include/app/workspace.h` - public workspace API.
-* `include/app/editor_controller.h` - editor runtime facade for input and render scene state.
-* `src/app/registration_manifest.c` - built-in registration sequence.
-* `src/app/extension_manifest.c` - built-in object registration.
-* `src/app/tool_manifest.c` - built-in tool registration.
-* `src/app/command_registry.c` - public command execution entrypoint.
-* `src/commands/command_executor.c` - undo/redo history and command execution.
-* `src/render/render_system.c` - render system lifecycle and scene submission.
-* `src/tools/tool_runtime.c` - active tool lifecycle and dispatch.
-* `CMakeLists.txt` - CMake project entrypoint.
-* `cmake/` - CMake modules for compiler options, dependencies, sources, tests,
-  and packaging.
+对象通过 `GraphicObjectDescriptor` 描述：
 
-## Ownership Rules
+- 按需实现 create、clone、destroy、translate、bounds、hit-test、path、
+  property 与 persistence 回调。
+- 使用 `register_object_type()` 注册。
+- 内置注册位于 `src/app/extension_manifest.c`。
+- 新自动分配的对象类型 ID 优先使用 `GRAPHIC_OBJECT_INVALID`。
 
-Keep edits aligned with the current boundaries:
+工具通过 `ToolDescriptor` 描述：
 
-* Durable document mutations should go through `CommandExecutor`.
-* Object storage, layers, IDs, revisions, and spatial queries belong to `document/`.
-* Selection, clipboard, dialogs, dirty state, and layout are workspace/session concerns.
-* Tool input should flow through `editor_controller` and `tool_runtime`, not directly from UI widgets.
-* UI code should consume view-model or workspace query state and emit actions; it should not own editing rules.
-* Rendering consumes `RenderSceneDesc` or editor render scene state; it should not define document behavior.
-* Platform-specific input values should be converted at the app/input boundary before reaching tools.
-* Resource lookup for shaders, themes, and scripts should use `base/resource_path`.
+- 使用 `register_tool()` 注册自定义工具。
+- 标准形状拖拽生命周期足够时使用 `register_shape_tool()`。
+- 内置注册位于 `src/app/tool_manifest.c`。
+- 持久编辑保持命令化；预览使用 overlay。
 
-Avoid adding new includes of `workspace_internal.h` outside workspace implementation files unless a test is explicitly verifying internal lifecycle behavior.
+## 命令与 UI
 
-## Extension Patterns
+- `command_catalog` 拥有命令描述符与 ID。
+- `command_availability` 拥有可执行状态检查。
+- `command_registry_execute()` 是公共执行入口。
+- 具体 workspace 行为拆分在 `workspace_*_commands.c` 模块中。
+- UI 帧构建拆分在聚焦的 `src/ui/` 模块中。
 
-Objects are descriptor-driven through `GraphicObjectDescriptor` in
-`include/document/object.h`.
+## 规则
 
-* Implement create, clone, destroy, translate, bounds, hit-test, path, property,
-  and persistence callbacks as needed.
-* Register object descriptors with `register_object_type()`.
-* Add built-in object registration through `src/app/extension_manifest.c`.
-* Prefer `GRAPHIC_OBJECT_INVALID` for new auto-assigned object type IDs.
+- 公共 API 属于 `include/`，私有实现与私有头属于 `src/`。
+- `third_party/` 与 `tests/vendor/` 不参与格式化与静态分析，不得因无关改动
+  重写它们。
+- 文档、界面、命令行输出与提交摘要只使用中文；提交类型与作用域保持英文。
+- 字体变更需同步更新 `assets/fonts/README.md` 的来源、SHA-256 与字形范围。
+- 测试应断言行为，而不是偶然的实现细节。
+- 不为让改动通过而放宽警告、测试、静态分析或 CI。
+- 修改构建、测试、安装或安全策略时同步更新文档。
 
-Tools are descriptor-driven through `ToolDescriptor` in `include/tools/tool.h`.
-
-* Register custom tools with `register_tool()`.
-* Use `register_shape_tool()` when the standard shape-drag lifecycle is enough.
-* Add built-in tool registration through `src/app/tool_manifest.c`.
-* Keep durable edits command-based; overlays are for previews.
-
-## Command And UI Notes
-
-Command metadata, availability, and execution are split:
-
-* `command_catalog` owns command descriptors and IDs.
-* `command_availability` owns executable-state checks.
-* `command_registry_execute()` remains the public execution entrypoint.
-* Concrete workspace behavior is split across `workspace_file_commands`,
-  `workspace_edit_commands`, `workspace_view_commands`,
-  `workspace_tool_commands`, and `workspace_dialog_commands`.
-
-UI frame construction is split across focused `src/ui/` modules such as
-`ui_frame.c`, `ui_chrome.c`, `ui_menubar*.c`, `ui_context_menu*.c`,
-`ui_inspector_panel.c`, `ui_layer_panel.c`, and dialog/theme modules.
-
-## Documentation
-
-Repository-local docs are intentionally short:
-
-* `docs/README.md` - documentation entrypoint.
-* `docs/build.md` - build, run, dependencies, and troubleshooting.
-* `docs/controls.md` - default shortcuts and pointer behavior.
-* `docs/dependencies.md` - dependency locations and update policy.
-* `docs/testing.md` - testing policy and expectations.
-* `docs/ai-agents.md` - AI agent policy.
-* `docs/agent-playbooks.md` - AI-assisted task workflows.
-* `docs/archive/` - historical notes retained for reference only.
-
-Architecture and source navigation are maintained through Zread:
-https://zread.ai/wubing7755/GLDraw
-
-Update local docs when build commands, run paths, dependencies, controls,
-testing policy, release policy, AI agent policy, or documentation policy change.
+许可证：MIT；界面字体为 SIL OFL 1.1。
