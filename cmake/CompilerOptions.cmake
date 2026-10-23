@@ -55,12 +55,18 @@ function(gldrawdesktop_target_defaults target_name)
             ${CMAKE_CURRENT_SOURCE_DIR}/include
         PRIVATE
             ${CMAKE_CURRENT_SOURCE_DIR}/src
+    )
+    target_include_directories(${target_name}
         SYSTEM PRIVATE
             ${CMAKE_CURRENT_SOURCE_DIR}/third_party
             ${CMAKE_CURRENT_SOURCE_DIR}/third_party/glad/include
             ${CMAKE_CURRENT_SOURCE_DIR}/third_party/nuklear/include
     )
     target_compile_features(${target_name} PRIVATE c_std_11)
+    if(UNIX AND NOT APPLE)
+        # 严格 C11 下 glibc 默认隐藏 readlink 等 POSIX 声明。
+        target_compile_definitions(${target_name} PRIVATE _POSIX_C_SOURCE=200809L)
+    endif()
     gldrawdesktop_target_warnings(${target_name})
     gldrawdesktop_target_sanitizers(${target_name})
     gldrawdesktop_target_coverage(${target_name})
