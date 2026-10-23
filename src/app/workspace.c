@@ -254,8 +254,11 @@ void workspace_set_statusf(Workspace* workspace, const char* fmt, ...)
     }
 
     va_start(args, fmt);
-    vsnprintf(
-        workspace->session.status_message, sizeof(workspace->session.status_message), fmt, args);
+    vsnprintf( // NOLINT(clang-analyzer-valist.Uninitialized)
+        workspace->session.status_message,
+        sizeof(workspace->session.status_message),
+        fmt,
+        args);
     va_end(args);
 }
 

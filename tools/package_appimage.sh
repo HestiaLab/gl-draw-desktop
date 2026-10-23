@@ -81,7 +81,15 @@ if [[ ! -x "$LINUXDEPLOY" ]]; then
 fi
 
 APPIMAGE_EXTRACT_AND_RUN=1 "$LINUXDEPLOY" --appdir "$APPDIR" --output appimage
-mv "gl-draw-desktop"*.AppImage "$DIST_DIR/$PACKAGE_NAME.AppImage"
+
+# linuxdeploy 按 desktop 文件的 Name 生成文件名（GL_Draw_Desktop-x86_64.AppImage），
+# 与可执行文件名不一定一致，因此按生成物定位而不是硬编码名称。
+GENERATED_APPIMAGE=$(find . -maxdepth 1 -type f -name '*-x86_64.AppImage' -print -quit)
+if [[ -z "$GENERATED_APPIMAGE" ]]; then
+    echo "linuxdeploy did not produce an AppImage." >&2
+    exit 1
+fi
+mv "$GENERATED_APPIMAGE" "$DIST_DIR/$PACKAGE_NAME.AppImage"
 
 echo ""
 echo "AppImage created:"

@@ -49,7 +49,7 @@ void ui_system_emit_status(UiSystem* ui, const char* fmt, ...)
     }
 
     va_start(args, fmt);
-    vsnprintf(buffer, sizeof(buffer), fmt, args);
+    vsnprintf(buffer, sizeof(buffer), fmt, args); // NOLINT(clang-analyzer-valist.Uninitialized)
     va_end(args);
 
     action = editor_action_make_set_status_message(buffer);
