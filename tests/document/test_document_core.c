@@ -13,113 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef int (*TestFn)(void);
-
-static int g_failures = 0;
-
-static int nearly_equal(float a, float b)
-{
-    return fabsf(a - b) <= 1e-5f;
-}
-
-static void expect_true_impl(int condition, const char* expr, const char* file, int line)
-{
-    if (!condition) {
-        fprintf(stderr, "%s:%d: expected true: %s\n", file, line, expr);
-        g_failures++;
-    }
-}
-
-static void expect_uint_eq_impl(unsigned int actual,
-                                unsigned int expected,
-                                const char* actual_expr,
-                                const char* expected_expr,
-                                const char* file,
-                                int line)
-{
-    if (actual != expected) {
-        fprintf(stderr,
-                "%s:%d: expected %s == %s (%u != %u)\n",
-                file,
-                line,
-                actual_expr,
-                expected_expr,
-                actual,
-                expected);
-        g_failures++;
-    }
-}
-
-static void expect_int_eq_impl(int actual,
-                               int expected,
-                               const char* actual_expr,
-                               const char* expected_expr,
-                               const char* file,
-                               int line)
-{
-    if (actual != expected) {
-        fprintf(stderr,
-                "%s:%d: expected %s == %s (%d != %d)\n",
-                file,
-                line,
-                actual_expr,
-                expected_expr,
-                actual,
-                expected);
-        g_failures++;
-    }
-}
-
-static void expect_float_eq_impl(float actual,
-                                 float expected,
-                                 const char* actual_expr,
-                                 const char* expected_expr,
-                                 const char* file,
-                                 int line)
-{
-    if (!nearly_equal(actual, expected)) {
-        fprintf(stderr,
-                "%s:%d: expected %s ~= %s (%.6f != %.6f)\n",
-                file,
-                line,
-                actual_expr,
-                expected_expr,
-                actual,
-                expected);
-        g_failures++;
-    }
-}
-
-static void expect_str_eq_impl(const char* actual,
-                               const char* expected,
-                               const char* actual_expr,
-                               const char* expected_expr,
-                               const char* file,
-                               int line)
-{
-    if (!actual || !expected || strcmp(actual, expected) != 0) {
-        fprintf(stderr,
-                "%s:%d: expected %s == %s (\"%s\" != \"%s\")\n",
-                file,
-                line,
-                actual_expr,
-                expected_expr,
-                actual ? actual : "(null)",
-                expected ? expected : "(null)");
-        g_failures++;
-    }
-}
-
-#define EXPECT_TRUE(expr) expect_true_impl((expr), #expr, __FILE__, __LINE__)
-#define EXPECT_FALSE(expr) expect_true_impl(!(expr), "!(" #expr ")", __FILE__, __LINE__)
-#define EXPECT_UINT_EQ(actual, expected)                                                           \
-    expect_uint_eq_impl((actual), (expected), #actual, #expected, __FILE__, __LINE__)
-#define EXPECT_INT_EQ(actual, expected)                                                            \
-    expect_int_eq_impl((actual), (expected), #actual, #expected, __FILE__, __LINE__)
-#define EXPECT_FLOAT_EQ(actual, expected)                                                          \
-    expect_float_eq_impl((actual), (expected), #actual, #expected, __FILE__, __LINE__)
-#define EXPECT_STR_EQ(actual, expected)                                                            \
-    expect_str_eq_impl((actual), (expected), #actual, #expected, __FILE__, __LINE__)
+#include "test_assertions.h"
 
 static GraphicObject* create_rect(float x, float y, float w, float h)
 {
@@ -152,7 +46,7 @@ static int write_text_file(const char* path, const char* text)
     return fclose(file) == 0;
 }
 
-static int test_document_selection_and_deletion(void)
+static void test_document_selection_and_deletion(void)
 {
     Document document;
     SelectionSet selection = { 0 };
@@ -204,10 +98,9 @@ static int test_document_selection_and_deletion(void)
 
     selection_set_shutdown(&selection);
     document_shutdown(&document);
-    return g_failures == 0;
 }
 
-static int test_command_executor_create_undo_redo(void)
+static void test_command_executor_create_undo_redo(void)
 {
     Document document;
     CommandExecutor executor;
@@ -232,10 +125,9 @@ static int test_command_executor_create_undo_redo(void)
 
     command_executor_shutdown(&executor);
     document_shutdown(&document);
-    return g_failures == 0;
 }
 
-static int test_command_executor_property_undo_redo(void)
+static void test_command_executor_property_undo_redo(void)
 {
     Document document;
     CommandExecutor executor;
@@ -267,10 +159,9 @@ static int test_command_executor_property_undo_redo(void)
 
     command_executor_shutdown(&executor);
     document_shutdown(&document);
-    return g_failures == 0;
 }
 
-static int test_command_executor_move_undo_redo(void)
+static void test_command_executor_move_undo_redo(void)
 {
     Document document;
     CommandExecutor executor;
@@ -308,10 +199,9 @@ static int test_command_executor_move_undo_redo(void)
 
     command_executor_shutdown(&executor);
     document_shutdown(&document);
-    return g_failures == 0;
 }
 
-static int test_persistence_round_trip(void)
+static void test_persistence_round_trip(void)
 {
     Document saved;
     Document loaded;
@@ -387,10 +277,9 @@ static int test_persistence_round_trip(void)
     remove(path);
     document_shutdown(&loaded);
     document_shutdown(&saved);
-    return g_failures == 0;
 }
 
-static int test_persistence_escapes_layer_names(void)
+static void test_persistence_escapes_layer_names(void)
 {
     Document saved;
     Document loaded;
@@ -417,10 +306,9 @@ static int test_persistence_escapes_layer_names(void)
     remove(path);
     document_shutdown(&loaded);
     document_shutdown(&saved);
-    return g_failures == 0;
 }
 
-static int test_persistence_ignores_unknown_fields(void)
+static void test_persistence_ignores_unknown_fields(void)
 {
     Document document;
     char path[TEST_TEMP_PATH_MAX];
@@ -474,10 +362,9 @@ static int test_persistence_ignores_unknown_fields(void)
 
     remove(path);
     document_shutdown(&document);
-    return g_failures == 0;
 }
 
-static int test_persistence_rejects_invalid_json(void)
+static void test_persistence_rejects_invalid_json(void)
 {
     Document document;
     char path[TEST_TEMP_PATH_MAX];
@@ -499,10 +386,9 @@ static int test_persistence_rejects_invalid_json(void)
 
     remove(path);
     document_shutdown(&document);
-    return g_failures == 0;
 }
 
-static int test_path_utils_common_cases(void)
+static void test_path_utils_common_cases(void)
 {
     char buffer[GLDRAW_PATH_MAX];
     char small_buffer[1];
@@ -541,11 +427,9 @@ static int test_path_utils_common_cases(void)
     EXPECT_TRUE(path_utils_join_same_directory(
         "C:\\dir\\base.json", "copy.JSON", ".json", buffer, sizeof(buffer)));
     EXPECT_STR_EQ(buffer, "C:\\dir\\copy.JSON");
-
-    return g_failures == 0;
 }
 
-static int test_layer_visibility_and_spatial_query(void)
+static void test_layer_visibility_and_spatial_query(void)
 {
     Document document;
     GraphicObject* hidden = NULL;
@@ -576,10 +460,9 @@ static int test_layer_visibility_and_spatial_query(void)
 
     free(indices);
     document_shutdown(&document);
-    return g_failures == 0;
 }
 
-static int test_stress_5000_objects_and_undo_redo(void)
+static void test_stress_5000_objects_and_undo_redo(void)
 {
     Document document;
     CommandExecutor executor;
@@ -610,46 +493,27 @@ static int test_stress_5000_objects_and_undo_redo(void)
 
     command_executor_shutdown(&executor);
     document_shutdown(&document);
-    return g_failures == 0;
 }
+
+void setUp(void) {}
+
+void tearDown(void) {}
 
 int main(void)
 {
-    static const struct {
-        const char* name;
-        TestFn fn;
-    } tests[] = { { "document selection and deletion", test_document_selection_and_deletion },
-                  { "command create undo/redo", test_command_executor_create_undo_redo },
-                  { "command property undo/redo", test_command_executor_property_undo_redo },
-                  { "command move undo/redo", test_command_executor_move_undo_redo },
-                  { "persistence round trip", test_persistence_round_trip },
-                  { "persistence escapes layer names", test_persistence_escapes_layer_names },
-                  { "persistence ignores unknown fields", test_persistence_ignores_unknown_fields },
-                  { "persistence rejects invalid json", test_persistence_rejects_invalid_json },
-                  { "path utils common cases", test_path_utils_common_cases },
-                  { "layer visibility and spatial query", test_layer_visibility_and_spatial_query },
-                  { "stress 5000 objects and undo/redo", test_stress_5000_objects_and_undo_redo } };
-    int i = 0;
-    int test_count = (int)(sizeof(tests) / sizeof(tests[0]));
-    int failures_before = 0;
-
     extension_loader_register_all();
 
-    for (i = 0; i < test_count; ++i) {
-        failures_before = g_failures;
-        tests[i].fn();
-        if (g_failures == failures_before) {
-            printf("[PASS] %s\n", tests[i].name);
-        } else {
-            printf("[FAIL] %s\n", tests[i].name);
-        }
-    }
-
-    if (g_failures != 0) {
-        fprintf(stderr, "Test failures: %d\n", g_failures);
-        return 1;
-    }
-
-    printf("All %d tests passed.\n", test_count);
-    return 0;
+    UNITY_BEGIN();
+    RUN_TEST(test_document_selection_and_deletion);
+    RUN_TEST(test_command_executor_create_undo_redo);
+    RUN_TEST(test_command_executor_property_undo_redo);
+    RUN_TEST(test_command_executor_move_undo_redo);
+    RUN_TEST(test_persistence_round_trip);
+    RUN_TEST(test_persistence_escapes_layer_names);
+    RUN_TEST(test_persistence_ignores_unknown_fields);
+    RUN_TEST(test_persistence_rejects_invalid_json);
+    RUN_TEST(test_path_utils_common_cases);
+    RUN_TEST(test_layer_visibility_and_spatial_query);
+    RUN_TEST(test_stress_5000_objects_and_undo_redo);
+    return UNITY_END();
 }

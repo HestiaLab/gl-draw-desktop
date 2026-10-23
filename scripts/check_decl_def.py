@@ -76,8 +76,37 @@ _KEYWORDS = frozenset(
     }
 )
 
-# A function declaration: `name(...)` terminated by `;` (multi-line aware).
-_DECL_RE = re.compile(r"\b([A-Za-z_][A-Za-z0-9_]*)\s*\([^;{}]*\)\s*;")
+# A function declaration: a return type, then `name(...)` terminated by `;`
+# at the start of a line. Anchoring to the line start keeps calls inside
+# `static inline` helpers from being mistaken for declarations.
+_DECL_RE = re.compile(
+    r"(?m)^[ \t]*(?:[A-Za-z_][A-Za-z0-9_]*[ \t\*]+)+"
+    r"([A-Za-z_][A-Za-z0-9_]*)\s*\((?!\s*\*)[^;{}]*\)\s*;"
+)
+
+
+def _strip_static_inline(text: str) -> str:
+    """Blank `static inline` definitions; they are header-local, not API."""
+    token = re.compile(r"\bstatic\s+inline\b")
+    while True:
+        match = token.search(text)
+        if not match:
+            return text
+        brace = text.find("{", match.end())
+        if brace < 0:
+            return text
+        depth = 0
+        i = brace
+        while i < len(text):
+            if text[i] == "{":
+                depth += 1
+            elif text[i] == "}":
+                depth -= 1
+                if depth == 0:
+                    i += 1
+                    break
+            i += 1
+        text = text[: match.start()] + " " * (i - match.start()) + text[i:]
 # A function definition: `name(...)` terminated by `{` (multi-line aware).
 _DEF_RE = re.compile(r"\b([A-Za-z_][A-Za-z0-9_]*)\s*\([^;{}]*\)\s*\{")
 # An all-uppercase identifier: by convention this is a macro or constant.
@@ -157,7 +186,8 @@ def collect_declarations(root: Path) -> dict[str, list[str]]:
     """Map each declared function name to the headers that declare it."""
     declarations: dict[str, list[str]] = {}
     for header in (root / "include").rglob("*.h"):
-        for match in _DECL_RE.finditer(_code_text(header)):
+        text = _strip_static_inline(_code_text(header))
+        for match in _DECL_RE.finditer(text):
             name = match.group(1)
             if name in _KEYWORDS:
                 continue

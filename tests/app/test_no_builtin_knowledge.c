@@ -10,28 +10,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#define EXPECT_TRUE(expr)                                                                          \
-    do {                                                                                           \
-        if (!(expr)) {                                                                             \
-            fprintf(stderr, "EXPECT_TRUE failed: %s:%d: %s\n", __FILE__, __LINE__, #expr);         \
-            return 1;                                                                              \
-        }                                                                                          \
-    } while (0)
+#include "test_assertions.h"
 
-#define EXPECT_STR_EQ(actual, expected)                                                            \
-    do {                                                                                           \
-        if (strcmp((actual), (expected)) != 0) {                                                   \
-            fprintf(stderr,                                                                        \
-                    "EXPECT_STR_EQ failed: %s:%d: \"%s\" != \"%s\"\n",                             \
-                    __FILE__,                                                                      \
-                    __LINE__,                                                                      \
-                    (actual),                                                                      \
-                    (expected));                                                                   \
-            return 1;                                                                              \
-        }                                                                                          \
-    } while (0)
-
-int main(void)
+static void test_no_builtin_knowledge(void)
 {
     /* ------------------------------------------------------------------ */
     /* 1. Before any registration, the registry should be empty and        */
@@ -98,7 +79,15 @@ int main(void)
         EXPECT_STR_EQ(object_type_id(ellipse), "ellipse");
         object_destroy(ellipse);
     }
+}
 
-    printf("[PASS] object.c has zero builtin type knowledge\n");
-    return 0;
+void setUp(void) {}
+
+void tearDown(void) {}
+
+int main(void)
+{
+    UNITY_BEGIN();
+    RUN_TEST(test_no_builtin_knowledge);
+    return UNITY_END();
 }

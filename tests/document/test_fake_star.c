@@ -9,28 +9,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#define EXPECT_TRUE(expr)                                                                          \
-    do {                                                                                           \
-        if (!(expr)) {                                                                             \
-            fprintf(stderr, "EXPECT_TRUE failed: %s:%d: %s\n", __FILE__, __LINE__, #expr);         \
-            return 1;                                                                              \
-        }                                                                                          \
-    } while (0)
+#include "test_assertions.h"
 
-#define EXPECT_STR_EQ(actual, expected)                                                            \
-    do {                                                                                           \
-        if (strcmp((actual), (expected)) != 0) {                                                   \
-            fprintf(stderr,                                                                        \
-                    "EXPECT_STR_EQ failed: %s:%d: \"%s\" != \"%s\"\n",                             \
-                    __FILE__,                                                                      \
-                    __LINE__,                                                                      \
-                    (actual),                                                                      \
-                    (expected));                                                                   \
-            return 1;                                                                              \
-        }                                                                                          \
-    } while (0)
-
-int main(void)
+static void test_fake_star(void)
 {
     Document document;
     Document loaded;
@@ -65,6 +46,15 @@ int main(void)
     remove(path);
     document_shutdown(&loaded);
     document_shutdown(&document);
-    printf("[PASS] fake star extension loader registration\n");
-    return 0;
+}
+
+void setUp(void) {}
+
+void tearDown(void) {}
+
+int main(void)
+{
+    UNITY_BEGIN();
+    RUN_TEST(test_fake_star);
+    return UNITY_END();
 }

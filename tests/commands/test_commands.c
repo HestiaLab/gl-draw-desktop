@@ -9,47 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define EXPECT_TRUE(expr)                                                                          \
-    do {                                                                                           \
-        if (!(expr)) {                                                                             \
-            fprintf(stderr, "EXPECT_TRUE failed: %s:%d: %s\n", __FILE__, __LINE__, #expr);         \
-            return 1;                                                                              \
-        }                                                                                          \
-    } while (0)
-
-#define EXPECT_FALSE(expr) EXPECT_TRUE(!(expr))
-
-#define EXPECT_INT_EQ(actual, expected)                                                            \
-    do {                                                                                           \
-        int actual_value = (actual);                                                               \
-        int expected_value = (expected);                                                           \
-        if (actual_value != expected_value) {                                                      \
-            fprintf(stderr,                                                                        \
-                    "EXPECT_INT_EQ failed: %s:%d: %s=%d expected %d\n",                            \
-                    __FILE__,                                                                      \
-                    __LINE__,                                                                      \
-                    #actual,                                                                       \
-                    actual_value,                                                                  \
-                    expected_value);                                                               \
-            return 1;                                                                              \
-        }                                                                                          \
-    } while (0)
-
-#define EXPECT_FLOAT_EQ(actual, expected)                                                          \
-    do {                                                                                           \
-        float actual_value = (actual);                                                             \
-        float expected_value = (expected);                                                         \
-        if (fabsf(actual_value - expected_value) > 1e-4f) {                                        \
-            fprintf(stderr,                                                                        \
-                    "EXPECT_FLOAT_EQ failed: %s:%d: %s=%.6f expected %.6f\n",                      \
-                    __FILE__,                                                                      \
-                    __LINE__,                                                                      \
-                    #actual,                                                                       \
-                    actual_value,                                                                  \
-                    expected_value);                                                               \
-            return 1;                                                                              \
-        }                                                                                          \
-    } while (0)
+#include "test_assertions.h"
 
 static int g_fail_realloc = 0;
 
@@ -86,7 +46,7 @@ static int get_scalar(Document* document, ObjectId id, const char* key, float* o
     return object && object_get_scalar(object, key, out_value);
 }
 
-static int test_create_object_command(void)
+static void test_create_object_command(void)
 {
     Document document;
     CommandExecutor executor;
@@ -109,10 +69,9 @@ static int test_create_object_command(void)
 
     command_executor_shutdown(&executor);
     document_shutdown(&document);
-    return 0;
 }
 
-static int test_delete_selection_command(void)
+static void test_delete_selection_command(void)
 {
     Document document;
     CommandExecutor executor;
@@ -142,10 +101,9 @@ static int test_delete_selection_command(void)
     selection_set_shutdown(&selection);
     command_executor_shutdown(&executor);
     document_shutdown(&document);
-    return 0;
 }
 
-static int test_move_objects_command_and_merge(void)
+static void test_move_objects_command_and_merge(void)
 {
     Document document;
     CommandExecutor executor;
@@ -174,10 +132,9 @@ static int test_move_objects_command_and_merge(void)
 
     command_executor_shutdown(&executor);
     document_shutdown(&document);
-    return 0;
 }
 
-static int test_set_property_command_and_merge(void)
+static void test_set_property_command_and_merge(void)
 {
     Document document;
     CommandExecutor executor;
@@ -208,10 +165,9 @@ static int test_set_property_command_and_merge(void)
 
     command_executor_shutdown(&executor);
     document_shutdown(&document);
-    return 0;
 }
 
-static int test_executor_allocation_failure_keeps_document_unchanged(void)
+static void test_executor_allocation_failure_keeps_document_unchanged(void)
 {
     Document document;
     CommandExecutor executor;
@@ -237,10 +193,9 @@ static int test_executor_allocation_failure_keeps_document_unchanged(void)
 
     command_executor_shutdown(&executor);
     document_shutdown(&document);
-    return 0;
 }
 
-static int test_failed_undo_redo_keeps_history_entry(void)
+static void test_failed_undo_redo_keeps_history_entry(void)
 {
     Document document;
     CommandExecutor executor;
@@ -274,10 +229,9 @@ static int test_failed_undo_redo_keeps_history_entry(void)
 
     command_executor_shutdown(&executor);
     document_shutdown(&document);
-    return 0;
 }
 
-static int test_transaction_commit_and_undo(void)
+static void test_transaction_commit_and_undo(void)
 {
     Document document;
     CommandExecutor executor;
@@ -312,10 +266,9 @@ static int test_transaction_commit_and_undo(void)
 
     command_executor_shutdown(&executor);
     document_shutdown(&document);
-    return 0;
 }
 
-static int test_transaction_rollback_restores_document(void)
+static void test_transaction_rollback_restores_document(void)
 {
     Document document;
     CommandExecutor executor;
@@ -344,10 +297,9 @@ static int test_transaction_rollback_restores_document(void)
 
     command_executor_shutdown(&executor);
     document_shutdown(&document);
-    return 0;
 }
 
-static int test_memory_budget_prunes_old_undo_entries(void)
+static void test_memory_budget_prunes_old_undo_entries(void)
 {
     Document document;
     CommandExecutor executor;
@@ -370,10 +322,9 @@ static int test_memory_budget_prunes_old_undo_entries(void)
 
     command_executor_shutdown(&executor);
     document_shutdown(&document);
-    return 0;
 }
 
-static int test_memory_budget_set_prunes_history_in_bulk(void)
+static void test_memory_budget_set_prunes_history_in_bulk(void)
 {
     Document document;
     CommandExecutor executor;
@@ -403,10 +354,9 @@ static int test_memory_budget_set_prunes_history_in_bulk(void)
 
     command_executor_shutdown(&executor);
     document_shutdown(&document);
-    return 0;
 }
 
-static int test_layer_commands_undo_redo(void)
+static void test_layer_commands_undo_redo(void)
 {
     Document document;
     CommandExecutor executor;
@@ -473,10 +423,9 @@ static int test_layer_commands_undo_redo(void)
 
     command_executor_shutdown(&executor);
     document_shutdown(&document);
-    return 0;
 }
 
-static int test_command_execute_respects_locked_targets(void)
+static void test_command_execute_respects_locked_targets(void)
 {
     Document document;
     CommandExecutor executor;
@@ -525,10 +474,9 @@ static int test_command_execute_respects_locked_targets(void)
     selection_set_shutdown(&selection);
     command_executor_shutdown(&executor);
     document_shutdown(&document);
-    return 0;
 }
 
-static int test_command_can_execute_reports_capability(void)
+static void test_command_can_execute_reports_capability(void)
 {
     Document document;
     SelectionSet selection = { 0 };
@@ -575,10 +523,9 @@ static int test_command_can_execute_reports_capability(void)
 
     selection_set_shutdown(&selection);
     document_shutdown(&document);
-    return 0;
 }
 
-static int test_paste_command_undo_redo_and_conflict_rollback(void)
+static void test_paste_command_undo_redo_and_conflict_rollback(void)
 {
     Document document;
     CommandExecutor executor;
@@ -632,10 +579,9 @@ static int test_paste_command_undo_redo_and_conflict_rollback(void)
     command_executor_shutdown(&executor);
     document_shutdown(&document);
     object_destroy(clipboard[0]);
-    return 0;
 }
 
-static int test_move_multiple_objects_undo(void)
+static void test_move_multiple_objects_undo(void)
 {
     Document document;
     CommandExecutor executor;
@@ -677,10 +623,9 @@ static int test_move_multiple_objects_undo(void)
 
     command_executor_shutdown(&executor);
     document_shutdown(&document);
-    return 0;
 }
 
-static int test_paste_on_locked_layer_rejected(void)
+static void test_paste_on_locked_layer_rejected(void)
 {
     Document document;
     CommandExecutor executor;
@@ -705,10 +650,9 @@ static int test_paste_on_locked_layer_rejected(void)
     command_executor_shutdown(&executor);
     document_shutdown(&document);
     object_destroy(clipboard[0]);
-    return 0;
 }
 
-static int test_paste_command_assigns_unique_ids(void)
+static void test_paste_command_assigns_unique_ids(void)
 {
     Document document;
     CommandExecutor executor;
@@ -743,10 +687,9 @@ static int test_paste_command_assigns_unique_ids(void)
     object_destroy(clipboard[0]);
     object_destroy(clipboard[1]);
     object_destroy(clipboard[2]);
-    return 0;
 }
 
-static int test_execute_null_command_returns_failure(void)
+static void test_execute_null_command_returns_failure(void)
 {
     Document document;
     CommandExecutor executor;
@@ -760,50 +703,34 @@ static int test_execute_null_command_returns_failure(void)
 
     command_executor_shutdown(&executor);
     document_shutdown(&document);
-    return 0;
 }
+
+void setUp(void) {}
+
+void tearDown(void) {}
 
 int main(void)
 {
     extension_loader_register_all();
 
-    if (test_create_object_command())
-        return 1;
-    if (test_delete_selection_command())
-        return 1;
-    if (test_move_objects_command_and_merge())
-        return 1;
-    if (test_set_property_command_and_merge())
-        return 1;
-    if (test_executor_allocation_failure_keeps_document_unchanged())
-        return 1;
-    if (test_failed_undo_redo_keeps_history_entry())
-        return 1;
-    if (test_transaction_commit_and_undo())
-        return 1;
-    if (test_transaction_rollback_restores_document())
-        return 1;
-    if (test_memory_budget_prunes_old_undo_entries())
-        return 1;
-    if (test_memory_budget_set_prunes_history_in_bulk())
-        return 1;
-    if (test_layer_commands_undo_redo())
-        return 1;
-    if (test_command_execute_respects_locked_targets())
-        return 1;
-    if (test_command_can_execute_reports_capability())
-        return 1;
-    if (test_paste_command_undo_redo_and_conflict_rollback())
-        return 1;
-    if (test_move_multiple_objects_undo())
-        return 1;
-    if (test_paste_on_locked_layer_rejected())
-        return 1;
-    if (test_paste_command_assigns_unique_ids())
-        return 1;
-    if (test_execute_null_command_returns_failure())
-        return 1;
-
-    printf("[PASS] command executor core commands\n");
-    return 0;
+    UNITY_BEGIN();
+    RUN_TEST(test_create_object_command);
+    RUN_TEST(test_delete_selection_command);
+    RUN_TEST(test_move_objects_command_and_merge);
+    RUN_TEST(test_set_property_command_and_merge);
+    RUN_TEST(test_executor_allocation_failure_keeps_document_unchanged);
+    RUN_TEST(test_failed_undo_redo_keeps_history_entry);
+    RUN_TEST(test_transaction_commit_and_undo);
+    RUN_TEST(test_transaction_rollback_restores_document);
+    RUN_TEST(test_memory_budget_prunes_old_undo_entries);
+    RUN_TEST(test_memory_budget_set_prunes_history_in_bulk);
+    RUN_TEST(test_layer_commands_undo_redo);
+    RUN_TEST(test_command_execute_respects_locked_targets);
+    RUN_TEST(test_command_can_execute_reports_capability);
+    RUN_TEST(test_paste_command_undo_redo_and_conflict_rollback);
+    RUN_TEST(test_move_multiple_objects_undo);
+    RUN_TEST(test_paste_on_locked_layer_rejected);
+    RUN_TEST(test_paste_command_assigns_unique_ids);
+    RUN_TEST(test_execute_null_command_returns_failure);
+    return UNITY_END();
 }

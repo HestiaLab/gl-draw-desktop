@@ -8,73 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define EXPECT_TRUE(expr)                                                                          \
-    do {                                                                                           \
-        if (!(expr)) {                                                                             \
-            fprintf(stderr, "EXPECT_TRUE failed: %s:%d: %s\n", __FILE__, __LINE__, #expr);         \
-            return 1;                                                                              \
-        }                                                                                          \
-    } while (0)
-
-#define EXPECT_FALSE(expr) EXPECT_TRUE(!(expr))
-
-#define EXPECT_INT_EQ(actual, expected)                                                            \
-    do {                                                                                           \
-        int actual_value = (actual);                                                               \
-        int expected_value = (expected);                                                           \
-        if (actual_value != expected_value) {                                                      \
-            fprintf(stderr,                                                                        \
-                    "EXPECT_INT_EQ failed: %s:%d: %d != %d\n",                                     \
-                    __FILE__,                                                                      \
-                    __LINE__,                                                                      \
-                    actual_value,                                                                  \
-                    expected_value);                                                               \
-            return 1;                                                                              \
-        }                                                                                          \
-    } while (0)
-
-#define EXPECT_UINT_EQ(actual, expected)                                                           \
-    do {                                                                                           \
-        unsigned int actual_value = (actual);                                                      \
-        unsigned int expected_value = (expected);                                                  \
-        if (actual_value != expected_value) {                                                      \
-            fprintf(stderr,                                                                        \
-                    "EXPECT_UINT_EQ failed: %s:%d: %u != %u\n",                                    \
-                    __FILE__,                                                                      \
-                    __LINE__,                                                                      \
-                    actual_value,                                                                  \
-                    expected_value);                                                               \
-            return 1;                                                                              \
-        }                                                                                          \
-    } while (0)
-
-#define EXPECT_FLOAT_EQ(actual, expected)                                                          \
-    do {                                                                                           \
-        float actual_value = (actual);                                                             \
-        float expected_value = (expected);                                                         \
-        if (fabsf(actual_value - expected_value) > 1e-4f) {                                        \
-            fprintf(stderr,                                                                        \
-                    "EXPECT_FLOAT_EQ failed: %s:%d: %.4f != %.4f\n",                               \
-                    __FILE__,                                                                      \
-                    __LINE__,                                                                      \
-                    actual_value,                                                                  \
-                    expected_value);                                                               \
-            return 1;                                                                              \
-        }                                                                                          \
-    } while (0)
-
-#define EXPECT_STR_EQ(actual, expected)                                                            \
-    do {                                                                                           \
-        if (strcmp((actual), (expected)) != 0) {                                                   \
-            fprintf(stderr,                                                                        \
-                    "EXPECT_STR_EQ failed: %s:%d: \"%s\" != \"%s\"\n",                             \
-                    __FILE__,                                                                      \
-                    __LINE__,                                                                      \
-                    (actual),                                                                      \
-                    (expected));                                                                   \
-            return 1;                                                                              \
-        }                                                                                          \
-    } while (0)
+#include "test_assertions.h"
 
 static const char* k_temp_document_path = "gldraw_workspace_service_test.json";
 
@@ -226,7 +160,7 @@ static int test_load_document_resets_runtime_state(Workspace* workspace)
     return 0;
 }
 
-static int test_workspace_create_destroy_allocates_opaque_workspace(void)
+static void test_workspace_create_destroy_allocates_opaque_workspace(void)
 {
     Workspace* workspace =
         workspace_create((RectF){ 0.0f, 0.0f, 640.0f, 480.0f }, "gldraw.test.keymap.json");
@@ -235,7 +169,6 @@ static int test_workspace_create_destroy_allocates_opaque_workspace(void)
     EXPECT_INT_EQ(workspace->core.document.count, 0);
     EXPECT_FLOAT_EQ(canvas_view_zoom(&workspace->core.canvas), 1.0f);
     workspace_destroy(workspace);
-    return 0;
 }
 
 static int test_workspace_service_invalid_arguments_are_safe(Workspace* workspace)
@@ -257,41 +190,48 @@ static int test_workspace_service_invalid_arguments_are_safe(Workspace* workspac
     return 0;
 }
 
+static Workspace g_workspace;
+
+static void run_new_document_resets_workspace_state(void)
+{
+    (void)test_new_document_resets_workspace_state(&g_workspace);
+}
+
+static void run_load_document_resets_runtime_state(void)
+{
+    (void)test_load_document_resets_runtime_state(&g_workspace);
+}
+
+static void run_workspace_service_invalid_arguments_are_safe(void)
+{
+    (void)test_workspace_service_invalid_arguments_are_safe(&g_workspace);
+}
+
+void setUp(void) {}
+
+void tearDown(void) {}
+
 int main(void)
 {
-    Workspace workspace;
     int result = 0;
 
     remove(k_temp_document_path);
-    memset(&workspace, 0, sizeof(workspace));
+    memset(&g_workspace, 0, sizeof(g_workspace));
 
     if (!workspace_init(
-            &workspace, (RectF){ 0.0f, 0.0f, 800.0f, 600.0f }, "gldraw.test.keymap.json")) {
+            &g_workspace, (RectF){ 0.0f, 0.0f, 800.0f, 600.0f }, "gldraw.test.keymap.json")) {
         fprintf(stderr, "workspace_init failed\n");
         return 1;
     }
 
-    if (test_new_document_resets_workspace_state(&workspace)) {
-        result = 1;
-        goto cleanup;
-    }
-    if (test_load_document_resets_runtime_state(&workspace)) {
-        result = 1;
-        goto cleanup;
-    }
-    if (test_workspace_create_destroy_allocates_opaque_workspace()) {
-        result = 1;
-        goto cleanup;
-    }
-    if (test_workspace_service_invalid_arguments_are_safe(&workspace)) {
-        result = 1;
-        goto cleanup;
-    }
+    UNITY_BEGIN();
+    RUN_TEST(run_new_document_resets_workspace_state);
+    RUN_TEST(run_load_document_resets_runtime_state);
+    RUN_TEST(test_workspace_create_destroy_allocates_opaque_workspace);
+    RUN_TEST(run_workspace_service_invalid_arguments_are_safe);
+    result = UNITY_END();
 
-    printf("[PASS] workspace service\n");
-
-cleanup:
-    workspace_shutdown(&workspace);
+    workspace_shutdown(&g_workspace);
     remove(k_temp_document_path);
     return result;
 }

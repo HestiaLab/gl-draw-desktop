@@ -19,69 +19,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define EXPECT_TRUE(expr)                                                                          \
-    do {                                                                                           \
-        if (!(expr)) {                                                                             \
-            fprintf(stderr, "EXPECT_TRUE failed: %s:%d: %s\n", __FILE__, __LINE__, #expr);         \
-            return 1;                                                                              \
-        }                                                                                          \
-    } while (0)
-
-#define EXPECT_STR_EQ(actual, expected)                                                            \
-    do {                                                                                           \
-        if (strcmp((actual), (expected)) != 0) {                                                   \
-            fprintf(stderr,                                                                        \
-                    "EXPECT_STR_EQ failed: %s:%d: \"%s\" != \"%s\"\n",                             \
-                    __FILE__,                                                                      \
-                    __LINE__,                                                                      \
-                    (actual),                                                                      \
-                    (expected));                                                                   \
-            return 1;                                                                              \
-        }                                                                                          \
-    } while (0)
-
-#define EXPECT_SUBSTR(actual, expected)                                                            \
-    do {                                                                                           \
-        if (strstr((actual), (expected)) == NULL) {                                                \
-            fprintf(stderr,                                                                        \
-                    "EXPECT_SUBSTR failed: %s:%d: \"%s\" missing \"%s\"\n",                        \
-                    __FILE__,                                                                      \
-                    __LINE__,                                                                      \
-                    (actual),                                                                      \
-                    (expected));                                                                   \
-            return 1;                                                                              \
-        }                                                                                          \
-    } while (0)
-
-#define EXPECT_INT_EQ(actual, expected)                                                            \
-    do {                                                                                           \
-        int actual_value = (actual);                                                               \
-        int expected_value = (expected);                                                           \
-        if (actual_value != expected_value) {                                                      \
-            fprintf(stderr,                                                                        \
-                    "EXPECT_INT_EQ failed: %s:%d: %d != %d\n",                                     \
-                    __FILE__,                                                                      \
-                    __LINE__,                                                                      \
-                    actual_value,                                                                  \
-                    expected_value);                                                               \
-            return 1;                                                                              \
-        }                                                                                          \
-    } while (0)
-
-#define EXPECT_FLOAT_EQ(actual, expected)                                                          \
-    do {                                                                                           \
-        float actual_value = (actual);                                                             \
-        float expected_value = (expected);                                                         \
-        if (fabsf(actual_value - expected_value) > 1e-4f) {                                        \
-            fprintf(stderr,                                                                        \
-                    "EXPECT_FLOAT_EQ failed: %s:%d: %.4f != %.4f\n",                               \
-                    __FILE__,                                                                      \
-                    __LINE__,                                                                      \
-                    actual_value,                                                                  \
-                    expected_value);                                                               \
-            return 1;                                                                              \
-        }                                                                                          \
-    } while (0)
+#include "test_assertions.h"
 
 static GraphicObject* make_rect(float x, float y, float w, float h)
 {
@@ -182,7 +120,7 @@ test_workspace_action_callback(Workspace* workspace, WorkspaceActionType action,
     return 1;
 }
 
-static int test_editor_viewmodel_builds_selection_properties(void)
+static void test_editor_viewmodel_builds_selection_properties(void)
 {
     Workspace workspace;
     EditorViewModel view_model = { 0 };
@@ -261,10 +199,9 @@ static int test_editor_viewmodel_builds_selection_properties(void)
 
     editor_viewmodel_shutdown(&view_model);
     shutdown_workspace(&workspace);
-    return 0;
 }
 
-static int test_command_dispatcher_routes_actions(void)
+static void test_command_dispatcher_routes_actions(void)
 {
     Workspace workspace;
     CommandDispatcher dispatcher;
@@ -353,10 +290,9 @@ static int test_command_dispatcher_routes_actions(void)
     EXPECT_FLOAT_EQ(width, 10.0f);
 
     shutdown_workspace(&workspace);
-    return 0;
 }
 
-static int test_command_dispatcher_updates_save_as_dialog_input(void)
+static void test_command_dispatcher_updates_save_as_dialog_input(void)
 {
     Workspace workspace;
     CommandDispatcher dispatcher;
@@ -373,10 +309,9 @@ static int test_command_dispatcher_updates_save_as_dialog_input(void)
 
     workspace_dialog_close(&workspace);
     shutdown_workspace(&workspace);
-    return 0;
 }
 
-static int test_tool_controller_pointer_anchor_accessors(void)
+static void test_tool_controller_pointer_anchor_accessors(void)
 {
     Workspace workspace;
     Vec2 screen_anchor;
@@ -396,10 +331,9 @@ static int test_tool_controller_pointer_anchor_accessors(void)
     EXPECT_FLOAT_EQ(world_anchor.y, 16.0f);
 
     shutdown_workspace(&workspace);
-    return 0;
 }
 
-static int test_workspace_tool_context_and_preview_accessors(void)
+static void test_workspace_tool_context_and_preview_accessors(void)
 {
     Workspace workspace;
     ToolContext context;
@@ -423,10 +357,9 @@ static int test_workspace_tool_context_and_preview_accessors(void)
     EXPECT_FLOAT_EQ(preview_delta.y, -3.0f);
 
     shutdown_workspace(&workspace);
-    return 0;
 }
 
-static int test_file_commands_route_to_workspace_services(void)
+static void test_file_commands_route_to_workspace_services(void)
 {
     Workspace workspace;
     ToolContext context;
@@ -463,10 +396,9 @@ static int test_file_commands_route_to_workspace_services(void)
 
     workspace_dialog_close(&workspace);
     shutdown_workspace(&workspace);
-    return 0;
 }
 
-static int test_dialog_commands_route_to_workspace_dialogs(void)
+static void test_dialog_commands_route_to_workspace_dialogs(void)
 {
     Workspace workspace;
     ToolContext context;
@@ -513,10 +445,9 @@ static int test_dialog_commands_route_to_workspace_dialogs(void)
     EXPECT_INT_EQ(callbacks.last_action, WORKSPACE_ACTION_NEW_DOCUMENT);
 
     shutdown_workspace(&workspace);
-    return 0;
 }
 
-static int test_editor_controller_builds_tool_events_and_render_scene(void)
+static void test_editor_controller_builds_tool_events_and_render_scene(void)
 {
     Workspace workspace;
     EditorRenderScene scene;
@@ -555,10 +486,9 @@ static int test_editor_controller_builds_tool_events_and_render_scene(void)
     EXPECT_TRUE(editor_controller_canvas(&workspace) == &workspace.core.canvas);
 
     shutdown_workspace(&workspace);
-    return 0;
 }
 
-static int test_locked_layers_block_pick_and_shape_creation(void)
+static void test_locked_layers_block_pick_and_shape_creation(void)
 {
     Workspace workspace;
     ToolContext context;
@@ -597,10 +527,9 @@ static int test_locked_layers_block_pick_and_shape_creation(void)
     EXPECT_INT_EQ(workspace.core.document.count, 1);
 
     shutdown_workspace(&workspace);
-    return 0;
 }
 
-static int test_dynamic_tool_command_activates_tool(void)
+static void test_dynamic_tool_command_activates_tool(void)
 {
     Workspace workspace;
     ToolContext context;
@@ -612,10 +541,9 @@ static int test_dynamic_tool_command_activates_tool(void)
     EXPECT_STR_EQ(tool_controller_active_id(&workspace.core.tools), "rect");
 
     shutdown_workspace(&workspace);
-    return 0;
 }
 
-static int test_command_registry_respects_locked_layers(void)
+static void test_command_registry_respects_locked_layers(void)
 {
     Workspace workspace;
     ToolContext context;
@@ -658,10 +586,9 @@ static int test_command_registry_respects_locked_layers(void)
                   "Active layer is locked.");
 
     shutdown_workspace(&workspace);
-    return 0;
 }
 
-static int test_edit_delete_prunes_locked_selection(void)
+static void test_edit_delete_prunes_locked_selection(void)
 {
     Workspace workspace;
     ToolContext context;
@@ -694,10 +621,9 @@ static int test_edit_delete_prunes_locked_selection(void)
     EXPECT_TRUE(document_find_object(&workspace.core.document, editable_id) != NULL);
 
     shutdown_workspace(&workspace);
-    return 0;
 }
 
-static int test_clipboard_copy_paste_cut_commands(void)
+static void test_clipboard_copy_paste_cut_commands(void)
 {
     Workspace workspace;
     ToolContext context;
@@ -740,10 +666,9 @@ static int test_clipboard_copy_paste_cut_commands(void)
     EXPECT_INT_EQ(workspace.core.document.count, 2);
 
     shutdown_workspace(&workspace);
-    return 0;
 }
 
-static int test_clipboard_cut_prunes_locked_selection(void)
+static void test_clipboard_cut_prunes_locked_selection(void)
 {
     Workspace workspace;
     ToolContext context;
@@ -777,10 +702,9 @@ static int test_clipboard_cut_prunes_locked_selection(void)
     EXPECT_INT_EQ(workspace.core.document.count, 2);
 
     shutdown_workspace(&workspace);
-    return 0;
 }
 
-static int test_view_commands_update_canvas_state(void)
+static void test_view_commands_update_canvas_state(void)
 {
     Workspace workspace;
     ToolContext context;
@@ -809,10 +733,9 @@ static int test_view_commands_update_canvas_state(void)
     EXPECT_FLOAT_EQ(canvas_view_zoom(&workspace.core.canvas), 1.0f);
 
     shutdown_workspace(&workspace);
-    return 0;
 }
 
-static int test_view_zoom_fit_frames_small_document(void)
+static void test_view_zoom_fit_frames_small_document(void)
 {
     Workspace workspace;
     ToolContext context;
@@ -830,46 +753,32 @@ static int test_view_zoom_fit_frames_small_document(void)
     EXPECT_FLOAT_EQ(canvas_view_zoom(&workspace.core.canvas), 12.0f);
 
     shutdown_workspace(&workspace);
-    return 0;
 }
+
+void setUp(void) {}
+
+void tearDown(void) {}
 
 int main(void)
 {
     extension_loader_register_all();
 
-    if (test_editor_viewmodel_builds_selection_properties())
-        return 1;
-    if (test_command_dispatcher_routes_actions())
-        return 1;
-    if (test_file_commands_route_to_workspace_services())
-        return 1;
-    if (test_dialog_commands_route_to_workspace_dialogs())
-        return 1;
-    if (test_command_dispatcher_updates_save_as_dialog_input())
-        return 1;
-    if (test_tool_controller_pointer_anchor_accessors())
-        return 1;
-    if (test_workspace_tool_context_and_preview_accessors())
-        return 1;
-    if (test_editor_controller_builds_tool_events_and_render_scene())
-        return 1;
-    if (test_locked_layers_block_pick_and_shape_creation())
-        return 1;
-    if (test_dynamic_tool_command_activates_tool())
-        return 1;
-    if (test_command_registry_respects_locked_layers())
-        return 1;
-    if (test_edit_delete_prunes_locked_selection())
-        return 1;
-    if (test_clipboard_copy_paste_cut_commands())
-        return 1;
-    if (test_clipboard_cut_prunes_locked_selection())
-        return 1;
-    if (test_view_commands_update_canvas_state())
-        return 1;
-    if (test_view_zoom_fit_frames_small_document())
-        return 1;
-
-    printf("[PASS] editor viewmodel and dispatcher\n");
-    return 0;
+    UNITY_BEGIN();
+    RUN_TEST(test_editor_viewmodel_builds_selection_properties);
+    RUN_TEST(test_command_dispatcher_routes_actions);
+    RUN_TEST(test_file_commands_route_to_workspace_services);
+    RUN_TEST(test_dialog_commands_route_to_workspace_dialogs);
+    RUN_TEST(test_command_dispatcher_updates_save_as_dialog_input);
+    RUN_TEST(test_tool_controller_pointer_anchor_accessors);
+    RUN_TEST(test_workspace_tool_context_and_preview_accessors);
+    RUN_TEST(test_editor_controller_builds_tool_events_and_render_scene);
+    RUN_TEST(test_locked_layers_block_pick_and_shape_creation);
+    RUN_TEST(test_dynamic_tool_command_activates_tool);
+    RUN_TEST(test_command_registry_respects_locked_layers);
+    RUN_TEST(test_edit_delete_prunes_locked_selection);
+    RUN_TEST(test_clipboard_copy_paste_cut_commands);
+    RUN_TEST(test_clipboard_cut_prunes_locked_selection);
+    RUN_TEST(test_view_commands_update_canvas_state);
+    RUN_TEST(test_view_zoom_fit_frames_small_document);
+    return UNITY_END();
 }

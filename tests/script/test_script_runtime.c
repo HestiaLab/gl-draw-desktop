@@ -8,28 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define EXPECT_TRUE(expr)                                                                          \
-    do {                                                                                           \
-        if (!(expr)) {                                                                             \
-            fprintf(stderr, "EXPECT_TRUE failed: %s:%d: %s\n", __FILE__, __LINE__, #expr);         \
-            return 1;                                                                              \
-        }                                                                                          \
-    } while (0)
-
-#define EXPECT_INT_EQ(actual, expected)                                                            \
-    do {                                                                                           \
-        int actual_value = (actual);                                                               \
-        int expected_value = (expected);                                                           \
-        if (actual_value != expected_value) {                                                      \
-            fprintf(stderr,                                                                        \
-                    "EXPECT_INT_EQ failed: %s:%d: %d != %d\n",                                     \
-                    __FILE__,                                                                      \
-                    __LINE__,                                                                      \
-                    actual_value,                                                                  \
-                    expected_value);                                                               \
-            return 1;                                                                              \
-        }                                                                                          \
-    } while (0)
+#include "test_assertions.h"
 
 typedef struct {
     CommandExecutor* executor;
@@ -89,7 +68,7 @@ static int write_script_file(const char* path, const char* source)
     return 1;
 }
 
-static int test_script_runtime_uses_safe_env_and_caches_script(void)
+static void test_script_runtime_uses_safe_env_and_caches_script(void)
 {
     static const char* script_source =
         "local gld = gldraw\n"
@@ -149,14 +128,15 @@ static int test_script_runtime_uses_safe_env_and_caches_script(void)
     command_executor_shutdown(&executor);
     selection_set_shutdown(&selection);
     document_shutdown(&document);
-    return 0;
 }
+
+void setUp(void) {}
+
+void tearDown(void) {}
 
 int main(void)
 {
-    if (test_script_runtime_uses_safe_env_and_caches_script())
-        return 1;
-
-    printf("[PASS] script runtime uses safe env and caches scripts\n");
-    return 0;
+    UNITY_BEGIN();
+    RUN_TEST(test_script_runtime_uses_safe_env_and_caches_script);
+    return UNITY_END();
 }

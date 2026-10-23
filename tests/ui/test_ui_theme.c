@@ -6,56 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define EXPECT_TRUE(expr)                                                                          \
-    do {                                                                                           \
-        if (!(expr)) {                                                                             \
-            fprintf(stderr, "EXPECT_TRUE failed: %s:%d: %s\n", __FILE__, __LINE__, #expr);         \
-            return 1;                                                                              \
-        }                                                                                          \
-    } while (0)
-
-#define EXPECT_INT_EQ(actual, expected)                                                            \
-    do {                                                                                           \
-        int actual_value = (actual);                                                               \
-        int expected_value = (expected);                                                           \
-        if (actual_value != expected_value) {                                                      \
-            fprintf(stderr,                                                                        \
-                    "EXPECT_INT_EQ failed: %s:%d: %d != %d\n",                                     \
-                    __FILE__,                                                                      \
-                    __LINE__,                                                                      \
-                    actual_value,                                                                  \
-                    expected_value);                                                               \
-            return 1;                                                                              \
-        }                                                                                          \
-    } while (0)
-
-#define EXPECT_FLOAT_EQ(actual, expected)                                                          \
-    do {                                                                                           \
-        float actual_value = (actual);                                                             \
-        float expected_value = (expected);                                                         \
-        if (actual_value < expected_value - 0.0001f || actual_value > expected_value + 0.0001f) {  \
-            fprintf(stderr,                                                                        \
-                    "EXPECT_FLOAT_EQ failed: %s:%d: %.4f != %.4f\n",                               \
-                    __FILE__,                                                                      \
-                    __LINE__,                                                                      \
-                    actual_value,                                                                  \
-                    expected_value);                                                               \
-            return 1;                                                                              \
-        }                                                                                          \
-    } while (0)
-
-#define EXPECT_STR_EQ(actual, expected)                                                            \
-    do {                                                                                           \
-        if (strcmp((actual), (expected)) != 0) {                                                   \
-            fprintf(stderr,                                                                        \
-                    "EXPECT_STR_EQ failed: %s:%d: \"%s\" != \"%s\"\n",                             \
-                    __FILE__,                                                                      \
-                    __LINE__,                                                                      \
-                    (actual),                                                                      \
-                    (expected));                                                                   \
-            return 1;                                                                              \
-        }                                                                                          \
-    } while (0)
+#include "test_assertions.h"
 
 static int write_text_file(const char* path, const char* text)
 {
@@ -97,7 +48,7 @@ static int color_equals(
     return color.r == r && color.g == g && color.b == b && color.a == a;
 }
 
-static int test_builtin_theme_lookup_and_fallback(void)
+static void test_builtin_theme_lookup_and_fallback(void)
 {
     UiThemeTokens default_tokens = ui_theme_default_tokens();
     UiThemeTokens fallback_tokens = ui_theme_tokens_for_id("missing-theme");
@@ -126,10 +77,9 @@ static int test_builtin_theme_lookup_and_fallback(void)
                              default_tokens.primary.b,
                              default_tokens.primary.a));
     EXPECT_FLOAT_EQ(fallback_tokens.row_height, default_tokens.row_height);
-    return 0;
 }
 
-static int test_json_scalar_values_require_delimiters(void)
+static void test_json_scalar_values_require_delimiters(void)
 {
     float number_value = 0.0f;
     int bool_value = -1;
@@ -166,11 +116,9 @@ static int test_json_scalar_values_require_delimiters(void)
     EXPECT_TRUE(!ui_extract_json_bool_value(
         "{ \"enable_transitions\": false0 }", "enable_transitions", &bool_value));
     EXPECT_INT_EQ(bool_value, -1);
-
-    return 0;
 }
 
-static int test_external_theme_load_error_and_clamp_behavior(void)
+static void test_external_theme_load_error_and_clamp_behavior(void)
 {
     UiThemeTokens tokens;
     char directory[TEST_TEMP_PATH_MAX];
@@ -219,10 +167,9 @@ static int test_external_theme_load_error_and_clamp_behavior(void)
     EXPECT_TRUE(ui_theme_index_of_id("test-clamped-theme") >= base_count);
 
     cleanup_theme_test_files(directory);
-    return 0;
 }
 
-static int test_selected_theme_id_load_save(void)
+static void test_selected_theme_id_load_save(void)
 {
     char loaded_theme_id[64];
     char directory[TEST_TEMP_PATH_MAX];
@@ -240,20 +187,18 @@ static int test_selected_theme_id_load_save(void)
     EXPECT_STR_EQ(loaded_theme_id, "gldraw-high-contrast");
 
     cleanup_theme_test_files(directory);
-    return 0;
 }
+
+void setUp(void) {}
+
+void tearDown(void) {}
 
 int main(void)
 {
-    if (test_builtin_theme_lookup_and_fallback())
-        return 1;
-    if (test_json_scalar_values_require_delimiters())
-        return 1;
-    if (test_external_theme_load_error_and_clamp_behavior())
-        return 1;
-    if (test_selected_theme_id_load_save())
-        return 1;
-
-    printf("[PASS] ui theme\n");
-    return 0;
+    UNITY_BEGIN();
+    RUN_TEST(test_builtin_theme_lookup_and_fallback);
+    RUN_TEST(test_json_scalar_values_require_delimiters);
+    RUN_TEST(test_external_theme_load_error_and_clamp_behavior);
+    RUN_TEST(test_selected_theme_id_load_save);
+    return UNITY_END();
 }

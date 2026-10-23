@@ -1,3 +1,9 @@
+set(GLDRAWDESKTOP_UNITY_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/tests/vendor/unity/unity.c
+)
+
+set(GLDRAWDESKTOP_TEST_TARGETS "")
+
 function(gldrawdesktop_add_test target)
     cmake_parse_arguments(GLDRAWDESKTOP_TEST
         ""
@@ -12,12 +18,15 @@ function(gldrawdesktop_add_test target)
 
     add_executable(${target}
         ${GLDRAWDESKTOP_TEST_SOURCES}
+        ${GLDRAWDESKTOP_UNITY_SOURCES}
     )
 
     target_include_directories(${target}
         PRIVATE
             ${CMAKE_CURRENT_SOURCE_DIR}/include
             ${GLDRAWDESKTOP_GENERATED_INCLUDE_DIR}
+            ${CMAKE_CURRENT_SOURCE_DIR}/tests/support
+            ${CMAKE_CURRENT_SOURCE_DIR}/tests/vendor/unity
     )
 
     target_link_libraries(${target} PRIVATE
@@ -37,6 +46,7 @@ function(gldrawdesktop_add_test target)
     )
 
     add_test(NAME ${target} COMMAND $<TARGET_FILE:${target}>)
+    set_tests_properties(${target} PROPERTIES LABELS "unit")
     list(APPEND GLDRAWDESKTOP_TEST_TARGETS ${target})
     set(GLDRAWDESKTOP_TEST_TARGETS "${GLDRAWDESKTOP_TEST_TARGETS}" PARENT_SCOPE)
 endfunction()
@@ -157,6 +167,56 @@ gldrawdesktop_add_test(gldraw_workspace_service_tests
     LIBS
         editor_runtime
 )
+
+# 架构门禁：include/ 中的每个公共函数声明都必须在 src/ 中有定义。
+# 下限取实测基线的 80%（2026-10-23：435 个声明 / 908 个定义）。
+find_package(Python3 COMPONENTS Interpreter)
+if(Python3_Interpreter_FOUND)
+    add_test(NAME gldrawdesktop_decl_def_check
+        COMMAND ${Python3_EXECUTABLE}
+            ${CMAKE_CURRENT_SOURCE_DIR}/scripts/check_decl_def.py
+            ${CMAKE_CURRENT_SOURCE_DIR}
+            --min-declarations 348
+            --min-definitions 726)
+    set_tests_properties(gldrawdesktop_decl_def_check PROPERTIES LABELS "architecture")
+else()
+    message(FATAL_ERROR
+        "未找到 Python3 解释器，但 GLDRAWDESKTOP_BUILD_TESTING 为 ON，"
+        "架构门禁需要它。请安装 Python 3，或使用 "
+        "-DGLDRAWDESKTOP_BUILD_TESTING=OFF 关闭测试。")
+endif()
+
+# 门禁自检：确认质量门禁脚本确实能够失败。
+add_test(NAME gldrawdesktop_gate_behaviors
+    COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/scripts/tests/test_gate_behaviors.py)
+set_tests_properties(gldrawdesktop_gate_behaviors PROPERTIES LABELS "architecture")
+
+# 版本门禁：CMake project VERSION、生成头文件、CHANGELOG 与 --version 输出一致。
+set(GLDRAWDESKTOP_VERSION_GATE_ARGS
+    ${CMAKE_CURRENT_SOURCE_DIR}/scripts/check_version_consistency.py
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    --build-dir ${CMAKE_BINARY_DIR}
+)
+if(TARGET gldrawdesktop)
+    list(APPEND GLDRAWDESKTOP_VERSION_GATE_ARGS --exe $<TARGET_FILE:gldrawdesktop>)
+endif()
+add_test(NAME gldrawdesktop_version_consistency
+    COMMAND ${Python3_EXECUTABLE} ${GLDRAWDESKTOP_VERSION_GATE_ARGS}
+)
+set_tests_properties(gldrawdesktop_version_consistency PROPERTIES LABELS "architecture")
+if(TARGET gldrawdesktop)
+    set_tests_properties(gldrawdesktop_version_consistency PROPERTIES DEPENDS gldrawdesktop)
+endif()
+
+if(GLDRAWDESKTOP_INSTALL)
+    add_test(NAME gldrawdesktop_cpack_config
+        COMMAND ${Python3_EXECUTABLE}
+            ${CMAKE_CURRENT_SOURCE_DIR}/scripts/check-cpack-config.py
+            ${CMAKE_CURRENT_BINARY_DIR}/CPackConfig.cmake
+    )
+    set_tests_properties(gldrawdesktop_cpack_config PROPERTIES LABELS "architecture")
+endif()
 
 add_custom_target(gldrawdesktop_tests
     DEPENDS
