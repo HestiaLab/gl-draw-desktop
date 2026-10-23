@@ -5,7 +5,6 @@ on:
     branches: [main, master]
     paths:
       - '.github/workflows/release.yml'
-      - '.github/workflows/legacy-release.yml'
       - 'packaging/**'
       - 'tools/package_*.ps1'
       - 'tools/package_*.sh'
@@ -20,6 +19,7 @@ permissions:
 jobs:
   package:
     strategy:
+      fail-fast: false
       matrix:
         include:
           - os: windows-latest
@@ -31,47 +31,55 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Cache GLFW source
-        uses: actions/cache@v4
-        with:
-          path: build/Release/_deps
-          key: ${{ runner.os }}-release-smoke-glfw-3.3.9-${{ hashFiles('CMakeLists.txt') }}
+        uses: actions/checkout@v7
 
       - name: Install dependencies (Linux)
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential cmake curl libgl1-mesa-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
+          sudo apt-get install -y build-essential cmake curl ninja-build libgl1-mesa-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
+
+      - name: Set up Ninja
+        uses: seanmiddleditch/gha-setup-ninja@v6
+
+      - name: Set up MSVC
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Configure
+        run: cmake --preset ninja-release
+
+      - name: Build
+        run: cmake --build --preset ninja-release
 
       - name: Package Windows portable
         if: runner.os == 'Windows'
         shell: pwsh
-        run: .\release.bat -Version 0.0.0 -Platform "${{ matrix.platform }}"
+        run: ./tools/package_release.ps1 -Version 0.0.0 -Platform "${{ matrix.platform }}" -SkipBuild
 
       - name: Package Windows installer
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
           choco install innosetup --no-progress -y
-          pwsh -NoProfile -ExecutionPolicy Bypass -File tools/package_windows_installer.ps1 -Version 0.0.0 -Platform "${{ matrix.platform }}"
+          ./tools/package_windows_installer.ps1 -Version 0.0.0 -Platform "${{ matrix.platform }}"
 
       - name: Validate Windows assets
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          $zip = "dist/GLDraw-v0.0.0-${{ matrix.platform }}.zip"
-          $setup = "dist/GLDraw-v0.0.0-${{ matrix.platform }}-setup.exe"
+          $zip = "dist/gl-draw-desktop-v0.0.0-${{ matrix.platform }}.zip"
+          $setup = "dist/gl-draw-desktop-v0.0.0-${{ matrix.platform }}-setup.exe"
           if (-not (Test-Path $zip)) { throw "Missing $zip" }
           if (-not (Test-Path $setup)) { throw "Missing $setup" }
           Add-Type -AssemblyName System.IO.Compression.FileSystem
           $entries = [IO.Compression.ZipFile]::OpenRead($zip).Entries.FullName
           foreach ($required in @(
-            "GLDraw-v0.0.0-${{ matrix.platform }}/bin/GLDraw.exe",
-            "GLDraw-v0.0.0-${{ matrix.platform }}/share/gldraw/shaders/basic.vert",
-            "GLDraw-v0.0.0-${{ matrix.platform }}/share/gldraw/shaders/basic.frag",
-            "GLDraw-v0.0.0-${{ matrix.platform }}/share/gldraw/themes/oceanic.json"
+            "gl-draw-desktop-v0.0.0-${{ matrix.platform }}/bin/gl-draw-desktop.exe",
+            "gl-draw-desktop-v0.0.0-${{ matrix.platform }}/share/gldrawdesktop/shaders/basic.vert",
+            "gl-draw-desktop-v0.0.0-${{ matrix.platform }}/share/gldrawdesktop/shaders/basic.frag",
+            "gl-draw-desktop-v0.0.0-${{ matrix.platform }}/share/gldrawdesktop/themes/oceanic.json",
+            "gl-draw-desktop-v0.0.0-${{ matrix.platform }}/share/gldrawdesktop/fonts/NotoSansSC-Regular.ttf"
           )) {
             if ($entries -notcontains $required) { throw "Missing zip entry $required" }
           }
@@ -79,7 +87,7 @@ jobs:
       - name: Package Linux portable
         if: runner.os == 'Linux'
         shell: bash
-        run: bash ./release.sh --version 0.0.0 --platform "${{ matrix.platform }}"
+        run: bash ./tools/package_release.sh --version 0.0.0 --platform "${{ matrix.platform }}" --skip-build
 
       - name: Package Linux AppImage
         if: runner.os == 'Linux'
@@ -90,21 +98,22 @@ jobs:
         if: runner.os == 'Linux'
         shell: bash
         run: |
-          tarball="dist/GLDraw-v0.0.0-${{ matrix.platform }}.tar.gz"
-          appimage="dist/GLDraw-v0.0.0-${{ matrix.platform }}.AppImage"
+          tarball="dist/gl-draw-desktop-v0.0.0-${{ matrix.platform }}.tar.gz"
+          appimage="dist/gl-draw-desktop-v0.0.0-${{ matrix.platform }}.AppImage"
           test -f "$tarball"
           test -f "$appimage"
-          tar -tzf "$tarball" | grep -F "GLDraw-v0.0.0-${{ matrix.platform }}/bin/GLDraw"
-          tar -tzf "$tarball" | grep -F "GLDraw-v0.0.0-${{ matrix.platform }}/share/gldraw/shaders/basic.vert"
-          tar -tzf "$tarball" | grep -F "GLDraw-v0.0.0-${{ matrix.platform }}/share/gldraw/themes/oceanic.json"
+          tar -tzf "$tarball" | grep -F "gl-draw-desktop-v0.0.0-${{ matrix.platform }}/bin/gl-draw-desktop"
+          tar -tzf "$tarball" | grep -F "share/gldrawdesktop/shaders/basic.vert"
+          tar -tzf "$tarball" | grep -F "share/gldrawdesktop/themes/oceanic.json"
+          tar -tzf "$tarball" | grep -F "share/gldrawdesktop/fonts/NotoSansSC-Regular.ttf"
 
       - name: Upload smoke artifacts
         uses: actions/upload-artifact@v4
         with:
           name: release-smoke-${{ matrix.platform }}
           path: |
-            dist/GLDraw-v0.0.0-*.zip
-            dist/GLDraw-v0.0.0-*.tar.gz
-            dist/GLDraw-v0.0.0-*.exe
-            dist/GLDraw-v0.0.0-*.AppImage
+            dist/gl-draw-desktop-v0.0.0-*.zip
+            dist/gl-draw-desktop-v0.0.0-*.tar.gz
+            dist/gl-draw-desktop-v0.0.0-*.exe
+            dist/gl-draw-desktop-v0.0.0-*.AppImage
           if-no-files-found: error

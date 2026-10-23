@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
-  - name: GLDraw Documentation
-    url: https://github.com/wubing7755/GLDraw/blob/main/docs/README.md
-    about: Read the local build, run, and controls documentation before opening new work.
-  - name: GLDraw Architecture Guide
-    url: https://zread.ai/wubing7755/GLDraw
-    about: Review the architecture, data flow, and source navigation guide before filing design or implementation issues.
+  - name: GL Draw Desktop 文档
+    url: https://github.com/HestiaLab/gl-draw-desktop/blob/main/README.md
+    about: 提交新工作前先阅读本地构建、运行与操作文档。
+  - name: GL Draw Desktop 架构指南
+    url: https://zread.ai/HestiaLab/gl-draw-desktop
+    about: 提交设计或实现问题前，先查看架构、数据流与源码导航指南。

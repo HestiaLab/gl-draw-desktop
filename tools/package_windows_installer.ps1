@@ -14,7 +14,7 @@ Set-Location $RepoRoot
 
 function Get-ProjectVersion {
     $cmakeText = Get-Content "CMakeLists.txt" -Raw
-    $match = [regex]::Match($cmakeText, "project\s*\(\s*GLDraw[\s\S]*?VERSION\s+([0-9A-Za-z._-]+)")
+    $match = [regex]::Match($cmakeText, "project\s*\(\s*GlDrawDesktop[\s\S]*?VERSION\s+([0-9A-Za-z._-]+)")
     if (-not $match.Success) {
         throw "Could not find project version in CMakeLists.txt."
     }
@@ -28,7 +28,7 @@ if ([string]::IsNullOrWhiteSpace($Version)) {
 $DistDir = [System.IO.Path]::GetFullPath((Join-Path $RepoRoot $DistDir))
 
 if ([string]::IsNullOrWhiteSpace($SourceDir)) {
-    $SourceDir = Join-Path $DistDir "stage/GLDraw-v$Version-$Platform"
+    $SourceDir = Join-Path $DistDir "stage/gl-draw-desktop-v$Version-$Platform"
 }
 
 if ([string]::IsNullOrWhiteSpace($OutputDir)) {
@@ -36,15 +36,15 @@ if ([string]::IsNullOrWhiteSpace($OutputDir)) {
 }
 
 if ([string]::IsNullOrWhiteSpace($OutputBaseFilename)) {
-    $OutputBaseFilename = "GLDraw-v$Version-$Platform-setup"
+    $OutputBaseFilename = "gl-draw-desktop-v$Version-$Platform-setup"
 }
 
 $SourceDir = [System.IO.Path]::GetFullPath($SourceDir)
 $OutputDir = [System.IO.Path]::GetFullPath($OutputDir)
-$SetupScript = Join-Path $RepoRoot "packaging/windows/GLDraw.iss"
+$SetupScript = Join-Path $RepoRoot "packaging/windows/gl-draw-desktop.iss"
 
-if (-not (Test-Path (Join-Path $SourceDir "bin/GLDraw.exe"))) {
-    throw "Missing staged GLDraw executable under $SourceDir."
+if (-not (Test-Path (Join-Path $SourceDir "bin/gl-draw-desktop.exe"))) {
+    throw "Missing staged gl-draw-desktop executable under $SourceDir."
 }
 
 if (-not (Test-Path $OutputDir)) {

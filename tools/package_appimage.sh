@@ -41,35 +41,38 @@ if [[ -z "$VERSION" ]]; then
 fi
 
 DIST_DIR="$(mkdir -p "$DIST_DIR" && cd "$DIST_DIR" && pwd)"
-PACKAGE_NAME="GLDraw-v$VERSION-$PLATFORM"
+PACKAGE_NAME="gl-draw-desktop-v$VERSION-$PLATFORM"
 
 if [[ -z "$STAGE_DIR" ]]; then
     STAGE_DIR="$DIST_DIR/stage/$PACKAGE_NAME"
 fi
 
-if [[ ! -x "$STAGE_DIR/bin/GLDraw" ]]; then
-    echo "Missing staged GLDraw executable: $STAGE_DIR/bin/GLDraw" >&2
+if [[ ! -x "$STAGE_DIR/bin/gl-draw-desktop" ]]; then
+    echo "Missing staged gl-draw-desktop executable: $STAGE_DIR/bin/gl-draw-desktop" >&2
     exit 1
 fi
 
 APPDIR="$DIST_DIR/appimage/$PACKAGE_NAME.AppDir"
 rm -rf "$APPDIR"
-mkdir -p "$APPDIR/usr/bin" "$APPDIR/usr/share/gldraw" "$APPDIR/usr/share/applications" "$APPDIR/usr/share/icons/hicolor/scalable/apps"
+mkdir -p "$APPDIR/usr/bin" "$APPDIR/usr/share/gldrawdesktop" "$APPDIR/usr/share/applications" "$APPDIR/usr/share/icons/hicolor/scalable/apps"
 
-cp "$STAGE_DIR/bin/GLDraw" "$APPDIR/usr/bin/GLDraw"
-if [[ -d "$STAGE_DIR/share/gldraw" ]]; then
-    cp -R "$STAGE_DIR/share/gldraw/." "$APPDIR/usr/share/gldraw/"
+cp "$STAGE_DIR/bin/gl-draw-desktop" "$APPDIR/usr/bin/gl-draw-desktop"
+if [[ -d "$STAGE_DIR/share/gldrawdesktop" ]]; then
+    cp -R "$STAGE_DIR/share/gldrawdesktop/." "$APPDIR/usr/share/gldrawdesktop/"
 fi
 for dir in shaders themes scripts; do
     if [[ -d "$STAGE_DIR/bin/$dir" ]]; then
         cp -R "$STAGE_DIR/bin/$dir" "$APPDIR/usr/bin/"
     fi
 done
+if [[ -d "$STAGE_DIR/share/gldrawdesktop/fonts" ]]; then
+    cp -R "$STAGE_DIR/share/gldrawdesktop/fonts" "$APPDIR/usr/bin/fonts"
+fi
 
-cp "packaging/linux/GLDraw.desktop" "$APPDIR/usr/share/applications/GLDraw.desktop"
-cp "packaging/linux/gldraw.svg" "$APPDIR/usr/share/icons/hicolor/scalable/apps/gldraw.svg"
-cp "packaging/linux/GLDraw.desktop" "$APPDIR/GLDraw.desktop"
-cp "packaging/linux/gldraw.svg" "$APPDIR/gldraw.svg"
+cp "packaging/linux/gl-draw-desktop.desktop" "$APPDIR/usr/share/applications/gl-draw-desktop.desktop"
+cp "packaging/linux/gl-draw-desktop.svg" "$APPDIR/usr/share/icons/hicolor/scalable/apps/gl-draw-desktop.svg"
+cp "packaging/linux/gl-draw-desktop.desktop" "$APPDIR/gl-draw-desktop.desktop"
+cp "packaging/linux/gl-draw-desktop.svg" "$APPDIR/gl-draw-desktop.svg"
 
 LINUXDEPLOY="$DIST_DIR/linuxdeploy-x86_64.AppImage"
 if [[ ! -x "$LINUXDEPLOY" ]]; then
@@ -78,7 +81,7 @@ if [[ ! -x "$LINUXDEPLOY" ]]; then
 fi
 
 APPIMAGE_EXTRACT_AND_RUN=1 "$LINUXDEPLOY" --appdir "$APPDIR" --output appimage
-mv "GLDraw-"*.AppImage "$DIST_DIR/$PACKAGE_NAME.AppImage"
+mv "gl-draw-desktop"*.AppImage "$DIST_DIR/$PACKAGE_NAME.AppImage"
 
 echo ""
 echo "AppImage created:"

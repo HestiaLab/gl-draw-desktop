@@ -91,7 +91,7 @@ set(EDITOR_RUNTIME_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/input/input_router.c
 )
 
-if(GLDRAW_ENABLE_SCRIPTING)
+if(GLDRAWDESKTOP_ENABLE_SCRIPTING)
     list(APPEND EDITOR_TOOLS_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/src/script/script_runtime_lua.c
         ${CMAKE_CURRENT_SOURCE_DIR}/src/tools/script_tool_lua.c
@@ -127,6 +127,8 @@ set(UI_NUKLEAR_GLFW_SOURCES
 )
 
 set(EDITOR_APP_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/gldrawdesktop/app.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/gldrawdesktop/version.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/app/application.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/app/application_callbacks.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/app/application_dialog_actions.c

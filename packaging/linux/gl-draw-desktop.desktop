@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=GL Draw Desktop
+Comment=基于 OpenGL 的画布绘图编辑器
+Exec=gl-draw-desktop
+Icon=gl-draw-desktop
+Terminal=false
+Categories=Graphics;2DGraphics;RasterGraphics;

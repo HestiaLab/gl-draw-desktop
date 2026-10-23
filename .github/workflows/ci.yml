@@ -2,92 +2,289 @@ name: CI
 
 on:
   push:
-    branches: [main, master, 'fix/**']
+    branches: [main, master]
   pull_request:
     branches: [main, master]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
-        build_type: [Debug, Release]
-
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        preset: [ninja-debug, ninja-release]
+        include:
+          - os: ubuntu-latest
+            preset: ninja-debug
+            compiler: clang
     runs-on: ${{ matrix.os }}
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-    - name: Cache GLFW source
-      uses: actions/cache@v4
-      with:
-        path: build/**/_deps
-        key: ${{ runner.os }}-glfw-3.3.9-${{ hashFiles('CMakeLists.txt') }}
+      - name: Cache apt packages
+        if: runner.os == 'Linux'
+        uses: actions/cache@v4
+        with:
+          path: .cache/apt/archives/*.deb
+          key: apt-${{ runner.os }}-v2
+          restore-keys: apt-${{ runner.os }}-
 
-    - name: Install dependencies (Linux)
-      if: runner.os == 'Linux'
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y build-essential cmake libgl1-mesa-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          mkdir -p .cache/apt/archives/partial
+          sudo apt-get update
+          sudo apt-get -o Dir::Cache::archives="$PWD/.cache/apt/archives" install -y \
+            build-essential \
+            cmake \
+            ninja-build \
+            libgl1-mesa-dev \
+            libxrandr-dev \
+            libxinerama-dev \
+            libxcursor-dev \
+            libxi-dev
 
-    - name: Install dependencies (macOS)
-      if: runner.os == 'macOS'
-      run: brew install cmake
+      - name: Set up Ninja
+        uses: seanmiddleditch/gha-setup-ninja@v6
 
-    - name: Configure CMake
-      shell: bash
-      run: |
-        preset="$(echo "${{ matrix.build_type }}" | tr '[:upper:]' '[:lower:]')"
-        if [ "${{ matrix.os }}" = "windows-latest" ]; then
-          preset="mingw-$preset"
-        fi
-        echo "GLDRAW_CMAKE_PRESET=$preset" >> "$GITHUB_ENV"
-        cmake --preset "$preset"
+      - name: Set up MSVC
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
 
-    - name: Build
-      shell: bash
-      run: cmake --build --preset "$GLDRAW_CMAKE_PRESET" --parallel
+      - name: Set up Clang
+        if: matrix.compiler == 'clang'
+        run: |
+          echo "CC=clang" >> "$GITHUB_ENV"
+          echo "CXX=clang++" >> "$GITHUB_ENV"
 
-    - name: Test
-      shell: bash
-      run: ctest --preset "$GLDRAW_CMAKE_PRESET" --output-on-failure
+      - name: Cache GLFW source
+        id: glfw-cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/glfw
+          key: glfw-3.3.9-${{ hashFiles('cmake/Dependencies.cmake') }}
+
+      - name: Fetch GLFW source on cache miss
+        if: steps.glfw-cache.outputs.cache-hit != 'true'
+        run: git clone --depth 1 --branch 3.3.9 https://github.com/glfw/glfw.git .cache/glfw
+
+      - name: Configure
+        run: >
+          cmake --preset ${{ matrix.preset }}
+          -DFETCHCONTENT_SOURCE_DIR_GLFW="${{ github.workspace }}/.cache/glfw"
+
+      - name: Build
+        run: cmake --build --preset ${{ matrix.preset }}
+
+      - name: Test
+        run: ctest --preset ${{ matrix.preset }} --output-on-failure
 
   sanitize:
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
-
     runs-on: ${{ matrix.os }}
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-    - name: Cache GLFW source
-      uses: actions/cache@v4
-      with:
-        path: build/**/_deps
-        key: ${{ runner.os }}-glfw-3.3.9-${{ hashFiles('CMakeLists.txt') }}
+      - name: Cache apt packages
+        if: runner.os == 'Linux'
+        uses: actions/cache@v4
+        with:
+          path: .cache/apt/archives/*.deb
+          key: apt-${{ runner.os }}-v2
+          restore-keys: apt-${{ runner.os }}-
 
-    - name: Install dependencies (Linux)
-      if: runner.os == 'Linux'
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y build-essential cmake libgl1-mesa-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          mkdir -p .cache/apt/archives/partial
+          sudo apt-get update
+          sudo apt-get -o Dir::Cache::archives="$PWD/.cache/apt/archives" install -y \
+            build-essential \
+            cmake \
+            ninja-build \
+            libgl1-mesa-dev \
+            libxrandr-dev \
+            libxinerama-dev \
+            libxcursor-dev \
+            libxi-dev
 
-    - name: Install dependencies (macOS)
-      if: runner.os == 'macOS'
-      run: brew install cmake
+      - name: Set up Ninja
+        uses: seanmiddleditch/gha-setup-ninja@v6
 
-    - name: Configure with ASan
-      shell: bash
-      run: cmake --preset asan
+      - name: Cache GLFW source
+        id: glfw-cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/glfw
+          key: glfw-3.3.9-${{ hashFiles('cmake/Dependencies.cmake') }}
 
-    - name: Build with ASan
-      shell: bash
-      run: cmake --build --preset asan --parallel
+      - name: Fetch GLFW source on cache miss
+        if: steps.glfw-cache.outputs.cache-hit != 'true'
+        run: git clone --depth 1 --branch 3.3.9 https://github.com/glfw/glfw.git .cache/glfw
 
-    - name: Test with ASan
-      shell: bash
-      run: ctest --preset asan --output-on-failure
+      - name: Configure
+        run: >
+          cmake --preset ninja-asan
+          -DFETCHCONTENT_SOURCE_DIR_GLFW="${{ github.workspace }}/.cache/glfw"
+
+      - name: Build
+        run: cmake --build --preset ninja-asan
+
+      - name: Test
+        run: ctest --preset ninja-asan --output-on-failure
+
+  coverage:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Cache apt packages
+        if: runner.os == 'Linux'
+        uses: actions/cache@v4
+        with:
+          path: .cache/apt/archives/*.deb
+          key: apt-${{ runner.os }}-v2
+          restore-keys: apt-${{ runner.os }}-
+
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          mkdir -p .cache/apt/archives/partial
+          sudo apt-get update
+          sudo apt-get -o Dir::Cache::archives="$PWD/.cache/apt/archives" install -y \
+            build-essential \
+            cmake \
+            ninja-build \
+            libgl1-mesa-dev \
+            libxrandr-dev \
+            libxinerama-dev \
+            libxcursor-dev \
+            libxi-dev
+
+      - name: Set up Ninja
+        uses: seanmiddleditch/gha-setup-ninja@v6
+
+      - name: Cache GLFW source
+        id: glfw-cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/glfw
+          key: glfw-3.3.9-${{ hashFiles('cmake/Dependencies.cmake') }}
+
+      - name: Fetch GLFW source on cache miss
+        if: steps.glfw-cache.outputs.cache-hit != 'true'
+        run: git clone --depth 1 --branch 3.3.9 https://github.com/glfw/glfw.git .cache/glfw
+
+      - name: Configure
+        run: >
+          cmake --preset ninja-coverage
+          -DFETCHCONTENT_SOURCE_DIR_GLFW="${{ github.workspace }}/.cache/glfw"
+
+      - name: Build
+        run: cmake --build --preset ninja-coverage
+
+      - name: Test
+        run: ctest --preset ninja-coverage --output-on-failure
+
+  install-smoke:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Cache apt packages
+        if: runner.os == 'Linux'
+        uses: actions/cache@v4
+        with:
+          path: .cache/apt/archives/*.deb
+          key: apt-${{ runner.os }}-v2
+          restore-keys: apt-${{ runner.os }}-
+
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          mkdir -p .cache/apt/archives/partial
+          sudo apt-get update
+          sudo apt-get -o Dir::Cache::archives="$PWD/.cache/apt/archives" install -y \
+            build-essential \
+            cmake \
+            ninja-build \
+            libgl1-mesa-dev \
+            libxrandr-dev \
+            libxinerama-dev \
+            libxcursor-dev \
+            libxi-dev
+
+      - name: Set up Ninja
+        uses: seanmiddleditch/gha-setup-ninja@v6
+
+      - name: Set up MSVC
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Cache GLFW source
+        id: glfw-cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/glfw
+          key: glfw-3.3.9-${{ hashFiles('cmake/Dependencies.cmake') }}
+
+      - name: Fetch GLFW source on cache miss
+        if: steps.glfw-cache.outputs.cache-hit != 'true'
+        run: git clone --depth 1 --branch 3.3.9 https://github.com/glfw/glfw.git .cache/glfw
+
+      - name: Configure release build
+        run: >
+          cmake --preset ninja-release
+          -DFETCHCONTENT_SOURCE_DIR_GLFW="${{ github.workspace }}/.cache/glfw"
+
+      - name: Build release
+        run: cmake --build --preset ninja-release
+
+      - name: Install
+        run: cmake --install build/ninja-release --config Release --prefix install
+
+      - name: Verify install payload
+        shell: bash
+        run: |
+          set -eu
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            test -f install/bin/gl-draw-desktop.exe
+          else
+            test -x install/bin/gl-draw-desktop
+          fi
+          test -f install/share/gldrawdesktop/fonts/NotoSansSC-Regular.ttf
+          test -f install/share/gldrawdesktop/fonts/OFL.txt
+          test -f install/share/doc/GlDrawDesktop/README.md
+
+      - name: Smoke run version flag
+        shell: bash
+        run: |
+          set -eu
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            ./install/bin/gl-draw-desktop.exe --version
+          else
+            ./install/bin/gl-draw-desktop --version
+          fi

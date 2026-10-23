@@ -33,7 +33,7 @@ PlatformFileDialogResult platform_file_dialog_open_document(char* out_path,
 
         dialog.lStructSize = sizeof(dialog);
         dialog.hwndOwner = NULL;
-        dialog.lpstrFilter = "GLDraw Documents (*.json)\0*.json\0All Files (*.*)\0*.*\0";
+        dialog.lpstrFilter = "GL Draw Desktop 文档 (*.json)\0*.json\0所有文件 (*.*)\0*.*\0";
         dialog.lpstrFile = path_buffer;
         dialog.nMaxFile = sizeof(path_buffer);
         dialog.lpstrDefExt = "json";

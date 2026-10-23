@@ -1,7 +1,7 @@
 param(
     [string]$Version = "",
-    [string]$Generator = "MinGW Makefiles",
-    [string]$BuildDir = "build/Release",
+    [string]$Generator = "Ninja",
+    [string]$BuildDir = "build/ninja-release",
     [string]$DistDir = "dist",
     [string]$Platform = "",
     [switch]$SkipBuild,
@@ -15,7 +15,7 @@ Set-Location $RepoRoot
 
 function Get-ProjectVersion {
     $cmakeText = Get-Content "CMakeLists.txt" -Raw
-    $match = [regex]::Match($cmakeText, "project\s*\(\s*GLDraw[\s\S]*?VERSION\s+([0-9A-Za-z._-]+)")
+    $match = [regex]::Match($cmakeText, "project\s*\(\s*GlDrawDesktop[\s\S]*?VERSION\s+([0-9A-Za-z._-]+)")
     if (-not $match.Success) {
         throw "Could not find project version in CMakeLists.txt."
     }
@@ -119,7 +119,7 @@ if ([string]::IsNullOrWhiteSpace($Platform)) {
 $BuildDir = [System.IO.Path]::GetFullPath((Join-Path $RepoRoot $BuildDir))
 $DistDir = [System.IO.Path]::GetFullPath((Join-Path $RepoRoot $DistDir))
 $StageRoot = Join-Path $DistDir "stage"
-$PackageName = "GLDraw-v$Version-$Platform"
+$PackageName = "gl-draw-desktop-v$Version-$Platform"
 $PackageRoot = Join-Path $StageRoot $PackageName
 $ArchivePath = Join-Path $DistDir "$PackageName.zip"
 
@@ -140,13 +140,12 @@ New-Item -ItemType Directory -Path $PackageRoot | Out-Null
 cmake --install $BuildDir --prefix $PackageRoot
 if ($LASTEXITCODE -ne 0) { throw "CMake install failed." }
 
-Copy-IfExists "LICENSE.txt" $PackageRoot
+Copy-IfExists "LICENSE" $PackageRoot
 Copy-IfExists "README.md" $PackageRoot
-Copy-IfExists "README.zh-CN.md" $PackageRoot
-Copy-IfExists "doc/build.md" $PackageRoot
-Copy-IfExists "doc/controls.md" $PackageRoot
+Copy-IfExists "docs/guides/build.md" $PackageRoot
+Copy-IfExists "docs/guides/controls.md" $PackageRoot
 
-$exePath = Join-Path $PackageRoot "bin/GLDraw.exe"
+$exePath = Join-Path $PackageRoot "bin/gl-draw-desktop.exe"
 if ((Test-Path $exePath) -and -not $SkipRuntimeDlls) {
     Copy-RuntimeDlls $exePath
 }

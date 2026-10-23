@@ -26,7 +26,7 @@
 
 #include "application_internal.h"
 
-#define APP_KEYMAP_SETTINGS_PATH "gldraw.keymap.json"
+#define APP_KEYMAP_SETTINGS_PATH "gldrawdesktop.keymap.json"
 
 /**
  * @brief Initialize all runtime subsystems in dependency order.
@@ -39,7 +39,7 @@
 static int app_init(Application *app) {
   RectF viewport = {0.0f, 0.0f, 1440.0f, 900.0f};
 
-  if (platform_window_init(&app->window, 1440, 900, "GLDraw Canvas") != 0) {
+  if (platform_window_init(&app->window, 1440, 900, "GL Draw Desktop 画布编辑器") != 0) {
     LOG_ERROR("%s", "Failed to create window");
     return -1;
   }

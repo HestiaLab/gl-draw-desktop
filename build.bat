@@ -1,42 +1,31 @@
 @echo off
 setlocal
 
-set ARG=%1
-
-if "%ARG%"=="clean" (
+if "%1"=="clean" (
     rmdir /s /q build 2>nul
-    echo Build folder cleaned.
+    echo 已清理 build 目录。
     exit /b 0
 )
 
-if "%ARG%"=="debug" (
-    cmake -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Debug -S . -B build/Debug
-    cmake --build build/Debug --parallel
-    echo.
-    echo ============================================================
-    echo   Build complete!
-    echo   Run: %CD%\build\Debug\bin\GLDraw.exe
-    echo ============================================================
+if "%1"=="debug" (
+    cmake --preset ninja-debug
+    if errorlevel 1 exit /b 1
+    cmake --build --preset ninja-debug
+    if errorlevel 1 exit /b 1
+    echo 构建完成：build/ninja-debug/bin/gl-draw-desktop.exe
     exit /b 0
 )
 
-if "%ARG%"=="release" (
-    cmake -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -S . -B build/Release
-    cmake --build build/Release --parallel
-    echo.
-    echo ============================================================
-    echo   Build complete!
-    echo   Run: %CD%\build\Release\bin\GLDraw.exe
-    echo ============================================================
-    exit /b 0
-)
+if "%1"=="" goto release
+if "%1"=="release" goto release
 
-rem Default: build Release
-cmake -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -S . -B build/Release
-cmake --build build/Release --parallel
+echo 用法：build.bat [debug^|release^|clean]
+exit /b 2
 
-echo.
-echo ============================================================
-echo   Build complete!
-echo   Run: %CD%\build\Release\bin\GLDraw.exe
-echo ============================================================
+:release
+cmake --preset ninja-release
+if errorlevel 1 exit /b 1
+cmake --build --preset ninja-release
+if errorlevel 1 exit /b 1
+echo 构建完成：build/ninja-release/bin/gl-draw-desktop.exe
+exit /b 0

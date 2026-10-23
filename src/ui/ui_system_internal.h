@@ -44,7 +44,7 @@
 
 #define UI_THEME_ID_CAPACITY 64
 #define UI_THEME_DESCRIPTOR_CACHE_MAX 64
-#define UI_THEME_SETTINGS_PATH "gldraw.settings.json"
+#define UI_THEME_SETTINGS_PATH "gldrawdesktop.settings.json"
 #define UI_THEME_DIRECTORY_PATH "themes"
 #define UI_THEME_WATCH_INTERVAL_SECONDS 0.35
 
