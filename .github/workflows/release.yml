@@ -157,6 +157,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           tag="${{ steps.release.outputs.tag }}"
-          gh release view "$tag" >/dev/null 2>&1 || gh release create "$tag" --target "$GITHUB_SHA" --title "$tag" --notes ""
-          gh release upload "$tag" dist/gl-draw-desktop-v* --clobber
-          gh release view "$tag" --json url,assets --jq '{url: .url, assets: [.assets[].name]}'
+          repo="$GITHUB_REPOSITORY"
+          gh release view "$tag" --repo "$repo" >/dev/null 2>&1 || gh release create "$tag" --repo "$repo" --title "$tag" --notes ""
+          gh release upload "$tag" dist/gl-draw-desktop-v* --repo "$repo" --clobber
+          gh release view "$tag" --repo "$repo" --json url,assets --jq '{url: .url, assets: [.assets[].name]}'
