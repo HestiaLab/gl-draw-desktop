@@ -55,6 +55,10 @@ function(gldrawdesktop_target_defaults target_name)
             ${CMAKE_CURRENT_SOURCE_DIR}/include
         PRIVATE
             ${CMAKE_CURRENT_SOURCE_DIR}/src
+        SYSTEM PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/third_party
+            ${CMAKE_CURRENT_SOURCE_DIR}/third_party/glad/include
+            ${CMAKE_CURRENT_SOURCE_DIR}/third_party/nuklear/include
     )
     target_compile_features(${target_name} PRIVATE c_std_11)
     gldrawdesktop_target_warnings(${target_name})
@@ -71,12 +75,6 @@ function(gldrawdesktop_target_glfw_defaults target_name)
 endfunction()
 
 function(gldrawdesktop_apply_source_compile_options)
-    if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
-        set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/src/glad.c
-            PROPERTIES COMPILE_FLAGS "-Wno-pedantic"
-        )
-    endif()
-
     if(CMAKE_C_COMPILER_ID MATCHES "Clang")
         set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/src/ui/ui_runtime.c
             PROPERTIES COMPILE_FLAGS "-Wno-c23-extensions"

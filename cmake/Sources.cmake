@@ -39,7 +39,12 @@ set(RENDER_GLFW_GL_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/render/render_device_factory.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/render/render_device_gl.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/render/shader_manager.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/glad.c
+)
+
+# third_party/ 下的代码由独立的 OBJECT 目标编译，不参与项目警告与静态分析。
+set(GLDRAWDESKTOP_VENDOR_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/glad/src/glad.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/nuklear/nuklear_impl.c
 )
 
 set(EDITOR_COMMANDS_SOURCES

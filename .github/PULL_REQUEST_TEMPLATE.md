@@ -1,58 +1,23 @@
-<!-- PR title format: type(scope): summary, for example docs(ai): add agent policy -->
+## 摘要
 
-Closes #xx
+- 改了什么：
+- 为什么：
 
-## Summary
-- ...
-- ...
+## 验证
 
-## Change Type
-- [ ] Bug fix
-- [ ] Feature
-- [ ] Refactor
-- [ ] Infrastructure / CI / packaging
-- [ ] Documentation
-- [ ] Release preparation
+- [ ] `./scripts/check.sh` 或 `./scripts/check.ps1`
+- [ ] 其他相关的 preset、冒烟或人工检查：
+- [ ] 未运行；原因：
 
-## Areas Touched
-- [ ] Document model / persistence
-- [ ] Commands / undo / redo
-- [ ] Tools / input handling
-- [ ] Workspace / session / services
-- [ ] UI / menus / panels / dialogs
-- [ ] Rendering / shaders / resources
-- [ ] Build / tests / CI / release
+针对具体改动的验证指导见 `docs/guides/testing.md`。
 
-## Architecture Checklist
-- [ ] Durable document mutations go through `CommandExecutor`.
-- [ ] UI code dispatches actions and does not own editing rules.
-- [ ] Tool input flows through editor controller / tool runtime boundaries.
-- [ ] Rendering changes consume scene state rather than defining document behavior.
-- [ ] No new `workspace_internal.h` include was added outside workspace implementation files.
-- [ ] Not applicable.
+## 影响
 
-## Testing
-- [ ] Local build completed.
-- [ ] Relevant CTest tests completed.
-- [ ] Format or static-analysis checks completed when applicable.
-- [ ] UI/rendering screenshots or recordings attached when applicable.
-- [ ] Not run; reason:
+- 公共 API 影响：
+- 构建、CI、打包或发布影响：
+- 文档影响：
 
-## AI Assistance
-- [ ] AI assistance was used.
-- Agent/tool:
-- What the agent did:
-- Required docs read:
-- Human verification performed:
-- [ ] Not applicable.
+## AI 辅助
 
-## Compatibility and Release Notes
-- File format impact:
-- Packaging or runtime dependency impact:
-- User-visible change for changelog:
-
-## Related
-- Refs #yy
-
-## Notes
-- Optional: migration details, review context, or follow-up work.
+- [ ] 使用了 AI 辅助并已披露，包括已读文档和已运行的验证。
+- [ ] 未使用实质性的 AI 辅助。

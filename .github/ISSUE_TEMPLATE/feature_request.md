@@ -1,22 +1,31 @@
 ---
-name: Feature Request
-about: Propose a feature, cleanup item, or planned improvement
-title: 'feat: '
+name: 功能请求
+about: 提议一个面向用户的能力
+title: "feat: "
 labels: enhancement
-assignees: ''
+assignees: ""
 ---
 
-## Summary
-One sentence describing the goal.
+## 问题
 
-## Background
-Describe the motivation or current gap.
+描述这将解决的用户或维护者问题。
 
-## Scope
-- Included item
-- Excluded item
+## 提议
 
-## Acceptance Criteria
-- [ ] Condition 1
-- [ ] Condition 2
-- [ ] Condition 3
+描述你期望的行为或 API。
+
+## 范围
+
+描述包含什么、有意排除什么。
+
+## 验收标准
+
+- TODO
+
+## 备选方案
+
+描述考虑过的备选方案，或为什么这不应该留在范围之外。
+
+## 兼容性
+
+描述预期的 API、构建、打包或文档影响。

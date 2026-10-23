@@ -1,25 +1,41 @@
 ---
-name: Bug Report
-about: Report a defect with evidence, impact, and acceptance criteria
-title: 'bug: '
+name: Bug 报告
+about: 报告一个可复现的缺陷
+title: "bug: "
 labels: bug
-assignees: ''
+assignees: ""
 ---
 
-## Summary
-One sentence describing the defect.
+## 摘要
 
-## Evidence
-- Symptom
-- Code location or runtime clue
-- Reproduction steps
+描述该缺陷。
 
-## Impact
-Describe the user impact or technical risk.
+## 复现
 
-## Suggested Fix
-Describe the intended fix direction without over-constraining the implementation.
+1. TODO
 
-## Acceptance Criteria
-- [ ] The defect no longer reproduces
-- [ ] No obvious regression remains
+## 命令
+
+```sh
+TODO
+```
+
+## 实际行为
+
+描述发生了什么。
+
+## 预期行为
+
+描述本应发生什么。
+
+## 环境
+
+- 操作系统：
+- 编译器：
+- CMake 版本：
+- Generator 或 preset：
+- 项目 commit：
+
+## 补充信息
+
+附上日志、失败的测试或相关链接。

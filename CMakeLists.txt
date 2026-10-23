@@ -49,6 +49,18 @@ include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/Sources.cmake")
 
 gldrawdesktop_apply_source_compile_options()
 
+# vendored 代码单独编译：不施加项目警告与静态分析。
+add_library(gldrawdesktop_vendor STATIC ${GLDRAWDESKTOP_VENDOR_SOURCES})
+target_compile_features(gldrawdesktop_vendor PRIVATE c_std_11)
+target_compile_definitions(gldrawdesktop_vendor PRIVATE GLFW_INCLUDE_NONE)
+target_include_directories(gldrawdesktop_vendor
+    SYSTEM PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/third_party
+        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/glad/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/nuklear/include
+        "${glfw_SOURCE_DIR}/include"
+)
+
 add_library(editor_model STATIC ${EDITOR_MODEL_SOURCES})
 gldrawdesktop_target_defaults(editor_model)
 target_compile_definitions(editor_model PUBLIC GLDRAW_RESOURCE_ROOT="${GLDRAWDESKTOP_RESOURCE_ROOT}")
@@ -78,6 +90,7 @@ target_link_libraries(render_glfw_gl
     PRIVATE
         glfw
         OpenGL::GL
+        gldrawdesktop_vendor
 )
 
 add_library(editor_commands STATIC ${EDITOR_COMMANDS_SOURCES})
@@ -116,6 +129,10 @@ target_link_libraries(ui_nuklear_glfw
     PUBLIC
         editor_runtime
         platform_glfw
+    PRIVATE
+        gldrawdesktop_vendor
+        glfw
+        OpenGL::GL
 )
 
 add_library(editor_app STATIC ${EDITOR_APP_SOURCES})

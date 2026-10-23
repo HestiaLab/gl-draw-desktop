@@ -20,6 +20,12 @@ function(gldrawdesktop_add_test target)
             ${GLDRAWDESKTOP_GENERATED_INCLUDE_DIR}
     )
 
+    target_link_libraries(${target} PRIVATE
+        gldrawdesktop_vendor
+        glfw
+        OpenGL::GL
+    )
+
     if(GLDRAWDESKTOP_TEST_LIBS)
         target_link_libraries(${target} PRIVATE ${GLDRAWDESKTOP_TEST_LIBS})
     endif()
@@ -121,7 +127,6 @@ gldrawdesktop_add_test(gldraw_ui_logic_tests
 gldrawdesktop_add_test(gldraw_ui_theme_tests
     SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/ui/test_ui_theme.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/support/test_nuklear_impl.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/support/test_temp_files.c
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/ui_theme.c
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/ui_theme_apply.c
