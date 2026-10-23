@@ -120,9 +120,11 @@ static int parse_stroke_object(JsonParser* parser, LoadedObjectData* data)
             data->has_stroke_width = 1;
         } else {
             json_parser_next(parser);
-            if (!json_expect(parser, JSON_TOKEN_COLON)) return 0;
+            if (!json_expect(parser, JSON_TOKEN_COLON))
+                return 0;
             json_parser_next(parser);
-            if (!json_skip_value(parser)) return 0;
+            if (!json_skip_value(parser))
+                return 0;
         }
 
         if (parser->type == JSON_TOKEN_COMMA) {
@@ -169,21 +171,47 @@ static int parse_properties_object(JsonParser* parser, LoadedObjectData* data)
         property_name[token_length] = '\0';
 
         json_parser_next(parser);
-        if (!json_expect(parser, JSON_TOKEN_COLON)) return 0;
+        if (!json_expect(parser, JSON_TOKEN_COLON))
+            return 0;
         json_parser_next(parser);
-        if (!json_parse_float(parser, &value)) return 0;
+        if (!json_parse_float(parser, &value))
+            return 0;
         if (!graphic_property_bag_set(&data->properties, property_name, value)) {
             return 0;
         }
 
-        if (strcmp(property_name, "x1") == 0) { data->x1 = value; data->has_x1 = 1; }
-        if (strcmp(property_name, "y1") == 0) { data->y1 = value; data->has_y1 = 1; }
-        if (strcmp(property_name, "x2") == 0) { data->x2 = value; data->has_x2 = 1; }
-        if (strcmp(property_name, "y2") == 0) { data->y2 = value; data->has_y2 = 1; }
-        if (strcmp(property_name, "x") == 0) { data->x = value; data->has_x = 1; }
-        if (strcmp(property_name, "y") == 0) { data->y = value; data->has_y = 1; }
-        if (strcmp(property_name, "width") == 0) { data->width = value; data->has_width = 1; }
-        if (strcmp(property_name, "height") == 0) { data->height = value; data->has_height = 1; }
+        if (strcmp(property_name, "x1") == 0) {
+            data->x1 = value;
+            data->has_x1 = 1;
+        }
+        if (strcmp(property_name, "y1") == 0) {
+            data->y1 = value;
+            data->has_y1 = 1;
+        }
+        if (strcmp(property_name, "x2") == 0) {
+            data->x2 = value;
+            data->has_x2 = 1;
+        }
+        if (strcmp(property_name, "y2") == 0) {
+            data->y2 = value;
+            data->has_y2 = 1;
+        }
+        if (strcmp(property_name, "x") == 0) {
+            data->x = value;
+            data->has_x = 1;
+        }
+        if (strcmp(property_name, "y") == 0) {
+            data->y = value;
+            data->has_y = 1;
+        }
+        if (strcmp(property_name, "width") == 0) {
+            data->width = value;
+            data->has_width = 1;
+        }
+        if (strcmp(property_name, "height") == 0) {
+            data->height = value;
+            data->has_height = 1;
+        }
 
         if (parser->type == JSON_TOKEN_COMMA) {
             json_parser_next(parser);
@@ -226,9 +254,8 @@ static int parse_object_type(JsonParser* parser, LoadedObjectData* data)
 
 static GraphicObject* build_loaded_object(const LoadedObjectData* data)
 {
-    if (!data || !data->has_id || !data->has_type ||
-        !data->has_stroke_r || !data->has_stroke_g || !data->has_stroke_b ||
-        !data->has_stroke_a || !data->has_stroke_width) {
+    if (!data || !data->has_id || !data->has_type || !data->has_stroke_r || !data->has_stroke_g ||
+        !data->has_stroke_b || !data->has_stroke_a || !data->has_stroke_width) {
         LOG_ERROR("%s", "[persistence][parse][object entry] missing required fields");
         return NULL;
     }
@@ -279,26 +306,33 @@ static int parse_object_entry(JsonParser* parser, Document* document)
 
         if (json_token_is_string(parser, "id")) {
             json_parser_next(parser);
-            if (!json_expect(parser, JSON_TOKEN_COLON)) return 0;
+            if (!json_expect(parser, JSON_TOKEN_COLON))
+                return 0;
             json_parser_next(parser);
-            if (!json_parse_u32(parser, &id_value)) return 0;
+            if (!json_parse_u32(parser, &id_value))
+                return 0;
             data.id = id_value;
             data.has_id = 1;
         } else if (json_token_is_string(parser, "layer_id")) {
             json_parser_next(parser);
-            if (!json_expect(parser, JSON_TOKEN_COLON)) return 0;
+            if (!json_expect(parser, JSON_TOKEN_COLON))
+                return 0;
             json_parser_next(parser);
-            if (!json_parse_u32(parser, &id_value)) return 0;
+            if (!json_parse_u32(parser, &id_value))
+                return 0;
             data.layer_id = id_value;
             data.has_layer_id = 1;
         } else if (json_token_is_string(parser, "type")) {
             json_parser_next(parser);
-            if (!json_expect(parser, JSON_TOKEN_COLON)) return 0;
+            if (!json_expect(parser, JSON_TOKEN_COLON))
+                return 0;
             json_parser_next(parser);
-            if (!parse_object_type(parser, &data)) return 0;
+            if (!parse_object_type(parser, &data))
+                return 0;
         } else if (json_token_is_string(parser, "stroke")) {
             json_parser_next(parser);
-            if (!json_expect(parser, JSON_TOKEN_COLON)) return 0;
+            if (!json_expect(parser, JSON_TOKEN_COLON))
+                return 0;
             json_parser_next(parser);
             if (!parse_stroke_object(parser, &data)) {
                 LOG_ERROR("%s", "[persistence][parse][object entry] failed parsing stroke");
@@ -307,7 +341,8 @@ static int parse_object_entry(JsonParser* parser, Document* document)
         } else if (json_token_is_string(parser, "geometry") ||
                    json_token_is_string(parser, "properties")) {
             json_parser_next(parser);
-            if (!json_expect(parser, JSON_TOKEN_COLON)) return 0;
+            if (!json_expect(parser, JSON_TOKEN_COLON))
+                return 0;
             json_parser_next(parser);
             if (!parse_properties_object(parser, &data)) {
                 LOG_ERROR("%s", "[persistence][parse][object entry] failed parsing properties");
@@ -315,9 +350,11 @@ static int parse_object_entry(JsonParser* parser, Document* document)
             }
         } else {
             json_parser_next(parser);
-            if (!json_expect(parser, JSON_TOKEN_COLON)) return 0;
+            if (!json_expect(parser, JSON_TOKEN_COLON))
+                return 0;
             json_parser_next(parser);
-            if (!json_skip_value(parser)) return 0;
+            if (!json_skip_value(parser))
+                return 0;
         }
 
         if (parser->type == JSON_TOKEN_COMMA) {
@@ -339,10 +376,7 @@ static int parse_object_entry(JsonParser* parser, Document* document)
     }
 
     object->layer_id = data.has_layer_id ? data.layer_id : document_active_layer_id(document);
-    if (!document_append_object_with_id_to_layer(document,
-                                                 object,
-                                                 data.id,
-                                                 object->layer_id)) {
+    if (!document_append_object_with_id_to_layer(document, object, data.id, object->layer_id)) {
         object_destroy(object);
         return 0;
     }
@@ -364,7 +398,8 @@ int parse_objects_array(JsonParser* parser, Document* document)
 
     while (1) {
         if (!parse_object_entry(parser, document)) {
-            LOG_ERROR("[persistence][parse][object entry] parse failed at index=%d", document->count);
+            LOG_ERROR("[persistence][parse][object entry] parse failed at index=%d",
+                      document->count);
             return 0;
         }
         if (parser->type == JSON_TOKEN_COMMA) {

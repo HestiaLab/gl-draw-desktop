@@ -20,15 +20,11 @@ int ui_theme_load_selected_id(const char* path, char* out_theme_id, size_t out_t
         return 0;
     }
 
-    loaded = ui_extract_json_string_value(text,
-                                          UI_THEME_CONFIG_KEY,
-                                          out_theme_id,
-                                          out_theme_id_size);
+    loaded =
+        ui_extract_json_string_value(text, UI_THEME_CONFIG_KEY, out_theme_id, out_theme_id_size);
     if (!loaded) {
-        loaded = ui_extract_json_string_value(text,
-                                              UI_THEME_COMPAT_KEY,
-                                              out_theme_id,
-                                              out_theme_id_size);
+        loaded = ui_extract_json_string_value(
+            text, UI_THEME_COMPAT_KEY, out_theme_id, out_theme_id_size);
     }
 
     free(text);

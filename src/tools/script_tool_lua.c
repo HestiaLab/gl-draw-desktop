@@ -62,14 +62,9 @@ static void script_tool_dispatch(Tool* tool,
         return;
     }
 
-    script_runtime_set_context(&state->runtime,
-                               context->document,
-                               context->selection,
-                               &context->ports);
-    script_runtime_execute_file_event(&state->runtime,
-                                      state->script_path,
-                                      event_name,
-                                      event);
+    script_runtime_set_context(
+        &state->runtime, context->document, context->selection, &context->ports);
+    script_runtime_execute_file_event(&state->runtime, state->script_path, event_name, event);
 }
 
 static int script_tool_pointer_down(Tool* tool, ToolContext* context, const ToolEvent* event)
@@ -88,25 +83,23 @@ static void script_tool_pointer_up(Tool* tool, ToolContext* context, const ToolE
     script_tool_dispatch(tool, context, event, "pointer_up");
 }
 
-static const ToolDescriptor G_SCRIPT_TOOL_DESCRIPTOR = {
-    "script",
-    "Script",
-    NULL,
-    "Execute Lua tool script",
-    "Script",
-    NULL,
-    0,
-    script_tool_create,
-    script_tool_destroy,
-    NULL,
-    NULL,
-    script_tool_pointer_down,
-    script_tool_pointer_move,
-    script_tool_pointer_up,
-    NULL,
-    NULL,
-    "scripts/star_wreath.lua"
-};
+static const ToolDescriptor G_SCRIPT_TOOL_DESCRIPTOR = { "script",
+                                                         "脚本",
+                                                         NULL,
+                                                         "执行 Lua 工具脚本",
+                                                         "脚本",
+                                                         NULL,
+                                                         0,
+                                                         script_tool_create,
+                                                         script_tool_destroy,
+                                                         NULL,
+                                                         NULL,
+                                                         script_tool_pointer_down,
+                                                         script_tool_pointer_move,
+                                                         script_tool_pointer_up,
+                                                         NULL,
+                                                         NULL,
+                                                         "scripts/star_wreath.lua" };
 
 void gldraw_register_script_tool(void)
 {

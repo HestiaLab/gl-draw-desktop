@@ -13,8 +13,9 @@
 #define TOOL_DESCRIPTOR_CACHE_SIZE 4
 
 static const CommandDescriptor g_commands[] = {
-#define GLDRAW_COMMAND_DESCRIPTOR(command, id, label, scope, menu_id, tool_id, availability, service, execute) \
-    {command, id, label, scope, menu_id, tool_id},
+#define GLDRAW_COMMAND_DESCRIPTOR(                                                                 \
+    command, id, label, scope, menu_id, tool_id, availability, service, execute)                   \
+    { command, id, label, scope, menu_id, tool_id },
     GLDRAW_STABLE_COMMANDS(GLDRAW_COMMAND_DESCRIPTOR)
 #undef GLDRAW_COMMAND_DESCRIPTOR
 };
@@ -39,7 +40,7 @@ const CommandDescriptor* command_catalog_stable_at(int index)
 }
 
 static const CommandDescriptor* command_catalog_make_tool_descriptor(const ToolDescriptor* tool,
-                                                                    int tool_index)
+                                                                     int tool_index)
 {
     static CommandDescriptor cache[TOOL_DESCRIPTOR_CACHE_SIZE];
     static int cache_index = 0;
@@ -61,8 +62,7 @@ static const CommandDescriptor* command_catalog_make_tool_descriptor(const ToolD
     return descriptor;
 }
 
-const ToolDescriptor* command_catalog_tool_for_command(EditorCommand command,
-                                                       int* out_tool_index)
+const ToolDescriptor* command_catalog_tool_for_command(EditorCommand command, int* out_tool_index)
 {
     int tool_index = command - EDITOR_COMMAND_DYNAMIC_TOOL_BASE;
 
@@ -123,9 +123,8 @@ const CommandDescriptor* command_catalog_find_by_command(EditorCommand command)
         }
     }
 
-    return command_catalog_make_tool_descriptor(
-        command_catalog_tool_for_command(command, NULL),
-        command - EDITOR_COMMAND_DYNAMIC_TOOL_BASE);
+    return command_catalog_make_tool_descriptor(command_catalog_tool_for_command(command, NULL),
+                                                command - EDITOR_COMMAND_DYNAMIC_TOOL_BASE);
 }
 
 const CommandDescriptor* command_catalog_find_by_menu_id(int id)
@@ -144,8 +143,7 @@ const CommandDescriptor* command_catalog_find_by_menu_id(int id)
 
     if (id >= MENU_ID_TOOL_DYNAMIC_BASE) {
         return command_catalog_make_tool_descriptor(
-            tool_registry_at(id - MENU_ID_TOOL_DYNAMIC_BASE),
-            id - MENU_ID_TOOL_DYNAMIC_BASE);
+            tool_registry_at(id - MENU_ID_TOOL_DYNAMIC_BASE), id - MENU_ID_TOOL_DYNAMIC_BASE);
     }
 
     return NULL;

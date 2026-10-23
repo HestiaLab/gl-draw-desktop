@@ -26,8 +26,7 @@ static int ui_dialog_supports_header_close(const UiDialogState* dialog)
     return 0;
 }
 
-static void ui_dialog_render_message_lines(struct nk_context* ctx,
-                                           const UiDialogState* dialog)
+static void ui_dialog_render_message_lines(struct nk_context* ctx, const UiDialogState* dialog)
 {
     char local[sizeof(dialog->message)];
     char* line = NULL;
@@ -45,10 +44,8 @@ static void ui_dialog_render_message_lines(struct nk_context* ctx,
     }
 }
 
-UiDialogResult ui_dialog_show(struct nk_context* ctx,
-                              UiDialogState* dialog,
-                              int window_width,
-                              int window_height)
+UiDialogResult
+ui_dialog_show(struct nk_context* ctx, UiDialogState* dialog, int window_width, int window_height)
 {
     struct nk_style_item blocker_background;
     struct nk_rect full_bounds;
@@ -84,7 +81,7 @@ UiDialogResult ui_dialog_show(struct nk_context* ctx,
                      dialog_width,
                      dialog_height);
     full_bounds = nk_rect(0.0f, 0.0f, (float)window_width, (float)window_height);
-    window_title = dialog->title[0] != '\0' ? dialog->title : "Dialog";
+    window_title = dialog->title[0] != '\0' ? dialog->title : "对话框";
 
     if (dialog->modal) {
         blocker_background = nk_style_item_color(nk_rgba(0, 0, 0, 96));
@@ -115,7 +112,7 @@ UiDialogResult ui_dialog_show(struct nk_context* ctx,
         ui_dialog_render_message_lines(ctx, dialog);
         if (dialog->kind == UI_DIALOG_SAVE_AS) {
             nk_layout_row_dynamic(ctx, 20.0f, 1);
-            nk_label(ctx, "Filename", NK_TEXT_LEFT);
+            nk_label(ctx, "文件名", NK_TEXT_LEFT);
             nk_layout_row_dynamic(ctx, 28.0f, 1);
             nk_edit_string_zero_terminated(ctx,
                                            NK_EDIT_FIELD,
@@ -136,8 +133,7 @@ UiDialogResult ui_dialog_show(struct nk_context* ctx,
     }
     nk_end(ctx);
 
-    if (ui_dialog_supports_header_close(dialog) &&
-        nk_window_is_closed(ctx, window_title)) {
+    if (ui_dialog_supports_header_close(dialog) && nk_window_is_closed(ctx, window_title)) {
         result = UI_DIALOG_RESULT_CANCEL;
     }
 

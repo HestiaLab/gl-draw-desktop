@@ -39,17 +39,10 @@ typedef void (*PlatformCursorPosCallback)(PlatformWindow* window,
                                           double xpos,
                                           double ypos,
                                           void* user_data);
-typedef void (*PlatformMouseButtonCallback)(PlatformWindow* window,
-                                            int button,
-                                            int action,
-                                            int mods,
-                                            void* user_data);
-typedef void (*PlatformKeyCallback)(PlatformWindow* window,
-                                    int key,
-                                    int scancode,
-                                    int action,
-                                    int mods,
-                                    void* user_data);
+typedef void (*PlatformMouseButtonCallback)(
+    PlatformWindow* window, int button, int action, int mods, void* user_data);
+typedef void (*PlatformKeyCallback)(
+    PlatformWindow* window, int key, int scancode, int action, int mods, void* user_data);
 typedef void (*PlatformCharCallback)(PlatformWindow* window,
                                      unsigned int codepoint,
                                      void* user_data);
@@ -110,9 +103,7 @@ void platform_window_on_cursor_pos(PlatformWindow* window,
 void platform_window_on_mouse_button(PlatformWindow* window,
                                      PlatformMouseButtonCallback callback,
                                      void* user_data);
-void platform_window_on_key(PlatformWindow* window,
-                            PlatformKeyCallback callback,
-                            void* user_data);
+void platform_window_on_key(PlatformWindow* window, PlatformKeyCallback callback, void* user_data);
 void platform_window_on_char(PlatformWindow* window,
                              PlatformCharCallback callback,
                              void* user_data);
@@ -123,11 +114,9 @@ void platform_window_on_close(PlatformWindow* window,
                               PlatformCloseCallback callback,
                               void* user_data);
 
-struct nk_context* platform_window_nuklear_init(struct nk_glfw* glfw,
-                                                PlatformWindow* window);
+struct nk_context* platform_window_nuklear_init(struct nk_glfw* glfw, PlatformWindow* window);
 void platform_window_nuklear_shutdown(struct nk_glfw* glfw);
-void platform_window_nuklear_font_stash_begin(struct nk_glfw* glfw,
-                                              struct nk_font_atlas** atlas);
+void platform_window_nuklear_font_stash_begin(struct nk_glfw* glfw, struct nk_font_atlas** atlas);
 void platform_window_nuklear_font_stash_end(struct nk_glfw* glfw);
 void platform_window_nuklear_new_frame(struct nk_glfw* glfw);
 void platform_window_nuklear_render(struct nk_glfw* glfw,

@@ -60,10 +60,7 @@ static int test_temp_path_exists(const char* path)
     return test_temp_access(path) == 0;
 }
 
-int test_temp_make_path(char* buffer,
-                        size_t buffer_size,
-                        const char* prefix,
-                        const char* suffix)
+int test_temp_make_path(char* buffer, size_t buffer_size, const char* prefix, const char* suffix)
 {
     const char* base_dir = test_temp_base_dir();
     const char* safe_prefix = (prefix && prefix[0] != '\0') ? prefix : "file";
@@ -148,12 +145,7 @@ int test_temp_join_path(char* buffer,
     }
 
     if (separator != '\0') {
-        written = snprintf(buffer,
-                           buffer_size,
-                           "%s%c%s",
-                           directory,
-                           separator,
-                           filename);
+        written = snprintf(buffer, buffer_size, "%s%c%s", directory, separator, filename);
     } else {
         written = snprintf(buffer, buffer_size, "%s%s", directory, filename);
     }

@@ -17,8 +17,7 @@ static int shader_manager_track_program(ShaderManager* manager, unsigned int han
     }
     if (manager->program_count >= manager->program_capacity) {
         capacity = manager->program_capacity > 0u ? manager->program_capacity * 2u : 4u;
-        handles =
-            (unsigned int*)realloc(manager->program_handles, capacity * sizeof(handles[0]));
+        handles = (unsigned int*)realloc(manager->program_handles, capacity * sizeof(handles[0]));
         if (!handles) {
             return 0;
         }
@@ -42,9 +41,7 @@ static GLuint shader_manager_compile_shader(GLenum type, const char* source, con
     if (!success) {
         char info[1024];
         glGetShaderInfoLog(shader, (GLsizei)sizeof(info), NULL, info);
-        LOG_ERROR("Shader compilation failed for %s: %s",
-                  label ? label : "unknown stage",
-                  info);
+        LOG_ERROR("Shader compilation failed for %s: %s", label ? label : "unknown stage", info);
         glDeleteShader(shader);
         return 0;
     }

@@ -87,8 +87,7 @@ typedef struct EditorViewModel {
 void editor_viewmodel_init(EditorViewModel* view_model);
 void editor_viewmodel_shutdown(EditorViewModel* view_model);
 int editor_viewmodel_build(EditorViewModel* view_model, const struct Workspace* workspace);
-int editor_viewmodel_command_available(const EditorViewModel* view_model,
-                                       EditorCommand command);
+int editor_viewmodel_command_available(const EditorViewModel* view_model, EditorCommand command);
 const char* editor_viewmodel_command_shortcut(const EditorViewModel* view_model,
                                               EditorCommand command);
 const char* editor_viewmodel_command_unavailable_reason(const EditorViewModel* view_model,

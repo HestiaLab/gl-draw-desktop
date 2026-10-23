@@ -8,8 +8,7 @@ static GraphicObject* document_find_for_command(Document* document, ObjectId id)
     return document_find_object(document, id);
 }
 
-static int set_property_apply(Document* document, const SetPropertyCommand* command,
-                              float value)
+static int set_property_apply(Document* document, const SetPropertyCommand* command, float value)
 {
     GraphicObject* object = NULL;
 
@@ -58,12 +57,16 @@ static void set_property_destroy(void* cmd)
     g_allocator.free_fn(cmd);
 }
 
-const CommandVTable SET_PROPERTY_VTABLE = {set_property_execute, set_property_undo,
-                                           set_property_execute, set_property_merge,
-                                           set_property_destroy};
+const CommandVTable SET_PROPERTY_VTABLE = { set_property_execute,
+                                            set_property_undo,
+                                            set_property_execute,
+                                            set_property_merge,
+                                            set_property_destroy };
 
-Command* command_create_set_property(ObjectId object_id, const char* key,
-                                     float before_value, float after_value)
+Command* command_create_set_property(ObjectId object_id,
+                                     const char* key,
+                                     float before_value,
+                                     float after_value)
 {
     SetPropertyCommand* command = NULL;
 

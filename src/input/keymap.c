@@ -14,25 +14,23 @@ static const struct {
     KeyScope scope;
     const char* primary;
     const char* secondary;
-} g_default_bindings[] = {
-    {"file.new", KEY_SCOPE_GLOBAL, "Ctrl+N", ""},
-    {"file.open", KEY_SCOPE_GLOBAL, "Ctrl+O", ""},
-    {"file.save", KEY_SCOPE_GLOBAL, "Ctrl+S", ""},
-    {"edit.undo", KEY_SCOPE_GLOBAL, "Ctrl+Z", ""},
-    {"edit.redo", KEY_SCOPE_GLOBAL, "Ctrl+Y", "Ctrl+Shift+Z"},
-    {"edit.cut", KEY_SCOPE_GLOBAL, "Ctrl+X", ""},
-    {"edit.copy", KEY_SCOPE_GLOBAL, "Ctrl+C", ""},
-    {"edit.paste", KEY_SCOPE_GLOBAL, "Ctrl+V", ""},
-    {"edit.delete", KEY_SCOPE_GLOBAL, "Delete", "Backspace"},
-    {"edit.select_all", KEY_SCOPE_GLOBAL, "Ctrl+A", ""},
-    {"view.zoom_in", KEY_SCOPE_GLOBAL, "Ctrl+Plus", ""},
-    {"view.zoom_out", KEY_SCOPE_GLOBAL, "Ctrl+Minus", ""},
-    {"view.zoom_fit", KEY_SCOPE_GLOBAL, "Ctrl+0", ""},
-    {"help.shortcuts", KEY_SCOPE_GLOBAL, "Shift+Slash", ""},
-    {"help.shortcuts", KEY_SCOPE_MODAL, "Shift+Slash", ""},
-    {"modal.confirm", KEY_SCOPE_MODAL, "Enter", ""},
-    {"modal.cancel", KEY_SCOPE_MODAL, "Esc", ""}
-};
+} g_default_bindings[] = { { "file.new", KEY_SCOPE_GLOBAL, "Ctrl+N", "" },
+                           { "file.open", KEY_SCOPE_GLOBAL, "Ctrl+O", "" },
+                           { "file.save", KEY_SCOPE_GLOBAL, "Ctrl+S", "" },
+                           { "edit.undo", KEY_SCOPE_GLOBAL, "Ctrl+Z", "" },
+                           { "edit.redo", KEY_SCOPE_GLOBAL, "Ctrl+Y", "Ctrl+Shift+Z" },
+                           { "edit.cut", KEY_SCOPE_GLOBAL, "Ctrl+X", "" },
+                           { "edit.copy", KEY_SCOPE_GLOBAL, "Ctrl+C", "" },
+                           { "edit.paste", KEY_SCOPE_GLOBAL, "Ctrl+V", "" },
+                           { "edit.delete", KEY_SCOPE_GLOBAL, "Delete", "Backspace" },
+                           { "edit.select_all", KEY_SCOPE_GLOBAL, "Ctrl+A", "" },
+                           { "view.zoom_in", KEY_SCOPE_GLOBAL, "Ctrl+Plus", "" },
+                           { "view.zoom_out", KEY_SCOPE_GLOBAL, "Ctrl+Minus", "" },
+                           { "view.zoom_fit", KEY_SCOPE_GLOBAL, "Ctrl+0", "" },
+                           { "help.shortcuts", KEY_SCOPE_GLOBAL, "Shift+Slash", "" },
+                           { "help.shortcuts", KEY_SCOPE_MODAL, "Shift+Slash", "" },
+                           { "modal.confirm", KEY_SCOPE_MODAL, "Enter", "" },
+                           { "modal.cancel", KEY_SCOPE_MODAL, "Esc", "" } };
 
 static int keymap_binding_matches(const KeyBinding* binding, KeyScope scope, KeyChord chord)
 {
@@ -40,13 +38,11 @@ static int keymap_binding_matches(const KeyBinding* binding, KeyScope scope, Key
         return 0;
     }
 
-    return key_chord_equals(binding->primary, chord) ||
-           key_chord_equals(binding->secondary, chord);
+    return key_chord_equals(binding->primary, chord) || key_chord_equals(binding->secondary, chord);
 }
 
-static const KeyBinding* keymap_find_effective_binding(const EditorKeymap* keymap,
-                                                       const char* command_id,
-                                                       KeyScope scope)
+static const KeyBinding*
+keymap_find_effective_binding(const EditorKeymap* keymap, const char* command_id, KeyScope scope)
 {
     int i = 0;
 
@@ -55,16 +51,14 @@ static const KeyBinding* keymap_find_effective_binding(const EditorKeymap* keyma
     }
 
     for (i = 0; i < keymap->user_override_count; ++i) {
-        if (keymap->user_overrides[i].scope == scope &&
-            keymap->user_overrides[i].command_id &&
+        if (keymap->user_overrides[i].scope == scope && keymap->user_overrides[i].command_id &&
             strcmp(keymap->user_overrides[i].command_id, command_id) == 0) {
             return &keymap->user_overrides[i];
         }
     }
 
     for (i = 0; i < keymap->default_count; ++i) {
-        if (keymap->defaults[i].scope == scope &&
-            keymap->defaults[i].command_id &&
+        if (keymap->defaults[i].scope == scope && keymap->defaults[i].command_id &&
             strcmp(keymap->defaults[i].command_id, command_id) == 0) {
             return &keymap->defaults[i];
         }

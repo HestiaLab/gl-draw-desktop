@@ -20,9 +20,7 @@ typedef struct RenderSceneSnapshot {
     RenderSceneCacheKey cache_key;
 } RenderSceneSnapshot;
 
-int render_scene_snapshot_capture(RenderSceneSnapshot* snapshot,
-                                  const RenderSceneDesc* scene);
-int render_scene_snapshot_equal(const RenderSceneSnapshot* a,
-                                const RenderSceneSnapshot* b);
+int render_scene_snapshot_capture(RenderSceneSnapshot* snapshot, const RenderSceneDesc* scene);
+int render_scene_snapshot_equal(const RenderSceneSnapshot* a, const RenderSceneSnapshot* b);
 
 #endif /* GLDRAW_RENDER_RENDER_SCENE_SNAPSHOT_H */

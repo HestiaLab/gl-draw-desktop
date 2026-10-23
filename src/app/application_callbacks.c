@@ -42,10 +42,8 @@ static int tool_mods_from_glfw(int mods)
     return tool_mods;
 }
 
-static void framebuffer_size_callback(PlatformWindow* window,
-                                      int width,
-                                      int height,
-                                      void* user_data)
+static void
+framebuffer_size_callback(PlatformWindow* window, int width, int height, void* user_data)
 {
     Application* app = (Application*)user_data;
     int window_width = 0;
@@ -60,10 +58,7 @@ static void framebuffer_size_callback(PlatformWindow* window,
     render_system_resize(app->renderer, window_width, window_height, width, height);
 }
 
-static void cursor_pos_callback(PlatformWindow* window,
-                                double xpos,
-                                double ypos,
-                                void* user_data)
+static void cursor_pos_callback(PlatformWindow* window, double xpos, double ypos, void* user_data)
 {
     Application* app = (Application*)user_data;
     ToolContext context;
@@ -88,11 +83,8 @@ static void cursor_pos_callback(PlatformWindow* window,
     editor_controller_pointer_move(app->workspace, &context, &event);
 }
 
-static void mouse_button_callback(PlatformWindow* window,
-                                  int button,
-                                  int action,
-                                  int mods,
-                                  void* user_data)
+static void
+mouse_button_callback(PlatformWindow* window, int button, int action, int mods, void* user_data)
 {
     Application* app = (Application*)user_data;
     ToolContext context;
@@ -104,8 +96,7 @@ static void mouse_button_callback(PlatformWindow* window,
     }
 
     if (action == GLFW_PRESS) {
-        if (app->ui &&
-            ui_system_handle_mouse_button(app->ui, app->cursor_screen, button, action)) {
+        if (app->ui && ui_system_handle_mouse_button(app->ui, app->cursor_screen, button, action)) {
             return;
         }
         if (!editor_controller_pointer_captured(app->workspace) &&
@@ -113,10 +104,8 @@ static void mouse_button_callback(PlatformWindow* window,
             return;
         }
         context = application_runtime_tool_context(app);
-        event = application_runtime_make_tool_event(app,
-                                                   tool_button_from_glfw(button),
-                                                   tool_mods_from_glfw(mods),
-                                                   0.0f);
+        event = application_runtime_make_tool_event(
+            app, tool_button_from_glfw(button), tool_mods_from_glfw(mods), 0.0f);
         editor_controller_pointer_down(app->workspace, &context, &event);
     } else if (action == GLFW_RELEASE) {
         /* Ignore release outside canvas unless pointer capture is active. */
@@ -127,20 +116,14 @@ static void mouse_button_callback(PlatformWindow* window,
             return;
         }
         context = application_runtime_tool_context(app);
-        event = application_runtime_make_tool_event(app,
-                                                   tool_button_from_glfw(button),
-                                                   tool_mods_from_glfw(mods),
-                                                   0.0f);
+        event = application_runtime_make_tool_event(
+            app, tool_button_from_glfw(button), tool_mods_from_glfw(mods), 0.0f);
         editor_controller_pointer_up(app->workspace, &context, &event);
     }
 }
 
-static void key_callback(PlatformWindow* window,
-                         int key,
-                         int scancode,
-                         int action,
-                         int mods,
-                         void* user_data)
+static void
+key_callback(PlatformWindow* window, int key, int scancode, int action, int mods, void* user_data)
 {
     Application* app = (Application*)user_data;
     ToolContext context;
@@ -160,8 +143,7 @@ static void key_callback(PlatformWindow* window,
     context = application_runtime_tool_context(app);
     router_context.workspace = app->workspace;
     router_context.tool_context = &context;
-    router_context.ui_has_keyboard_focus =
-        app->ui ? ui_system_has_active_interaction(app->ui) : 0;
+    router_context.ui_has_keyboard_focus = app->ui ? ui_system_has_active_interaction(app->ui) : 0;
     event.key = key;
     event.mods = mods;
     event.action = action;
@@ -169,10 +151,7 @@ static void key_callback(PlatformWindow* window,
     input_router_handle_key(&router_context, &event);
 }
 
-static void scroll_callback(PlatformWindow* window,
-                            double xoffset,
-                            double yoffset,
-                            void* user_data)
+static void scroll_callback(PlatformWindow* window, double xoffset, double yoffset, void* user_data)
 {
     Application* app = (Application*)user_data;
     ToolContext context;

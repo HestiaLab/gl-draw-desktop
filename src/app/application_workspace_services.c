@@ -10,7 +10,7 @@ static int app_exit_application(Application* app)
     }
 
     platform_window_set_should_close(&app->window, 1);
-    workspace_set_status_message(app->workspace, "Closing application");
+    workspace_set_status_message(app->workspace, "正在关闭应用");
     return 1;
 }
 
@@ -38,9 +38,8 @@ static int app_workspace_load(Workspace* workspace, void* user_data)
     return application_load_document((Application*)user_data);
 }
 
-static int app_workspace_execute_action(Workspace* workspace,
-                                        WorkspaceActionType action,
-                                        void* user_data)
+static int
+app_workspace_execute_action(Workspace* workspace, WorkspaceActionType action, void* user_data)
 {
     Application* app = (Application*)user_data;
     (void)workspace;

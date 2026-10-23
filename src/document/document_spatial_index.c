@@ -6,9 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-static int document_spatial_add_entry(Document* document,
-                                      int cell_index,
-                                      int object_index)
+static int document_spatial_add_entry(Document* document, int cell_index, int object_index)
 {
     DocumentSpatialEntry* entries = NULL;
     int capacity = 0;
@@ -39,7 +37,7 @@ static int document_spatial_add_entry(Document* document,
 
 static int document_spatial_rebuild(Document* document)
 {
-    RectF bounds = {0.0f, 0.0f, 0.0f, 0.0f};
+    RectF bounds = { 0.0f, 0.0f, 0.0f, 0.0f };
     int first = 1;
     int i = 0;
 
@@ -53,11 +51,13 @@ static int document_spatial_rebuild(Document* document)
     document->spatial_entry_count = 0;
     if (document->count <= 0) {
         if (document->spatial_heads) {
-            memset(document->spatial_heads, 0xff,
+            memset(document->spatial_heads,
+                   0xff,
                    (size_t)document->spatial_cell_count * sizeof(document->spatial_heads[0]));
         }
         if (document->spatial_marks) {
-            memset(document->spatial_marks, 0,
+            memset(document->spatial_marks,
+                   0,
                    (size_t)document->spatial_mark_capacity * sizeof(document->spatial_marks[0]));
         }
         document->spatial_bounds = bounds;
@@ -82,9 +82,8 @@ static int document_spatial_rebuild(Document* document)
             float right = rectf_right(&bounds) > rectf_right(&object_bounds)
                               ? rectf_right(&bounds)
                               : rectf_right(&object_bounds);
-            float top = rectf_top(&bounds) > rectf_top(&object_bounds)
-                            ? rectf_top(&bounds)
-                            : rectf_top(&object_bounds);
+            float top = rectf_top(&bounds) > rectf_top(&object_bounds) ? rectf_top(&bounds)
+                                                                       : rectf_top(&object_bounds);
             bounds.x = left;
             bounds.y = bottom;
             bounds.w = right - left;
@@ -125,10 +124,8 @@ static int document_spatial_rebuild(Document* document)
         int* heads = (int*)realloc(document->spatial_heads,
                                    (size_t)document->spatial_cell_count *
                                        sizeof(document->spatial_heads[0]));
-        unsigned int* marks =
-            (unsigned int*)realloc(document->spatial_marks,
-                                   (size_t)document->count *
-                                       sizeof(document->spatial_marks[0]));
+        unsigned int* marks = (unsigned int*)realloc(
+            document->spatial_marks, (size_t)document->count * sizeof(document->spatial_marks[0]));
         if (!heads || !marks) {
             if (heads) {
                 document->spatial_heads = heads;
@@ -144,9 +141,11 @@ static int document_spatial_rebuild(Document* document)
         document->spatial_mark_capacity = document->count;
     }
 
-    memset(document->spatial_heads, 0xff,
+    memset(document->spatial_heads,
+           0xff,
            (size_t)document->spatial_cell_count * sizeof(document->spatial_heads[0]));
-    memset(document->spatial_marks, 0,
+    memset(document->spatial_marks,
+           0,
            (size_t)document->spatial_mark_capacity * sizeof(document->spatial_marks[0]));
     document->spatial_query_token = 0u;
 
@@ -165,11 +164,10 @@ static int document_spatial_rebuild(Document* document)
 
         object_bounds = object_get_bounds(document->objects[i]);
         min_col = (int)floorf((object_bounds.x - bounds.x) / document->spatial_cell_size);
-        max_col = (int)floorf((rectf_right(&object_bounds) - bounds.x) /
-                              document->spatial_cell_size);
+        max_col =
+            (int)floorf((rectf_right(&object_bounds) - bounds.x) / document->spatial_cell_size);
         min_row = (int)floorf((object_bounds.y - bounds.y) / document->spatial_cell_size);
-        max_row = (int)floorf((rectf_top(&object_bounds) - bounds.y) /
-                              document->spatial_cell_size);
+        max_row = (int)floorf((rectf_top(&object_bounds) - bounds.y) / document->spatial_cell_size);
         if (min_col < 0) {
             min_col = 0;
         }
@@ -211,8 +209,7 @@ static unsigned int document_spatial_next_query_token(Document* document)
     if (document->spatial_query_token == 0xffffffffu) {
         memset(document->spatial_marks,
                0,
-               (size_t)document->spatial_mark_capacity *
-                   sizeof(document->spatial_marks[0]));
+               (size_t)document->spatial_mark_capacity * sizeof(document->spatial_marks[0]));
         document->spatial_query_token = 1u;
     } else {
         document->spatial_query_token++;
@@ -250,7 +247,7 @@ void document_spatial_free(Document* document)
     document->spatial_entry_capacity = 0;
     document->spatial_revision = 0u;
     document->spatial_query_token = 0u;
-    document->spatial_bounds = (RectF){0.0f, 0.0f, 0.0f, 0.0f};
+    document->spatial_bounds = (RectF){ 0.0f, 0.0f, 0.0f, 0.0f };
     document->spatial_cell_size = DOCUMENT_SPATIAL_CELL_SIZE;
     document->spatial_mark_capacity = 0;
 }
@@ -289,12 +286,12 @@ int document_query_visible_indices(Document* document,
 
     query_token = document_spatial_next_query_token(document);
 
-    cell_min_col = (int)floorf((visible_rect.x - document->spatial_bounds.x) /
-                               document->spatial_cell_size);
+    cell_min_col =
+        (int)floorf((visible_rect.x - document->spatial_bounds.x) / document->spatial_cell_size);
     cell_max_col = (int)floorf((rectf_right(&visible_rect) - document->spatial_bounds.x) /
                                document->spatial_cell_size);
-    cell_min_row = (int)floorf((visible_rect.y - document->spatial_bounds.y) /
-                               document->spatial_cell_size);
+    cell_min_row =
+        (int)floorf((visible_rect.y - document->spatial_bounds.y) / document->spatial_cell_size);
     cell_max_row = (int)floorf((rectf_top(&visible_rect) - document->spatial_bounds.y) /
                                document->spatial_cell_size);
     if (cell_min_col < 0) {
@@ -319,9 +316,8 @@ int document_query_visible_indices(Document* document,
                 const DocumentLayer* layer =
                     object ? document_layer_find_const(document, object->layer_id) : NULL;
 
-                if (object &&
-                    document->spatial_marks[object_index] != query_token &&
-                    layer && layer->visible) {
+                if (object && document->spatial_marks[object_index] != query_token && layer &&
+                    layer->visible) {
                     RectF object_bounds = object_get_bounds(object);
                     if (!rect_intersects(&visible_rect, &object_bounds)) {
                         entry_index = document->spatial_entries[entry_index].next;
@@ -340,11 +336,8 @@ int document_query_visible_indices(Document* document,
     return count;
 }
 
-int document_query_point_indices(Document* document,
-                                 Vec2 point,
-                                 float tolerance,
-                                 int* out_indices,
-                                 int max_indices)
+int document_query_point_indices(
+    Document* document, Vec2 point, float tolerance, int* out_indices, int max_indices)
 {
     RectF query_rect;
 

@@ -117,7 +117,7 @@ void object_translate(GraphicObject* object, Vec2 delta)
 
 RectF object_get_bounds(const GraphicObject* object)
 {
-    RectF empty = {0.0f, 0.0f, 0.0f, 0.0f};
+    RectF empty = { 0.0f, 0.0f, 0.0f, 0.0f };
 
     if (!object || !object->descriptor || !object->descriptor->get_bounds) {
         return empty;

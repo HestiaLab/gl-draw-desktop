@@ -10,8 +10,7 @@
 struct Workspace;
 
 /** Check whether a command can run in the current workspace state. */
-int command_availability_is_available(const struct Workspace* workspace,
-                                      EditorCommand command);
+int command_availability_is_available(const struct Workspace* workspace, EditorCommand command);
 
 /**
  * Get a short human-readable reason when a command is unavailable.
@@ -21,7 +20,6 @@ const char* command_availability_unavailable_reason(const struct Workspace* work
                                                     EditorCommand command);
 
 /** Check whether a menu-backed command is available in the current workspace state. */
-int command_availability_is_menu_action_available(const struct Workspace* workspace,
-                                                  int id);
+int command_availability_is_menu_action_available(const struct Workspace* workspace, int id);
 
 #endif /* GLDRAW_APP_COMMAND_AVAILABILITY_H */

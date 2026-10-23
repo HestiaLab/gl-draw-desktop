@@ -210,13 +210,18 @@ static int ui_parse_hex_byte(const char* text, unsigned char* out_value)
 {
     int hi = 0;
     int lo = 0;
+    size_t length = 0u;
 
     if (!text || !out_value) {
         return 0;
     }
+    length = strlen(text);
+    if (length < 2u) {
+        return 0;
+    }
 
     hi = ui_hex_digit_value(text[0]);
-    lo = ui_hex_digit_value(text[1]);
+    lo = ui_hex_digit_value(text[1]); // NOLINT(clang-analyzer-core.CallAndMessage)
     if (hi < 0 || lo < 0) {
         return 0;
     }
@@ -242,8 +247,7 @@ int ui_parse_hex_color(const char* hex_text, struct nk_color* out_color)
         return 0;
     }
 
-    if (!ui_parse_hex_byte(hex_text + 1, &r) ||
-        !ui_parse_hex_byte(hex_text + 3, &g) ||
+    if (!ui_parse_hex_byte(hex_text + 1, &r) || !ui_parse_hex_byte(hex_text + 3, &g) ||
         !ui_parse_hex_byte(hex_text + 5, &b)) {
         return 0;
     }
@@ -267,8 +271,8 @@ int ui_theme_id_is_safe_for_json(const char* theme_id)
     }
 
     while (*cursor != '\0') {
-        if (!(isalnum((unsigned char)*cursor) || *cursor == '-' ||
-              *cursor == '_' || *cursor == '.')) {
+        if (!(isalnum((unsigned char)*cursor) || *cursor == '-' || *cursor == '_' ||
+              *cursor == '.')) {
             return 0;
         }
         cursor++;
@@ -329,7 +333,9 @@ int ui_theme_id_from_path(const char* path, char* out_id, size_t out_id_size)
     return write_length > 0u;
 }
 
-void ui_theme_apply_color_overrides(const char* source_path, const char* text, UiThemeTokens* tokens)
+void ui_theme_apply_color_overrides(const char* source_path,
+                                    const char* text,
+                                    UiThemeTokens* tokens)
 {
     typedef struct UiThemeColorField {
         const char* key;
@@ -337,21 +343,21 @@ void ui_theme_apply_color_overrides(const char* source_path, const char* text, U
     } UiThemeColorField;
 
     static const UiThemeColorField fields[] = {
-        {"primary", offsetof(UiThemeTokens, primary)},
-        {"primary_hover", offsetof(UiThemeTokens, primary_hover)},
-        {"primary_active", offsetof(UiThemeTokens, primary_active)},
-        {"background", offsetof(UiThemeTokens, background)},
-        {"panel", offsetof(UiThemeTokens, panel)},
-        {"panel_hover", offsetof(UiThemeTokens, panel_hover)},
-        {"canvas_background", offsetof(UiThemeTokens, canvas_background)},
-        {"text", offsetof(UiThemeTokens, text)},
-        {"text_secondary", offsetof(UiThemeTokens, text_secondary)},
-        {"text_disabled", offsetof(UiThemeTokens, text_disabled)},
-        {"border", offsetof(UiThemeTokens, border)},
-        {"border_hover", offsetof(UiThemeTokens, border_hover)},
-        {"success", offsetof(UiThemeTokens, success)},
-        {"warning", offsetof(UiThemeTokens, warning)},
-        {"error", offsetof(UiThemeTokens, error)},
+        { "primary", offsetof(UiThemeTokens, primary) },
+        { "primary_hover", offsetof(UiThemeTokens, primary_hover) },
+        { "primary_active", offsetof(UiThemeTokens, primary_active) },
+        { "background", offsetof(UiThemeTokens, background) },
+        { "panel", offsetof(UiThemeTokens, panel) },
+        { "panel_hover", offsetof(UiThemeTokens, panel_hover) },
+        { "canvas_background", offsetof(UiThemeTokens, canvas_background) },
+        { "text", offsetof(UiThemeTokens, text) },
+        { "text_secondary", offsetof(UiThemeTokens, text_secondary) },
+        { "text_disabled", offsetof(UiThemeTokens, text_disabled) },
+        { "border", offsetof(UiThemeTokens, border) },
+        { "border_hover", offsetof(UiThemeTokens, border_hover) },
+        { "success", offsetof(UiThemeTokens, success) },
+        { "warning", offsetof(UiThemeTokens, warning) },
+        { "error", offsetof(UiThemeTokens, error) },
     };
 
     if (!text || !tokens) {
@@ -377,7 +383,9 @@ void ui_theme_apply_color_overrides(const char* source_path, const char* text, U
     }
 }
 
-void ui_theme_apply_float_overrides(const char* source_path, const char* text, UiThemeTokens* tokens)
+void ui_theme_apply_float_overrides(const char* source_path,
+                                    const char* text,
+                                    UiThemeTokens* tokens)
 {
     typedef struct UiThemeFloatField {
         const char* key;
@@ -385,16 +393,16 @@ void ui_theme_apply_float_overrides(const char* source_path, const char* text, U
     } UiThemeFloatField;
 
     static const UiThemeFloatField fields[] = {
-        {"row_height", offsetof(UiThemeTokens, row_height)},
-        {"panel_width", offsetof(UiThemeTokens, panel_width)},
-        {"menu_height", offsetof(UiThemeTokens, menu_height)},
-        {"status_height", offsetof(UiThemeTokens, status_height)},
-        {"tool_rail_width", offsetof(UiThemeTokens, tool_rail_width)},
-        {"padding", offsetof(UiThemeTokens, padding)},
-        {"margin", offsetof(UiThemeTokens, margin)},
-        {"gap", offsetof(UiThemeTokens, gap)},
-        {"border_radius", offsetof(UiThemeTokens, border_radius)},
-        {"transition_duration", offsetof(UiThemeTokens, transition_duration)},
+        { "row_height", offsetof(UiThemeTokens, row_height) },
+        { "panel_width", offsetof(UiThemeTokens, panel_width) },
+        { "menu_height", offsetof(UiThemeTokens, menu_height) },
+        { "status_height", offsetof(UiThemeTokens, status_height) },
+        { "tool_rail_width", offsetof(UiThemeTokens, tool_rail_width) },
+        { "padding", offsetof(UiThemeTokens, padding) },
+        { "margin", offsetof(UiThemeTokens, margin) },
+        { "gap", offsetof(UiThemeTokens, gap) },
+        { "border_radius", offsetof(UiThemeTokens, border_radius) },
+        { "transition_duration", offsetof(UiThemeTokens, transition_duration) },
     };
 
     if (!text || !tokens) {

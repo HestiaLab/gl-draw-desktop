@@ -1,19 +1,21 @@
+# C's malloc/realloc/free intentionally convert between object pointers and
+# void *, so disable the C++-oriented checks that flag that pattern.
+# 指针数组的元素本身就是指针，sizeof(A*) 在这里是有意为之。
 Checks: >
   clang-diagnostic-*,
   clang-analyzer-*,
+  -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
   bugprone-*,
   performance-*,
   portability-*,
   misc-*,
-  -bugprone-easily-swappable-parameters,
-  -bugprone-narrowing-conversions,
-  -bugprone-suspicious-string-compare,
   -misc-include-cleaner,
   -misc-no-recursion,
+  -misc-use-internal-linkage,
+  -bugprone-easily-swappable-parameters,
+  -bugprone-multi-level-implicit-pointer-conversion,
+  -bugprone-sizeof-expression,
   -readability-*
 WarningsAsErrors: ''
-HeaderFilterRegex: '^(include|src|tests)/'
+HeaderFilterRegex: '^(include|src|tests/(?!vendor)).*'
 FormatStyle: file
-CheckOptions:
-  - key: bugprone-assert-side-effect.AssertMacros
-    value: assert

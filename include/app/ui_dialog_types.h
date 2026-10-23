@@ -5,10 +5,7 @@
 #ifndef GLDRAW_APP_UI_DIALOG_TYPES_H
 #define GLDRAW_APP_UI_DIALOG_TYPES_H
 
-typedef enum UiRequestType {
-    UI_REQUEST_NONE = 0,
-    UI_REQUEST_DIALOG
-} UiRequestType;
+typedef enum UiRequestType { UI_REQUEST_NONE = 0, UI_REQUEST_DIALOG } UiRequestType;
 
 typedef enum UiDialogKind {
     UI_DIALOG_NONE = 0,

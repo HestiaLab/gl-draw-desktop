@@ -1,201 +1,171 @@
-# Contributing to GLDraw
+# 贡献指南
 
-GLDraw is a C11 OpenGL drawing editor. This guide keeps day-to-day
-contributions aligned across contributors, reviewers, and CI.
+GL Draw Desktop 是 C11 + CMake + OpenGL 3.3 + Nuklear 的桌面绘图应用。本指南
+约束日常贡献、评审与 CI 预期。
 
-## Development Setup
+## 本地检查
 
-Use the repository build scripts for normal local builds:
+提交前必须执行完整的本地检查（格式检查 + 配置 + 构建 + 测试）。检查命令不会
+自动改写源码，格式不符合时会失败。
 
-```sh
-./build.sh
-./build.sh debug
-```
-
-On Windows with MinGW/MSYS2 from CMD:
-
-```bat
-build.bat
-build.bat debug
-```
-
-Manual CMake and packaging details are documented in [docs/build.md](docs/build.md).
-Optional CMake presets are available for contributors with a recent CMake:
+**Linux/macOS**
 
 ```sh
-cmake --preset debug
-cmake --build --preset debug
-ctest --preset debug --output-on-failure
+./scripts/bootstrap.sh
+./scripts/check.sh
 ```
 
-`CMakeLists.txt` should stay the project entry point. Keep reusable CMake logic
-in `cmake/` modules instead of growing the root file.
+**Windows PowerShell**
 
-## Branches and Commits
+```powershell
+./scripts/bootstrap.ps1
+./scripts/check.ps1
+```
 
-Use short, scoped branch names:
+提交前运行包含 clang-tidy 的完整质量门禁：
 
-* `feature/<topic>` for user-facing behavior.
-* `fix/<topic>` for bug fixes.
-* `refactor/<topic>` for internal reshaping without intended behavior changes.
-* `infra/<topic>` for build, CI, documentation, packaging, or tooling.
-* `release/<version>` for release preparation.
+```sh
+./scripts/check.sh --enable-tidy
+```
 
-Prefer focused commits that can be reviewed independently. Commit subjects should
-start with a useful scope when possible, for example:
+```powershell
+./scripts/check.ps1 -EnableTidy
+```
+
+需要显式修复 C 源码和头文件格式时执行：
+
+```sh
+./scripts/check.sh --fix-format
+```
+
+```powershell
+./scripts/check.ps1 -FixFormat
+```
+
+## 分支与提交
+
+使用短小、聚焦的分支名：
+
+- `feature/<topic>`：用户可见行为。
+- `fix/<topic>`：缺陷修复。
+- `refactor/<topic>`：不改变行为的内部调整。
+- `infra/<topic>`：构建、CI、文档、打包或工具链。
+- `release/<version>`：发布准备。
+
+提交标题使用 Conventional Commits，类型与作用域保持英文，摘要使用中文：
 
 ```text
-fix(commands): preserve selection after undo
-feat(tools): add polygon drag lifecycle
-chore(ci): align builds with CMake presets
+fix(commands): 撤销后保留选择状态
+feat(tools): 增加多边形拖拽生命周期
+chore(ci): 对齐 CMake preset
 ```
 
-## Pull Requests
+## Pull Request
 
-Before opening a pull request:
+创建 Pull Request 前：
 
-* Use a Conventional Commit style PR title: `type(scope): summary`, for example
-  `fix(commands): preserve selection after undo`.
-* Use the repository pull request template as the shared review format. Keep the
-  standard sections unless they are clearly not applicable, and mark fields as
-  not applicable or not run instead of deleting review context.
-* Rebase or merge the target branch if the change depends on recent CI or build
-  updates.
-* Run the smallest local verification that covers the touched area.
-* Include screenshots or short recordings for visible UI, canvas, rendering, or
-  theme changes.
-* Explain any compatibility, file format, packaging, or release impact.
-* Link issues with `Closes #...` or `Refs #...` when applicable.
+- 使用 `type(scope): 摘要` 格式的标题。
+- 使用仓库 PR 模板，保留摘要、验证、影响与 AI 辅助章节；不适用时标记为
+  “不适用”，不要删除评审上下文。
+- 如果改动依赖最新的 CI 或构建变更，先 rebase 或合并目标分支。
+- 运行覆盖改动范围的最小验证。
+- 可见的 UI、画布、渲染或主题改动附截图或短录屏。
+- 说明兼容性、文件格式、打包或发布影响。
+- 使用 `Closes #...` 或 `Refs #...` 关联 Issue。
 
-The pull request body should help reviewers collaborate without reconstructing
-the change from the diff:
+评审首先关注行为、所有权边界与测试；风格问题应指回共享的格式化配置。
 
-* `Summary` should state what changed and why, not list unrelated work.
-* `Change Type` and `Areas Touched` should identify the review owners and risk
-  surface.
-* `Architecture Checklist` should call out boundary-sensitive work or explicitly
-  mark it not applicable.
-* `Testing` should list the checks that actually ran and give a reason for any
-  relevant check that was skipped.
-* `AI Assistance` should disclose meaningful agent use, the required docs read,
-  and the human verification still needed.
-* `Compatibility and Release Notes` should make file format, dependency,
-  packaging, and changelog impact explicit.
+## AI 辅助贡献
 
-Reviewers should focus first on behavior, ownership boundaries, and tests. Style
-feedback should point back to the shared formatting rules where possible.
+AI 辅助贡献必须像其他改动一样受范围、评审与验证约束。编辑前，AI 代理应阅读
+`AGENTS.md`、[AI 代理政策](docs/guides/ai-agents.md)、
+[AI 代理工作流](docs/guides/agent-playbooks.md) 以及任务涉及的文档。
 
-## AI-Assisted Contributions
+使用实质性 AI 辅助时：
 
-AI-assisted contributions are welcome when they are scoped, reviewable, and
-verified like any other change. Before editing, AI agents should read AGENTS.md,
-docs/ai-agents.md, docs/agent-playbooks.md, and the documents required by the task
-area.
+- 在 PR 模板中披露。
+- 写明代理或工具名称。
+- 概括代理完成的工作。
+- 列出已阅读的必读文档。
+- 记录人工验证与仍需执行的手动检查。
 
-When meaningful AI assistance was used:
+AI 生成的改动不得绕过架构边界、削弱检查或替代维护者评审。
 
-* Disclose it in the pull request template.
-* Name the agent or tool.
-* Summarize what the agent did.
-* List the required docs read.
-* Record human verification and any remaining manual checks.
+## 架构边界
 
-AI-generated changes must not bypass architecture boundaries, weaken checks, or
-replace maintainer review. Use the AI agent task issue template when preparing
-work that should be handed to an agent.
+保持改动与当前所有权模型一致：
 
-## Architecture Boundaries
+- 持久文档变更通过 `CommandExecutor`。
+- 对象存储、图层、ID、修订与空间查询属于 `document/`。
+- 选择、剪贴板、对话框、脏状态与布局属于 workspace/session。
+- 工具输入通过 `editor_controller` 与 `tool_runtime`。
+- UI 消费 view-model 或 workspace 查询状态并发出 action，不拥有编辑规则。
+- 渲染消费 `RenderSceneDesc` 或编辑器渲染场景状态，不定义文档行为。
+- 平台输入值在 app/input 边界转换。
+- 着色器、主题、脚本与字体查找使用 `base/resource_path`。
 
-When modifying core documentation (build, controls, testing), also update the
-corresponding Chinese translation under `docs/zh-CN/` if the change affects
-user-visible instructions or policy.
+除 workspace 实现文件外，不要新增 `workspace_internal.h` 依赖；仅当测试明确
+验证内部生命周期行为时例外。
 
-Keep changes aligned with the current ownership model:
+## 添加对象
 
-* Durable document mutations should go through `CommandExecutor`.
-* Object storage, layers, IDs, revisions, and spatial queries belong in
-  `document/`.
-* Selection, clipboard, dialogs, dirty state, and layout are workspace/session
-  concerns.
-* Tool input should flow through `editor_controller` and `tool_runtime`.
-* UI code should consume view-model or workspace query state and emit actions; it
-  should not own editing rules.
-* Rendering consumes render scene state; it should not define document behavior.
-* Platform-specific input values should be converted at the app/input boundary.
-* Resource lookup for shaders, themes, and scripts should use
-  `base/resource_path`.
+对象通过 `GraphicObjectDescriptor` 描述。
 
-Avoid adding new includes of `workspace_internal.h` outside workspace
-implementation files unless a test explicitly verifies internal lifecycle
-behavior.
+新增或修改对象类型时：
 
-## Adding Document Objects
+- 按需实现 create、clone、destroy、translate、bounds、hit-test、path、
+  property 与 persistence 回调。
+- 使用 `register_object_type()` 注册描述符。
+- 通过 `src/app/extension_manifest.c` 注册内置对象。
+- 新自动分配的对象类型 ID 优先使用 `GRAPHIC_OBJECT_INVALID`。
+- 为持久化、边界、命中测试与属性行为补充聚焦测试。
 
-Objects are descriptor-driven through `GraphicObjectDescriptor`.
+## 添加工具
 
-When adding or changing an object type:
+工具通过 `ToolDescriptor` 描述。
 
-* Implement create, clone, destroy, translate, bounds, hit-test, path, property,
-  and persistence callbacks as needed.
-* Register descriptors with `register_object_type()`.
-* Add built-in object registration through `src/app/extension_manifest.c`.
-* Prefer `GRAPHIC_OBJECT_INVALID` for new auto-assigned object type IDs.
-* Add focused tests for persistence, bounds, hit-testing, and property behavior
-  when the object affects those contracts.
+新增或修改工具时：
 
-## Adding Tools
+- 使用 `register_tool()` 注册自定义工具。
+- 标准形状拖拽生命周期足够时使用 `register_shape_tool()`。
+- 通过 `src/app/tool_manifest.c` 注册内置工具。
+- 持久编辑保持命令化；预览使用 overlay。
+- 为命令创建与取消行为补充测试。
 
-Tools are descriptor-driven through `ToolDescriptor`.
+## 添加命令
 
-When adding or changing a tool:
+命令元数据、可用性与执行是分开的：
 
-* Register custom tools with `register_tool()`.
-* Use `register_shape_tool()` when the standard shape-drag lifecycle is enough.
-* Add built-in tool registration through `src/app/tool_manifest.c`.
-* Keep durable edits command-based; use overlays for previews.
-* Test command creation and cancellation behavior where practical.
+- `command_catalog` 拥有命令描述符与 ID。
+- `command_availability` 拥有可执行状态检查。
+- `command_registry_execute()` 是公共执行入口。
+- 具体 workspace 行为拆分在聚焦的 workspace 命令模块中。
 
-## Adding Commands
+命令改动应包含成功路径、不可用状态与撤销/重做测试。
 
-Command metadata, availability, and execution are split:
+## UI 改动
 
-* `command_catalog` owns command descriptors and IDs.
-* `command_availability` owns executable-state checks.
-* `command_registry_execute()` remains the public execution entrypoint.
-* Concrete workspace behavior is split across focused workspace command modules.
+UI 帧构建拆分在聚焦的 `src/ui/` 模块中。保持 UI 薄：读取 workspace 查询状态、
+呈现控件、发出 action，不要把编辑规则搬进控件。
 
-Command changes should include tests for success paths, unavailable states, and
-undo/redo behavior when durable document state changes.
+可见 UI 改动应在 PR 中附截图或短录屏；中文字体或布局改动必须启动应用核验。
 
-## UI Changes
-
-UI frame construction is split across focused `src/ui/` modules. Keep UI changes
-thin: read workspace query state, present controls, and dispatch actions. Avoid
-moving editing rules into widgets.
-
-Visible UI changes should include a screenshot or short recording in the pull
-request when possible.
-
-## Local Verification
-
-Use the local check scripts when available:
+## 本地验证
 
 ```sh
 ./scripts/check.sh
 ```
 
-On Windows PowerShell:
-
 ```powershell
 ./scripts/check.ps1
 ```
 
-For targeted work, run the relevant CMake preset directly:
+针对特定范围可直接运行 preset：
 
 ```sh
-cmake --preset debug
-cmake --build --preset debug
-ctest --preset debug --output-on-failure
+cmake --preset ninja-debug
+cmake --build --preset ninja-debug
+ctest --preset ninja-debug --output-on-failure
 ```
 
-CI remains the source of truth for platform coverage.
+CI 是三平台覆盖的事实来源。

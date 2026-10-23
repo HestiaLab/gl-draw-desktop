@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 static const char* layer_blend_mode_name(DocumentLayerBlendMode blend_mode)
 {
@@ -22,15 +23,18 @@ static const char* layer_blend_mode_name(DocumentLayerBlendMode blend_mode)
 
 static int write_json_string(FILE* file, const char* text)
 {
-    const unsigned char* cursor = (const unsigned char*)(text ? text : "");
+    size_t length = text ? strlen(text) : 0u;
+    size_t index = 0u;
 
     if (!file) {
         return 0;
     }
 
     fputc('"', file);
-    while (*cursor) {
-        switch (*cursor) {
+    for (index = 0u; index < length; ++index) {
+        unsigned char current = (unsigned char)text[index];
+
+        switch (current) {
         case '"':
             fputs("\\\"", file);
             break;
@@ -53,14 +57,13 @@ static int write_json_string(FILE* file, const char* text)
             fputs("\\t", file);
             break;
         default:
-            if (*cursor < 0x20u) {
-                fprintf(file, "\\u%04x", (unsigned int)*cursor);
+            if (current < 0x20u) {
+                fprintf(file, "\\u%04x", (unsigned int)current);
             } else {
-                fputc((int)*cursor, file);
+                fputc((int)current, file);
             }
             break;
         }
-        cursor++;
     }
     fputc('"', file);
     return ferror(file) == 0;
@@ -86,12 +89,14 @@ int write_document_json(FILE* file, const Document* document)
         fprintf(file, "    {\n");
         fprintf(file, "      \"id\": %u,\n", layer->id);
         fprintf(file, "      \"name\": ");
-        if (!write_json_string(file, layer->name)) return 0;
+        if (!write_json_string(file, layer->name))
+            return 0;
         fprintf(file, ",\n");
         fprintf(file, "      \"visible\": %s,\n", layer->visible ? "true" : "false");
         fprintf(file, "      \"locked\": %s,\n", layer->locked ? "true" : "false");
         fprintf(file, "      \"blend_mode\": ");
-        if (!write_json_string(file, layer_blend_mode_name(layer->blend_mode))) return 0;
+        if (!write_json_string(file, layer_blend_mode_name(layer->blend_mode)))
+            return 0;
         fprintf(file, "\n");
         fprintf(file, "    }%s\n", (i + 1 < document->layer_count) ? "," : "");
     }
@@ -105,10 +110,12 @@ int write_document_json(FILE* file, const Document* document)
         fprintf(file, "      \"id\": %u,\n", object->id);
         fprintf(file, "      \"layer_id\": %u,\n", object->layer_id);
         fprintf(file, "      \"type\": ");
-        if (!write_json_string(file, object_type_id(object))) return 0;
+        if (!write_json_string(file, object_type_id(object)))
+            return 0;
         fprintf(file, ",\n");
         fprintf(file,
-                "      \"stroke\": { \"r\": %.9g, \"g\": %.9g, \"b\": %.9g, \"a\": %.9g, \"width\": %.9g },\n",
+                "      \"stroke\": { \"r\": %.9g, \"g\": %.9g, \"b\": %.9g, \"a\": %.9g, "
+                "\"width\": %.9g },\n",
                 object->style.stroke_color.r,
                 object->style.stroke_color.g,
                 object->style.stroke_color.b,

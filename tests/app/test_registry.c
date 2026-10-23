@@ -14,41 +14,13 @@
 #include <stdio.h>
 #include <string.h>
 
-#define EXPECT_TRUE(expr)                                                     \
-    do {                                                                      \
-        if (!(expr)) {                                                        \
-            fprintf(stderr, "EXPECT_TRUE failed: %s:%d: %s\n",                \
-                    __FILE__, __LINE__, #expr);                               \
-            return 1;                                                         \
-        }                                                                     \
-    } while (0)
-
-#define EXPECT_STR_EQ(actual, expected)                                       \
-    do {                                                                      \
-        if (strcmp((actual), (expected)) != 0) {                              \
-            fprintf(stderr, "EXPECT_STR_EQ failed: %s:%d: \"%s\" != \"%s\"\n",\
-                    __FILE__, __LINE__, (actual), (expected));                \
-            return 1;                                                         \
-        }                                                                     \
-    } while (0)
+#include "test_assertions.h"
 
 static const ToolDescriptor G_FAKE_TOOL = {
-    "fake-tool",
-    "Fake Tool",
-    "tool.fake",
-    "Synthetic registry tool",
-    "Fake",
-    "F",
-    1,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
+    "fake-tool", "Fake Tool", "tool.fake", "Synthetic registry tool",
+    "Fake",      "F",         1,           NULL,
+    NULL,        NULL,        NULL,        NULL,
+    NULL,        NULL,        NULL,        NULL,
     NULL
 };
 
@@ -74,7 +46,7 @@ static int find_fake_tool_index(void)
     return -1;
 }
 
-static int test_tool_registry_preserves_extension_preload(void)
+static void test_tool_registry_preserves_extension_preload(void)
 {
     const ToolDescriptor* select_tool = NULL;
     ToolDescriptor conflicting_tool = G_FAKE_TOOL;
@@ -99,11 +71,9 @@ static int test_tool_registry_preserves_extension_preload(void)
     conflicting_tool.name = "Conflicting Fake Tool";
     EXPECT_TRUE(!register_tool(&conflicting_tool));
     EXPECT_TRUE(tool_registry_count() == count_after_builtins);
-
-    return 0;
 }
 
-static int test_dynamic_tool_command_and_menu_registration(void)
+static void test_dynamic_tool_command_and_menu_registration(void)
 {
     const CommandDescriptor* command_descriptor = NULL;
     const CommandDescriptor* menu_descriptor = NULL;
@@ -137,11 +107,9 @@ static int test_dynamic_tool_command_and_menu_registration(void)
         }
     }
     EXPECT_TRUE(found_menu_item);
-
-    return 0;
 }
 
-static int test_stable_command_catalog_availability_and_routes(void)
+static void test_stable_command_catalog_availability_and_routes(void)
 {
     int i = 0;
 
@@ -161,12 +129,10 @@ static int test_stable_command_catalog_availability_and_routes(void)
         EXPECT_TRUE(by_id == descriptor);
         EXPECT_TRUE(by_command == descriptor);
         EXPECT_TRUE(command_registry_has_static_handler(descriptor->command));
-        EXPECT_TRUE(command_availability_unavailable_reason(NULL,
-                                                            descriptor->command) != NULL);
+        EXPECT_TRUE(command_availability_unavailable_reason(NULL, descriptor->command) != NULL);
 
         if (descriptor->menu_id > 0) {
-            EXPECT_TRUE(command_catalog_find_by_menu_id(descriptor->menu_id) ==
-                        descriptor);
+            EXPECT_TRUE(command_catalog_find_by_menu_id(descriptor->menu_id) == descriptor);
         }
     }
 
@@ -174,13 +140,12 @@ static int test_stable_command_catalog_availability_and_routes(void)
     EXPECT_TRUE(command_catalog_stable_at(command_catalog_stable_count()) == NULL);
     EXPECT_TRUE(!command_registry_has_static_handler(EDITOR_COMMAND_NONE));
     EXPECT_TRUE(!command_registry_has_static_handler(EDITOR_COMMAND_DYNAMIC_TOOL_BASE));
-    return 0;
 }
 
-static int test_dynamic_tool_shortcut_and_availability(void)
+static void test_dynamic_tool_shortcut_and_availability(void)
 {
     Workspace workspace;
-    EditorViewModel view_model = {0};
+    EditorViewModel view_model = { 0 };
     LayerId locked_layer = 0u;
     EditorKeymap keymap;
     char shortcut[64];
@@ -194,7 +159,8 @@ static int test_dynamic_tool_shortcut_and_availability(void)
     keymap_init(&keymap, "registry.test.keymap.json");
 
     shortcut[0] = '\0';
-    keymap_format_command_shortcut(&keymap, "tool.fake", KEY_SCOPE_GLOBAL, shortcut, sizeof(shortcut));
+    keymap_format_command_shortcut(
+        &keymap, "tool.fake", KEY_SCOPE_GLOBAL, shortcut, sizeof(shortcut));
     EXPECT_STR_EQ(shortcut, "F");
 
     workspace.session.keymap = keymap;
@@ -211,7 +177,7 @@ static int test_dynamic_tool_shortcut_and_availability(void)
             found_tool = 1;
             EXPECT_TRUE(view_model.tools[i].available == 0);
             EXPECT_STR_EQ(view_model.tools[i].shortcut, "F");
-            EXPECT_STR_EQ(view_model.tools[i].unavailable_reason, "Active layer is locked.");
+            EXPECT_STR_EQ(view_model.tools[i].unavailable_reason, "当前图层已锁定。");
             break;
         }
     }
@@ -222,16 +188,18 @@ static int test_dynamic_tool_shortcut_and_availability(void)
     keymap_shutdown(&workspace.session.keymap);
     command_executor_shutdown(&workspace.core.commands);
     document_shutdown(&workspace.core.document);
-    return 0;
 }
+
+void setUp(void) {}
+
+void tearDown(void) {}
 
 int main(void)
 {
-    if (test_tool_registry_preserves_extension_preload()) return 1;
-    if (test_stable_command_catalog_availability_and_routes()) return 1;
-    if (test_dynamic_tool_command_and_menu_registration()) return 1;
-    if (test_dynamic_tool_shortcut_and_availability()) return 1;
-
-    printf("[PASS] dynamic tool registry integration\n");
-    return 0;
+    UNITY_BEGIN();
+    RUN_TEST(test_tool_registry_preserves_extension_preload);
+    RUN_TEST(test_stable_command_catalog_availability_and_routes);
+    RUN_TEST(test_dynamic_tool_command_and_menu_registration);
+    RUN_TEST(test_dynamic_tool_shortcut_and_availability);
+    return UNITY_END();
 }

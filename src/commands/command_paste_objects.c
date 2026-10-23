@@ -17,10 +17,8 @@ static int paste_objects_execute(void* cmd, Document* document)
             break;
         }
 
-        if (!document_append_object_with_id_to_layer(document,
-                                                     clone,
-                                                     command->object_ids[i],
-                                                     command->layer_id)) {
+        if (!document_append_object_with_id_to_layer(
+                document, clone, command->object_ids[i], command->layer_id)) {
             object_destroy(clone);
             break;
         }
@@ -74,17 +72,21 @@ static void paste_objects_destroy(void* cmd)
         return;
     }
 
-    for (i = 0; i < command->object_count; ++i) {
-        object_destroy(command->object_snapshots[i]);
+    if (command->object_snapshots) {
+        for (i = 0; i < command->object_count; ++i) {
+            object_destroy(command->object_snapshots[i]);
+        }
     }
     g_allocator.free_fn(command->object_snapshots);
     g_allocator.free_fn(command->object_ids);
     g_allocator.free_fn(command);
 }
 
-const CommandVTable PASTE_OBJECTS_VTABLE = {paste_objects_execute, paste_objects_undo,
-                                            paste_objects_execute, paste_objects_merge,
-                                            paste_objects_destroy};
+const CommandVTable PASTE_OBJECTS_VTABLE = { paste_objects_execute,
+                                             paste_objects_undo,
+                                             paste_objects_execute,
+                                             paste_objects_merge,
+                                             paste_objects_destroy };
 
 Command* command_create_paste_objects(const Document* document,
                                       GraphicObject* const* object_snapshots,
@@ -106,9 +108,8 @@ Command* command_create_paste_objects(const Document* document,
         return NULL;
     }
 
-    command->object_snapshots =
-        (GraphicObject**)g_allocator.calloc_fn((size_t)object_count,
-                                               sizeof(command->object_snapshots[0]));
+    command->object_snapshots = (GraphicObject**)g_allocator.calloc_fn(
+        (size_t)object_count, sizeof(command->object_snapshots[0]));
     command->object_ids =
         (ObjectId*)g_allocator.calloc_fn((size_t)object_count, sizeof(command->object_ids[0]));
     if (!command->object_snapshots || !command->object_ids) {

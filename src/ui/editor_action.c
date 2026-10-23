@@ -37,15 +37,13 @@ EditorAction editor_action_make_set_tool(const char* tool_id)
 
     editor_action_init(&action);
     action.type = EDITOR_ACTION_SET_TOOL;
-    editor_action_copy_string(action.payload.set_tool.tool_id,
-                              sizeof(action.payload.set_tool.tool_id),
-                              tool_id);
+    editor_action_copy_string(
+        action.payload.set_tool.tool_id, sizeof(action.payload.set_tool.tool_id), tool_id);
     return action;
 }
 
-EditorAction editor_action_make_modify_property(ObjectId object_id,
-                                                const char* property_name,
-                                                float value)
+EditorAction
+editor_action_make_modify_property(ObjectId object_id, const char* property_name, float value)
 {
     EditorAction action;
 
@@ -98,9 +96,8 @@ EditorAction editor_action_make_rename_layer(LayerId layer_id, const char* name)
     editor_action_init(&action);
     action.type = EDITOR_ACTION_RENAME_LAYER;
     action.payload.rename_layer.layer_id = layer_id;
-    editor_action_copy_string(action.payload.rename_layer.name,
-                              sizeof(action.payload.rename_layer.name),
-                              name);
+    editor_action_copy_string(
+        action.payload.rename_layer.name, sizeof(action.payload.rename_layer.name), name);
     return action;
 }
 
@@ -121,23 +118,20 @@ EditorAction editor_action_make_create_layer(const char* name)
 
     editor_action_init(&action);
     action.type = EDITOR_ACTION_CREATE_LAYER;
-    editor_action_copy_string(action.payload.create_layer.name,
-                              sizeof(action.payload.create_layer.name),
-                              name);
+    editor_action_copy_string(
+        action.payload.create_layer.name, sizeof(action.payload.create_layer.name), name);
     return action;
 }
 
-EditorAction editor_action_make_resolve_dialog(UiDialogResult result,
-                                               const char* text)
+EditorAction editor_action_make_resolve_dialog(UiDialogResult result, const char* text)
 {
     EditorAction action;
 
     editor_action_init(&action);
     action.type = EDITOR_ACTION_RESOLVE_DIALOG;
     action.payload.resolve_dialog.result = result;
-    editor_action_copy_string(action.payload.resolve_dialog.text,
-                              sizeof(action.payload.resolve_dialog.text),
-                              text);
+    editor_action_copy_string(
+        action.payload.resolve_dialog.text, sizeof(action.payload.resolve_dialog.text), text);
     return action;
 }
 

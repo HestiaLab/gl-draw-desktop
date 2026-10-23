@@ -69,9 +69,11 @@ static void transaction_destroy(void* cmd)
     g_allocator.free_fn(transaction);
 }
 
-const CommandVTable TRANSACTION_VTABLE = {transaction_execute, transaction_undo,
-                                          transaction_execute, transaction_merge,
-                                          transaction_destroy};
+const CommandVTable TRANSACTION_VTABLE = { transaction_execute,
+                                           transaction_undo,
+                                           transaction_execute,
+                                           transaction_merge,
+                                           transaction_destroy };
 
 int command_executor_begin_transaction(CommandExecutor* executor)
 {
@@ -120,9 +122,8 @@ int command_executor_commit_transaction(CommandExecutor* executor)
         return 0;
     }
 
-    transaction->commands = (Command**)g_allocator.calloc_fn(
-        executor->transaction_count,
-        sizeof(transaction->commands[0]));
+    transaction->commands = (Command**)g_allocator.calloc_fn(executor->transaction_count,
+                                                             sizeof(transaction->commands[0]));
     if (!transaction->commands) {
         g_allocator.free_fn(transaction);
         for (i = 0u; i < executor->transaction_count; ++i) {
@@ -161,8 +162,9 @@ void command_executor_rollback_transaction(CommandExecutor* executor, Document* 
             Command* command = executor->transaction_commands[i - 1u];
             if (command && command->vtable && command->vtable->undo) {
                 if (!command->vtable->undo(command, document)) {
-                    LOG_ERROR("%s", "command_executor_rollback_transaction: undo failed during "
-                                    "transaction rollback - document may be in inconsistent state");
+                    LOG_ERROR("%s",
+                              "command_executor_rollback_transaction: undo failed during "
+                              "transaction rollback - document may be in inconsistent state");
                 }
             }
         }

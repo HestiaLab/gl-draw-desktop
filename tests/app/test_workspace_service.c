@@ -8,64 +8,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define EXPECT_TRUE(expr)                                                     \
-    do {                                                                      \
-        if (!(expr)) {                                                        \
-            fprintf(stderr, "EXPECT_TRUE failed: %s:%d: %s\n",                \
-                    __FILE__, __LINE__, #expr);                               \
-            return 1;                                                         \
-        }                                                                     \
-    } while (0)
-
-#define EXPECT_FALSE(expr) EXPECT_TRUE(!(expr))
-
-#define EXPECT_INT_EQ(actual, expected)                                       \
-    do {                                                                      \
-        int actual_value = (actual);                                          \
-        int expected_value = (expected);                                      \
-        if (actual_value != expected_value) {                                 \
-            fprintf(stderr, "EXPECT_INT_EQ failed: %s:%d: %d != %d\n",        \
-                    __FILE__, __LINE__, actual_value, expected_value);        \
-            return 1;                                                         \
-        }                                                                     \
-    } while (0)
-
-#define EXPECT_UINT_EQ(actual, expected)                                      \
-    do {                                                                      \
-        unsigned int actual_value = (actual);                                 \
-        unsigned int expected_value = (expected);                             \
-        if (actual_value != expected_value) {                                 \
-            fprintf(stderr, "EXPECT_UINT_EQ failed: %s:%d: %u != %u\n",       \
-                    __FILE__, __LINE__, actual_value, expected_value);        \
-            return 1;                                                         \
-        }                                                                     \
-    } while (0)
-
-#define EXPECT_FLOAT_EQ(actual, expected)                                     \
-    do {                                                                      \
-        float actual_value = (actual);                                        \
-        float expected_value = (expected);                                    \
-        if (fabsf(actual_value - expected_value) > 1e-4f) {                   \
-            fprintf(stderr, "EXPECT_FLOAT_EQ failed: %s:%d: %.4f != %.4f\n",  \
-                    __FILE__, __LINE__, actual_value, expected_value);        \
-            return 1;                                                         \
-        }                                                                     \
-    } while (0)
-
-#define EXPECT_STR_EQ(actual, expected)                                       \
-    do {                                                                      \
-        if (strcmp((actual), (expected)) != 0) {                              \
-            fprintf(stderr, "EXPECT_STR_EQ failed: %s:%d: \"%s\" != \"%s\"\n",\
-                    __FILE__, __LINE__, (actual), (expected));                \
-            return 1;                                                         \
-        }                                                                     \
-    } while (0)
+#include "test_assertions.h"
 
 static const char* k_temp_document_path = "gldraw_workspace_service_test.json";
 
 static GraphicObject* make_rect(float x, float y, float w, float h)
 {
-    return object_create_rect((RectF){x, y, w, h}, object_default_style());
+    return object_create_rect((RectF){ x, y, w, h }, object_default_style());
 }
 
 static int seed_clipboard_with_object(Workspace* workspace, const GraphicObject* source)
@@ -101,8 +50,7 @@ static int make_workspace_dirty(Workspace* workspace)
         return 0;
     }
 
-    if (!document_add_object(&workspace->core.document,
-                             make_rect(10.0f, 20.0f, 30.0f, 40.0f))) {
+    if (!document_add_object(&workspace->core.document, make_rect(10.0f, 20.0f, 30.0f, 40.0f))) {
         return 0;
     }
     object = document_find_object(&workspace->core.document, 1u);
@@ -115,13 +63,10 @@ static int make_workspace_dirty(Workspace* workspace)
     if (!seed_clipboard_with_object(workspace, object)) {
         return 0;
     }
-    if (!command_executor_execute(
-            &workspace->core.commands,
-            command_create_set_property_from_document(&workspace->core.document,
-                                                      object->id,
-                                                      "width",
-                                                      55.0f),
-            &workspace->core.document)) {
+    if (!command_executor_execute(&workspace->core.commands,
+                                  command_create_set_property_from_document(
+                                      &workspace->core.document, object->id, "width", 55.0f),
+                                  &workspace->core.document)) {
         return 0;
     }
     if (!tool_controller_set_active(&workspace->core.tools, NULL, "rect")) {
@@ -188,7 +133,7 @@ static int test_new_document_resets_workspace_state(Workspace* workspace)
     EXPECT_UINT_EQ(workspace->core.document.active_layer_id, 1u);
     EXPECT_TRUE(expect_runtime_state_cleared(workspace));
     EXPECT_TRUE(workspace->session.current_document_path[0] == '\0');
-    EXPECT_STR_EQ(workspace->session.status_message, "New empty document");
+    EXPECT_STR_EQ(workspace->session.status_message, "新建空白文档");
     EXPECT_FLOAT_EQ(canvas_view_center(&workspace->core.canvas).x, 0.0f);
     EXPECT_FLOAT_EQ(canvas_view_center(&workspace->core.canvas).y, 0.0f);
     EXPECT_FLOAT_EQ(canvas_view_zoom(&workspace->core.canvas), 1.0f);
@@ -197,8 +142,8 @@ static int test_new_document_resets_workspace_state(Workspace* workspace)
 
 static int test_load_document_resets_runtime_state(Workspace* workspace)
 {
-    EXPECT_TRUE(document_add_object(&workspace->core.document,
-                                    make_rect(0.0f, 0.0f, 10.0f, 10.0f)));
+    EXPECT_TRUE(
+        document_add_object(&workspace->core.document, make_rect(0.0f, 0.0f, 10.0f, 10.0f)));
     EXPECT_TRUE(workspace_service_save_to_path(workspace, k_temp_document_path));
     EXPECT_TRUE(make_workspace_dirty(workspace));
 
@@ -211,20 +156,19 @@ static int test_load_document_resets_runtime_state(Workspace* workspace)
     EXPECT_TRUE(expect_runtime_state_cleared(workspace));
     EXPECT_STR_EQ(workspace_service_document_path(workspace), k_temp_document_path);
     EXPECT_STR_EQ(workspace->session.status_message,
-                  "Loaded document: gldraw_workspace_service_test.json");
+                  "已加载文档：gldraw_workspace_service_test.json");
     return 0;
 }
 
-static int test_workspace_create_destroy_allocates_opaque_workspace(void)
+static void test_workspace_create_destroy_allocates_opaque_workspace(void)
 {
-    Workspace* workspace = workspace_create((RectF){0.0f, 0.0f, 640.0f, 480.0f},
-                                            "gldraw.test.keymap.json");
+    Workspace* workspace =
+        workspace_create((RectF){ 0.0f, 0.0f, 640.0f, 480.0f }, "gldraw.test.keymap.json");
 
     EXPECT_TRUE(workspace != NULL);
     EXPECT_INT_EQ(workspace->core.document.count, 0);
     EXPECT_FLOAT_EQ(canvas_view_zoom(&workspace->core.canvas), 1.0f);
     workspace_destroy(workspace);
-    return 0;
 }
 
 static int test_workspace_service_invalid_arguments_are_safe(Workspace* workspace)
@@ -246,42 +190,48 @@ static int test_workspace_service_invalid_arguments_are_safe(Workspace* workspac
     return 0;
 }
 
+static Workspace g_workspace;
+
+static void run_new_document_resets_workspace_state(void)
+{
+    (void)test_new_document_resets_workspace_state(&g_workspace);
+}
+
+static void run_load_document_resets_runtime_state(void)
+{
+    (void)test_load_document_resets_runtime_state(&g_workspace);
+}
+
+static void run_workspace_service_invalid_arguments_are_safe(void)
+{
+    (void)test_workspace_service_invalid_arguments_are_safe(&g_workspace);
+}
+
+void setUp(void) {}
+
+void tearDown(void) {}
+
 int main(void)
 {
-    Workspace workspace;
     int result = 0;
 
     remove(k_temp_document_path);
-    memset(&workspace, 0, sizeof(workspace));
+    memset(&g_workspace, 0, sizeof(g_workspace));
 
-    if (!workspace_init(&workspace,
-                        (RectF){0.0f, 0.0f, 800.0f, 600.0f},
-                        "gldraw.test.keymap.json")) {
+    if (!workspace_init(
+            &g_workspace, (RectF){ 0.0f, 0.0f, 800.0f, 600.0f }, "gldraw.test.keymap.json")) {
         fprintf(stderr, "workspace_init failed\n");
         return 1;
     }
 
-    if (test_new_document_resets_workspace_state(&workspace)) {
-        result = 1;
-        goto cleanup;
-    }
-    if (test_load_document_resets_runtime_state(&workspace)) {
-        result = 1;
-        goto cleanup;
-    }
-    if (test_workspace_create_destroy_allocates_opaque_workspace()) {
-        result = 1;
-        goto cleanup;
-    }
-    if (test_workspace_service_invalid_arguments_are_safe(&workspace)) {
-        result = 1;
-        goto cleanup;
-    }
+    UNITY_BEGIN();
+    RUN_TEST(run_new_document_resets_workspace_state);
+    RUN_TEST(run_load_document_resets_runtime_state);
+    RUN_TEST(test_workspace_create_destroy_allocates_opaque_workspace);
+    RUN_TEST(run_workspace_service_invalid_arguments_are_safe);
+    result = UNITY_END();
 
-    printf("[PASS] workspace service\n");
-
-cleanup:
-    workspace_shutdown(&workspace);
+    workspace_shutdown(&g_workspace);
     remove(k_temp_document_path);
     return result;
 }

@@ -12,11 +12,7 @@
 #define UI_THEME_HASH_OFFSET_BASIS 1469598103934665603ull
 #define UI_THEME_HASH_PRIME 1099511628211ull
 
-enum {
-    UI_THEME_LIGHT_INDEX = 0,
-    UI_THEME_DARK_PLUS_INDEX = 1,
-    UI_THEME_HIGH_CONTRAST_INDEX = 2
-};
+enum { UI_THEME_LIGHT_INDEX = 0, UI_THEME_DARK_PLUS_INDEX = 1, UI_THEME_HIGH_CONTRAST_INDEX = 2 };
 
 typedef struct UiCustomThemeEntry {
     UiThemeDescriptor descriptor;
@@ -44,9 +40,15 @@ int ui_json_key_exists(const char* text, const char* key);
 int ui_parse_hex_color(const char* hex_text, struct nk_color* out_color);
 int ui_theme_id_is_safe_for_json(const char* theme_id);
 int ui_theme_id_from_path(const char* path, char* out_id, size_t out_id_size);
-void ui_theme_apply_color_overrides(const char* source_path, const char* text, UiThemeTokens* tokens);
-void ui_theme_apply_float_overrides(const char* source_path, const char* text, UiThemeTokens* tokens);
-void ui_theme_apply_bool_overrides(const char* source_path, const char* text, UiThemeTokens* tokens);
+void ui_theme_apply_color_overrides(const char* source_path,
+                                    const char* text,
+                                    UiThemeTokens* tokens);
+void ui_theme_apply_float_overrides(const char* source_path,
+                                    const char* text,
+                                    UiThemeTokens* tokens);
+void ui_theme_apply_bool_overrides(const char* source_path,
+                                   const char* text,
+                                   UiThemeTokens* tokens);
 void ui_theme_clamp_tokens(UiThemeTokens* tokens);
 
 #endif /* GLDRAW_UI_THEME_INTERNAL_H */

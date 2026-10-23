@@ -108,8 +108,7 @@ static CommandExecuteCheck set_property_check(const Document* document,
     return COMMAND_EXECUTE_CHECK_OK;
 }
 
-CommandExecuteCheck command_check_execute(const Command* command,
-                                          const Document* document)
+CommandExecuteCheck command_check_execute(const Command* command, const Document* document)
 {
     if (!command || !command->vtable || !document) {
         return COMMAND_EXECUTE_CHECK_INVALID_ARGUMENT;
@@ -147,9 +146,9 @@ const char* command_execute_check_message(CommandExecuteCheck check)
     case COMMAND_EXECUTE_CHECK_TARGET_MISSING:
         return "Target object is missing.";
     case COMMAND_EXECUTE_CHECK_TARGET_OBJECT_LOCKED:
-        return "Target object is on a locked layer.";
+        return "目标对象位于锁定图层。";
     case COMMAND_EXECUTE_CHECK_TARGET_LAYER_LOCKED:
-        return "Active layer is locked.";
+        return "当前图层已锁定。";
     case COMMAND_EXECUTE_CHECK_INVALID_ARGUMENT:
     default:
         return "Command is invalid in the current context.";

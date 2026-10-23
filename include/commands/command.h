@@ -96,20 +96,12 @@ Command* command_create_set_property_from_document(const Document* document,
                                                    ObjectId object_id,
                                                    const char* key,
                                                    float after_value);
-Command* command_create_set_active_layer(const Document* document,
-                                         LayerId after_layer_id);
-Command* command_create_set_layer_visibility(const Document* document,
-                                             LayerId layer_id,
-                                             int visible);
-Command* command_create_set_layer_locked(const Document* document,
-                                         LayerId layer_id,
-                                         int locked);
-Command* command_create_rename_layer(const Document* document,
-                                     LayerId layer_id,
-                                     const char* name);
-Command* command_create_move_layer(const Document* document,
-                                   LayerId layer_id,
-                                   int target_index);
+Command* command_create_set_active_layer(const Document* document, LayerId after_layer_id);
+Command*
+command_create_set_layer_visibility(const Document* document, LayerId layer_id, int visible);
+Command* command_create_set_layer_locked(const Document* document, LayerId layer_id, int locked);
+Command* command_create_rename_layer(const Document* document, LayerId layer_id, const char* name);
+Command* command_create_move_layer(const Document* document, LayerId layer_id, int target_index);
 Command* command_create_create_layer(const char* name);
 
 #endif /* GLDRAW_COMMANDS_COMMAND_H */

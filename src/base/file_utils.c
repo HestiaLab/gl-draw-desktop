@@ -18,6 +18,7 @@ char* file_utils_read_text_file(const char* path)
     char* buffer = NULL;
     long size = 0;
     size_t read_size = 0u;
+    size_t capacity = 0u;
 
     if (!path || path[0] == '\0') {
         return NULL;
@@ -38,14 +39,20 @@ char* file_utils_read_text_file(const char* path)
         return NULL;
     }
 
-    buffer = (char*)malloc((size_t)size + 1u);
+    capacity = (size_t)size + 1u;
+    buffer = (char*)malloc(capacity);
     if (!buffer) {
         fclose(file);
         return NULL;
     }
 
-    read_size = fread(buffer, 1u, (size_t)size, file);
-    if (read_size != (size_t)size && ferror(file)) {
+    read_size = fread(buffer, 1u, capacity - 1u, file);
+    if (read_size >= capacity) {
+        free(buffer);
+        fclose(file);
+        return NULL;
+    }
+    if (read_size != capacity - 1u && ferror(file)) {
         free(buffer);
         fclose(file);
         return NULL;
@@ -96,17 +103,14 @@ int file_utils_path_exists(const char* path)
     return 1;
 }
 
-int file_utils_replace_file_with_temp(const char* temp_path,
-                                      const char* target_path)
+int file_utils_replace_file_with_temp(const char* temp_path, const char* target_path)
 {
     if (!temp_path || !target_path) {
         return 0;
     }
 
 #ifdef _WIN32
-    if (MoveFileExA(temp_path,
-                    target_path,
-                    MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH)) {
+    if (MoveFileExA(temp_path, target_path, MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH)) {
         return 1;
     }
 #else

@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Release version, for example 0.0.3"
+        description: "Release version, for example 3.0.0"
         required: true
         type: string
   push:
@@ -14,23 +14,28 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: release-${{ inputs.version || github.ref_name }}
+  cancel-in-progress: false
+
 jobs:
   package:
     strategy:
+      fail-fast: false
       matrix:
         include:
           - os: windows-latest
             platform: windows-x64
-            artifact: GLDraw-windows-x64
+            artifact: gl-draw-desktop-windows-x64
           - os: ubuntu-latest
             platform: linux-x64
-            artifact: GLDraw-linux-x64
+            artifact: gl-draw-desktop-linux-x64
 
     runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Resolve release version
         id: version
@@ -43,72 +48,86 @@ jobs:
           else
             version=""
           fi
+          if [ -z "$version" ]; then
+            echo "无法解析发布版本。" >&2
+            exit 1
+          fi
           echo "value=$version" >> "$GITHUB_OUTPUT"
-
-      - name: Cache GLFW source
-        uses: actions/cache@v4
-        with:
-          path: build/Release/_deps
-          key: ${{ runner.os }}-release-glfw-3.3.9-${{ hashFiles('CMakeLists.txt') }}
 
       - name: Install dependencies (Linux)
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential cmake curl libgl1-mesa-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
+          sudo apt-get install -y build-essential cmake curl ninja-build libgl1-mesa-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
 
-      - name: Package Windows
+      - name: Set up Ninja
+        uses: seanmiddleditch/gha-setup-ninja@v6
+
+      - name: Set up MSVC
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Cache GLFW source
+        id: glfw-cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/glfw
+          key: glfw-3.3.9-${{ hashFiles('cmake/Dependencies.cmake') }}
+
+      - name: Fetch GLFW source on cache miss
+        if: steps.glfw-cache.outputs.cache-hit != 'true'
+        run: git clone --depth 1 --branch 3.3.9 https://github.com/glfw/glfw.git .cache/glfw
+
+      - name: Configure release
+        run: >
+          cmake --preset ninja-release
+          -DFETCHCONTENT_SOURCE_DIR_GLFW="${{ github.workspace }}/.cache/glfw"
+
+      - name: Build release
+        run: cmake --build --preset ninja-release
+
+      - name: Test release
+        run: ctest --preset ninja-release --output-on-failure
+
+      - name: Package Windows portable
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          $version = "${{ steps.version.outputs.value }}"
-          if ($version) {
-            ./release.bat -Version $version -Platform "${{ matrix.platform }}"
-          } else {
-            ./release.bat -Platform "${{ matrix.platform }}"
-          }
+          ./tools/package_release.ps1 -Version "${{ steps.version.outputs.value }}" -Platform "${{ matrix.platform }}" -SkipBuild
 
       - name: Build Windows installer
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          $version = "${{ steps.version.outputs.value }}"
           choco install innosetup --no-progress -y
-          if ($version) {
-            pwsh -NoProfile -ExecutionPolicy Bypass -File tools/package_windows_installer.ps1 -Version $version -Platform "${{ matrix.platform }}"
-          } else {
-            pwsh -NoProfile -ExecutionPolicy Bypass -File tools/package_windows_installer.ps1 -Platform "${{ matrix.platform }}"
-          }
+          ./tools/package_windows_installer.ps1 -Version "${{ steps.version.outputs.value }}" -Platform "${{ matrix.platform }}"
 
-      - name: Package Linux
+      - name: Package Linux portable
         if: runner.os == 'Linux'
         shell: bash
         run: |
-          if [ -n "${{ steps.version.outputs.value }}" ]; then
-            bash ./release.sh --version "${{ steps.version.outputs.value }}" --platform "${{ matrix.platform }}"
-          else
-            bash ./release.sh --platform "${{ matrix.platform }}"
-          fi
+          bash ./tools/package_release.sh \
+            --version "${{ steps.version.outputs.value }}" \
+            --platform "${{ matrix.platform }}" \
+            --skip-build
 
       - name: Build Linux AppImage
         if: runner.os == 'Linux'
         shell: bash
         run: |
-          version="${{ steps.version.outputs.value }}"
-          if [ -z "$version" ]; then
-            version="$(sed -nE '/project[[:space:]]*\([[:space:]]*GLDraw/,/\)/s/.*VERSION[[:space:]]+([0-9A-Za-z._-]+).*/\1/p' CMakeLists.txt | head -n 1)"
-          fi
-          bash ./tools/package_appimage.sh --version "$version" --platform "${{ matrix.platform }}"
+          bash ./tools/package_appimage.sh \
+            --version "${{ steps.version.outputs.value }}" \
+            --platform "${{ matrix.platform }}"
 
       - name: Upload package artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact }}
           path: |
-            dist/GLDraw-v*.zip
-            dist/GLDraw-v*.tar.gz
-            dist/GLDraw-v*.exe
-            dist/GLDraw-v*.AppImage
+            dist/gl-draw-desktop-v*.zip
+            dist/gl-draw-desktop-v*.tar.gz
+            dist/gl-draw-desktop-v*.exe
+            dist/gl-draw-desktop-v*.AppImage
           if-no-files-found: error
 
   publish:
@@ -116,9 +135,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
       - name: Resolve release tag
         id: release
         shell: bash
@@ -142,4 +158,5 @@ jobs:
         run: |
           tag="${{ steps.release.outputs.tag }}"
           gh release view "$tag" >/dev/null 2>&1 || gh release create "$tag" --target "$GITHUB_SHA" --title "$tag" --notes ""
-          gh release upload "$tag" dist/GLDraw-v* --clobber
+          gh release upload "$tag" dist/gl-draw-desktop-v* --clobber
+          gh release view "$tag" --json url,assets --jq '{url: .url, assets: [.assets[].name]}'

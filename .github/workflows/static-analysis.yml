@@ -2,55 +2,75 @@ name: Static Analysis
 
 on:
   push:
-    branches: [main, master, 'fix/**', 'feature/**']
+    branches: [main, master]
   pull_request:
     branches: [main, master]
   workflow_dispatch:
+
+concurrency:
+  group: analysis-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
 
 jobs:
-  cppcheck:
+  analysis:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - name: Install cppcheck
+      - name: Cache apt packages
+        uses: actions/cache@v4
+        with:
+          path: .cache/apt/archives/*.deb
+          key: apt-${{ runner.os }}-v2
+          restore-keys: apt-${{ runner.os }}-
+
+      - name: Install tools and dependencies
         run: |
+          mkdir -p .cache/apt/archives/partial
           sudo apt-get update
-          sudo apt-get install -y cppcheck
+          sudo apt-get -o Dir::Cache::archives="$PWD/.cache/apt/archives" install -y \
+            build-essential \
+            clang-format \
+            clang-tidy \
+            cmake \
+            cppcheck \
+            libgl1-mesa-dev \
+            libxrandr-dev \
+            libxinerama-dev \
+            libxcursor-dev \
+            libxi-dev \
+            ninja-build \
+            yamllint
 
-      - name: Run cppcheck
-        run: |
-          find src tests -type f -name '*.c' \
-            ! -path 'src/glad.c' \
-            ! -path 'src/platform/window.c' \
-            ! -path 'src/render/buffer_pool.c' \
-            ! -path 'src/render/render_device_gl.c' \
-            ! -path 'src/render/shader_manager.c' \
-            ! -path 'tests/support/test_nuklear_impl.c' \
-            | sort > cppcheck-files.txt
+      - name: YAML lint
+        run: yamllint .github .yamllint.yml
 
-          echo "Cppcheck will scan $(wc -l < cppcheck-files.txt) C source files."
+      - name: Format check
+        # 通过 bash 调用：脚本以 100644 模式提交，不带可执行位。
+        run: bash scripts/static_analysis.sh format-check --require-tools
 
-          cppcheck \
-            --std=c11 \
-            --enable=warning,performance,portability \
-            --max-configs=1 \
-            --quiet \
-            --inline-suppr \
-            --suppress=*:include/nuklear/* \
-            --suppress=missingIncludeSystem \
-            --suppress=memleak:tests/ui/test_ui_logic.c \
-            --suppress=returnDanglingLifetime:src/document/object_properties.c \
-            --suppress=unmatchedSuppression \
-            --error-exitcode=1 \
-            --file-list=cppcheck-files.txt \
-            -I include \
-            -i include/glad \
-            -i include/KHR \
-            -i include/nuklear
+      - name: Cache GLFW source
+        id: glfw-cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/glfw
+          key: glfw-3.3.9-${{ hashFiles('cmake/Dependencies.cmake') }}
+
+      - name: Fetch GLFW source on cache miss
+        if: steps.glfw-cache.outputs.cache-hit != 'true'
+        run: git clone --depth 1 --branch 3.3.9 https://github.com/glfw/glfw.git .cache/glfw
+
+      - name: Configure clang-tidy database
+        run: >
+          cmake --preset ninja-debug
+          -DFETCHCONTENT_SOURCE_DIR_GLFW="${{ github.workspace }}/.cache/glfw"
+
+      - name: Clang-tidy
+        run: bash scripts/static_analysis.sh tidy --require-tools
+
+      - name: Cppcheck
+        run: bash scripts/static_analysis.sh cppcheck --require-tools

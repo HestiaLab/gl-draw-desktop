@@ -12,6 +12,6 @@
 #define UI_CONTEXT_MENU_HEIGHT 240.0f
 #define UI_CONTEXT_MENU_ANCHOR_SIZE 1.0f
 
-RectF ui_context_menu_popup_bounds(const UiContextMenuState *menu);
+RectF ui_context_menu_popup_bounds(const UiContextMenuState* menu);
 
 #endif /* GLDRAW_UI_UI_CONTEXT_MENU_INTERNAL_H */

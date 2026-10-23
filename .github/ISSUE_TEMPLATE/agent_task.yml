@@ -1,70 +1,69 @@
-name: AI agent task
-description: Prepare a scoped task for AI-assisted implementation or analysis.
+name: AI 代理任务
+description: 为 AI 辅助实现或分析准备一个有明确范围的任务。
 title: "[agent] "
 labels: ["agent-task"]
 body:
   - type: markdown
     attributes:
       value: |
-        Use this template for work that should be clear enough for an AI agent
-        and reviewable by a maintainer. Keep the task focused.
+        使用此模板描述可由 AI 代理执行、并由维护者评审的任务。保持任务聚焦。
   - type: textarea
     id: background
     attributes:
-      label: Background
-      description: What context or problem should the agent understand?
-      placeholder: Describe the current behavior, related issue, or reason for the task.
+      label: 背景
+      description: 代理需要理解哪些上下文或问题？
+      placeholder: 描述当前行为、相关 Issue 或任务原因。
     validations:
       required: true
   - type: textarea
     id: goal
     attributes:
-      label: Goal
-      description: What should be true when the task is complete?
-      placeholder: Describe the desired outcome in concrete terms.
+      label: 目标
+      description: 任务完成后应达到什么状态？
+      placeholder: 用可验证的方式描述期望结果。
     validations:
       required: true
   - type: textarea
     id: non-goals
     attributes:
-      label: Non-goals
-      description: What should the agent avoid changing?
-      placeholder: List behavior, modules, or follow-up work that is out of scope.
+      label: 非目标
+      description: 代理应避免改动哪些内容？
+      placeholder: 列出范围之外的行为、模块或后续工作。
     validations:
       required: true
   - type: checkboxes
     id: required-context
     attributes:
-      label: Required context
-      description: Documents the agent should read before editing.
+      label: 必读上下文
+      description: 代理编辑前应阅读的文档。
       options:
         - label: AGENTS.md
           required: true
         - label: CONTRIBUTING.md
           required: true
-        - label: docs/ai-agents.md
+        - label: docs/guides/ai-agents.md
           required: true
-        - label: docs/agent-playbooks.md
+        - label: docs/guides/agent-playbooks.md
           required: true
-        - label: docs/testing.md
+        - label: docs/guides/testing.md
           required: true
-        - label: Relevant ADRs in docs/adr/
+        - label: docs/adr/ 中相关 ADR
           required: false
-        - label: docs/build.md or docs/release.md for build, CI, packaging, or release work
+        - label: 构建、CI、打包或发布工作还需阅读 docs/guides/cmake.md 或 docs/guides/release.md
           required: false
   - type: textarea
     id: affected-areas
     attributes:
-      label: Expected affected areas
-      description: Which files, modules, or ownership boundaries are likely involved?
-      placeholder: "Example: src/commands/, tests/, docs/testing.md"
+      label: 预期影响范围
+      description: 可能涉及哪些文件、模块或所有权边界？
+      placeholder: "例如：src/commands/、tests/、docs/guides/testing.md"
     validations:
       required: true
   - type: textarea
     id: acceptance
     attributes:
-      label: Acceptance criteria
-      description: List concrete conditions reviewers can verify.
+      label: 验收标准
+      description: 列出评审者可验证的具体条件。
       placeholder: |
         - ...
         - ...
@@ -73,17 +72,17 @@ body:
   - type: textarea
     id: checks
     attributes:
-      label: Required checks
-      description: Which local or CI checks should pass for this task?
+      label: 必需检查
+      description: 本任务应通过哪些本地或 CI 检查？
       placeholder: |
         - cmake --list-presets
-        - ctest --preset debug --output-on-failure
+        - ctest --preset ninja-debug --output-on-failure
     validations:
       required: true
   - type: textarea
     id: notes
     attributes:
-      label: Notes for reviewers
-      description: Mention manual verification, screenshots, risks, or follow-up work.
+      label: 评审备注
+      description: 说明人工验证、截图、风险或后续工作。
     validations:
       required: false

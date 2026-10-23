@@ -1,51 +1,31 @@
-#!/bin/bash
+#!/usr/bin/env sh
+set -eu
 
-ARG=${1:-""}
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+cd "$SCRIPT_DIR"
 
-# Detect platform
-if [[ "$OSTYPE" == "darwin"* ]]; then
-    GENERATOR="Unix Makefiles"
-    EXE_EXT=""
-elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    GENERATOR="Unix Makefiles"
-    EXE_EXT=""
-else
-    # Windows with MSYS/MinGW
-    GENERATOR="MinGW Makefiles"
-    EXE_EXT=".exe"
-fi
+usage() {
+    echo "用法：$0 [debug|release|clean]"
+    echo "  默认构建 release。"
+}
 
-case "$ARG" in
+case "${1:-release}" in
     clean)
         rm -rf build
-        echo "Build folder cleaned."
+        echo "已清理 build 目录。"
         ;;
     debug)
-        cmake -G "$GENERATOR" -DCMAKE_BUILD_TYPE=Debug -S . -B build/Debug
-        cmake --build build/Debug --parallel
-        echo ""
-        echo "============================================================"
-        echo "  Build complete!"
-        echo "  Run: ./build/Debug/bin/GLDraw$EXE_EXT"
-        echo "============================================================"
+        cmake --preset ninja-debug
+        cmake --build --preset ninja-debug
+        echo "构建完成：build/ninja-debug/bin/gl-draw-desktop"
         ;;
     release)
-        cmake -G "$GENERATOR" -DCMAKE_BUILD_TYPE=Release -S . -B build/Release
-        cmake --build build/Release --parallel
-        echo ""
-        echo "============================================================"
-        echo "  Build complete!"
-        echo "  Run: ./build/Release/bin/GLDraw$EXE_EXT"
-        echo "============================================================"
+        cmake --preset ninja-release
+        cmake --build --preset ninja-release
+        echo "构建完成：build/ninja-release/bin/gl-draw-desktop"
         ;;
     *)
-        # Default: build Release
-        cmake -G "$GENERATOR" -DCMAKE_BUILD_TYPE=Release -S . -B build/Release
-        cmake --build build/Release --parallel
-        echo ""
-        echo "============================================================"
-        echo "  Build complete!"
-        echo "  Run: ./build/Release/bin/GLDraw$EXE_EXT"
-        echo "============================================================"
+        usage >&2
+        exit 2
         ;;
 esac

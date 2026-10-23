@@ -1,48 +1,45 @@
-Theme Files (`themes/*.json`)
-======================================
+# 主题文件（`themes/*.json`）
 
-GLDraw loads custom themes from the `themes/` directory at startup.
-Each file with `.json` extension is parsed as one theme entry.
-Theme files are also hot-reloaded while GLDraw is running.
-You can force a refresh from `Theme -> Reload Themes`.
+应用启动时从 `themes/` 目录加载自定义主题，每个 `.json` 文件解析为一个主题
+条目。运行期间主题文件会自动热重载，也可以通过“主题 -> 重新加载主题”强制刷新。
 
-Required fields:
+## 必填字段
 
-- `id` (string): unique identifier, allowed chars `[A-Za-z0-9._-]`
+- `id`（字符串）：唯一标识，允许字符 `[A-Za-z0-9._-]`。
 
-Optional fields:
+## 可选字段
 
-- `label` (string): display name in the `Theme` menu
-- `base_theme` (string): parent theme id (for example `gldraw-dark-plus`)
-- `base` or `extends` can be used as aliases for `base_theme`
-- `base_theme` should point to a built-in theme for predictable load order
+- `label`（字符串）：主题菜单中的显示名。
+- `base_theme`（字符串）：父主题 ID，例如 `gldrawdesktop-dark-plus`。
+- `base` 或 `extends` 可作为 `base_theme` 的别名。
+- `base_theme` 应指向内置主题，以保证加载顺序可预测。
 
-Color fields (`#RRGGBB` or `#RRGGBBAA`):
+## 颜色字段（`#RRGGBB` 或 `#RRGGBBAA`）
 
-- `primary`, `primary_hover`, `primary_active`
-- `background`, `panel`, `panel_hover`, `canvas_background`
-- `text`, `text_secondary`, `text_disabled`
-- `border`, `border_hover`
-- `success`, `warning`, `error`
+- `primary`、`primary_hover`、`primary_active`
+- `background`、`panel`、`panel_hover`、`canvas_background`
+- `text`、`text_secondary`、`text_disabled`
+- `border`、`border_hover`
+- `success`、`warning`、`error`
 
-Float fields:
+## 浮点字段
 
-- `row_height`, `panel_width`, `menu_height`, `status_height`, `tool_rail_width`
-- `padding`, `margin`, `gap`
+- `row_height`、`panel_width`、`menu_height`、`status_height`、`tool_rail_width`
+- `padding`、`margin`、`gap`
 - `border_radius`
 - `transition_duration`
 
-Boolean fields:
+## 布尔字段
 
 - `enable_transitions`
 
-Example:
+## 示例
 
 ```json
 {
   "id": "my-team-theme",
-  "label": "My Team Theme",
-  "base_theme": "gldraw-dark-plus",
+  "label": "团队主题",
+  "base_theme": "gldrawdesktop-dark-plus",
   "primary": "#57A7FF",
   "panel": "#18212B",
   "canvas_background": "#0E141B",

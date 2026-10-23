@@ -41,10 +41,9 @@ static const ManifestInitFn g_object_extensions[] = {
 int object_manifest_register_builtins(void)
 {
     /* Core object types only (skip fake_star, which is the last entry). */
-    return manifest_runner_run(
-        g_object_extensions,
-        sizeof(g_object_extensions) / sizeof(g_object_extensions[0]) - 1,
-        MANIFEST_RUN_CONTINUE_ON_FAILURE);
+    return manifest_runner_run(g_object_extensions,
+                               sizeof(g_object_extensions) / sizeof(g_object_extensions[0]) - 1,
+                               MANIFEST_RUN_CONTINUE_ON_FAILURE);
 }
 
 int object_manifest_register_fake_star(void)
@@ -54,10 +53,9 @@ int object_manifest_register_fake_star(void)
 
 int object_manifest_register_all(void)
 {
-    return manifest_runner_run(
-        g_object_extensions,
-        sizeof(g_object_extensions) / sizeof(g_object_extensions[0]),
-        MANIFEST_RUN_CONTINUE_ON_FAILURE);
+    return manifest_runner_run(g_object_extensions,
+                               sizeof(g_object_extensions) / sizeof(g_object_extensions[0]),
+                               MANIFEST_RUN_CONTINUE_ON_FAILURE);
 }
 
 int extension_loader_register_builtins(void)

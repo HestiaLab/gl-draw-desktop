@@ -45,7 +45,7 @@ int workspace_view_zoom_to_fit(Workspace* workspace)
     const float minimum_world_span = 32.0f;
     Document* doc = NULL;
     CanvasView* canvas = NULL;
-    RectF canvas_viewport = {0.0f, 0.0f, 0.0f, 0.0f};
+    RectF canvas_viewport = { 0.0f, 0.0f, 0.0f, 0.0f };
     float min_x = 0.0f;
     float max_x = 0.0f;
     float min_y = 0.0f;
@@ -93,10 +93,14 @@ int workspace_view_zoom_to_fit(Workspace* workspace)
             max_y = bounds.y + bounds.h;
             first = 0;
         } else {
-            if (bounds.x < min_x) min_x = bounds.x;
-            if (bounds.y < min_y) min_y = bounds.y;
-            if (bounds.x + bounds.w > max_x) max_x = bounds.x + bounds.w;
-            if (bounds.y + bounds.h > max_y) max_y = bounds.y + bounds.h;
+            if (bounds.x < min_x)
+                min_x = bounds.x;
+            if (bounds.y < min_y)
+                min_y = bounds.y;
+            if (bounds.x + bounds.w > max_x)
+                max_x = bounds.x + bounds.w;
+            if (bounds.y + bounds.h > max_y)
+                max_y = bounds.y + bounds.h;
         }
     }
 
@@ -132,10 +136,8 @@ int workspace_view_zoom_to_fit(Workspace* workspace)
     zoom_y = canvas_viewport.h / content_h;
     new_zoom = (zoom_x < zoom_y) ? zoom_x : zoom_y;
     new_zoom = clampf(new_zoom, 0.1f, 12.0f);
-    canvas_view_set_center_zoom(canvas,
-                                vec2_make((min_x + max_x) * 0.5f,
-                                          (min_y + max_y) * 0.5f),
-                                new_zoom);
+    canvas_view_set_center_zoom(
+        canvas, vec2_make((min_x + max_x) * 0.5f, (min_y + max_y) * 0.5f), new_zoom);
 
     return 1;
 }

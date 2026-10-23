@@ -81,7 +81,7 @@ int buffer_pool_create_vertex_stream(BufferPool* pool,
                                      const RenderVertexStreamDesc* desc,
                                      RenderVertexStream* out_stream)
 {
-    RenderVertexStream stream = {0u, 0u, 0u, 0u};
+    RenderVertexStream stream = { 0u, 0u, 0u, 0u };
     size_t i = 0u;
 
     if (!pool || !desc || !out_stream || !desc->attributes || desc->attribute_count == 0u ||
@@ -110,12 +110,13 @@ int buffer_pool_create_vertex_stream(BufferPool* pool,
     for (i = 0u; i < desc->attribute_count; ++i) {
         const RenderVertexAttribute* attribute = &desc->attributes[i];
 
-        glVertexAttribPointer(attribute->index,
-                              attribute->component_count,
-                              GL_FLOAT,
-                              GL_FALSE,
-                              (GLsizei)stream.stride_bytes,
-                              (void*)(uintptr_t)attribute->offset_bytes);
+        glVertexAttribPointer(
+            attribute->index,
+            attribute->component_count,
+            GL_FLOAT,
+            GL_FALSE,
+            (GLsizei)stream.stride_bytes,
+            (void*)(uintptr_t)attribute->offset_bytes); // NOLINT(performance-no-int-to-ptr)
         glEnableVertexAttribArray(attribute->index);
     }
     glBindVertexArray(0);

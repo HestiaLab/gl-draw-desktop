@@ -48,9 +48,7 @@ int document_reserve_objects(Document* document, int needed)
     return 1;
 }
 
-int document_add_object_to_layer(Document* document,
-                                 GraphicObject* object,
-                                 LayerId layer_id)
+int document_add_object_to_layer(Document* document, GraphicObject* object, LayerId layer_id)
 {
     if (!document || !object || !document_reserve_objects(document, document->count + 1)) {
         return 0;
@@ -71,8 +69,8 @@ int document_add_object_to_layer(Document* document,
 
 int document_add_object(Document* document, GraphicObject* object)
 {
-    return document_add_object_to_layer(document, object,
-                                        document ? document->active_layer_id : 0u);
+    return document_add_object_to_layer(
+        document, object, document ? document->active_layer_id : 0u);
 }
 
 int document_append_object_with_id_to_layer(Document* document,
@@ -104,8 +102,7 @@ int document_append_object_with_id_to_layer(Document* document,
     return 1;
 }
 
-int document_append_object_with_id(Document* document, GraphicObject* object,
-                                   ObjectId id)
+int document_append_object_with_id(Document* document, GraphicObject* object, ObjectId id)
 {
     return document_append_object_with_id_to_layer(
         document, object, id, object ? object->layer_id : 0u);
@@ -210,15 +207,12 @@ ObjectId document_max_id(const Document* document)
     return max_id;
 }
 
-int document_insert_object_clone_at(Document* document,
-                                    const GraphicObject* snapshot,
-                                    int index)
+int document_insert_object_clone_at(Document* document, const GraphicObject* snapshot, int index)
 {
     GraphicObject* clone = NULL;
     int i = 0;
 
-    if (!document || !snapshot ||
-        !document_reserve_objects(document, document->count + 1) ||
+    if (!document || !snapshot || !document_reserve_objects(document, document->count + 1) ||
         snapshot->id == 0u || document_find_object(document, snapshot->id)) {
         return 0;
     }

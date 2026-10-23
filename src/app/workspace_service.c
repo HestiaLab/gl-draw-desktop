@@ -47,8 +47,7 @@ static void workspace_service_reset_canvas_state(Workspace* workspace)
         return;
     }
 
-    canvas_view_set_center_zoom(&workspace->core.canvas,
-                                vec2_make(0.0f, 0.0f), 1.0f);
+    canvas_view_set_center_zoom(&workspace->core.canvas, vec2_make(0.0f, 0.0f), 1.0f);
 }
 
 int workspace_init(Workspace* workspace, RectF viewport, const char* keymap_path)
@@ -123,7 +122,7 @@ int workspace_service_new_document(Workspace* workspace)
     workspace_service_reset_canvas_state(workspace);
     workspace->session.current_document_path[0] = '\0';
     workspace_mark_saved(workspace);
-    workspace_set_status_message(workspace, "New empty document");
+    workspace_set_status_message(workspace, "新建空白文档");
     return 1;
 }
 
@@ -134,15 +133,15 @@ int workspace_service_save_to_path(Workspace* workspace, const char* path)
     }
 
     if (!document_save_json(&workspace->core.document, path)) {
-        LOG_ERROR("%s", "Save document failed");
-        workspace_set_statusf(workspace, "Save failed: %s", path);
+        LOG_ERROR("%s", "保存文档失败");
+        workspace_set_statusf(workspace, "保存失败：%s", path);
         return 0;
     }
 
     workspace_service_set_document_path(workspace, path);
     workspace_mark_saved(workspace);
-    workspace_set_statusf(workspace, "Saved document: %s", path);
-    LOG_INFO("Saved document: %s", path);
+    workspace_set_statusf(workspace, "已保存文档：%s", path);
+    LOG_INFO("已保存文档：%s", path);
     return 1;
 }
 
@@ -152,8 +151,7 @@ int workspace_service_save(Workspace* workspace)
         return 0;
     }
 
-    return workspace_service_save_to_path(workspace,
-                                          workspace_service_document_path(workspace));
+    return workspace_service_save_to_path(workspace, workspace_service_document_path(workspace));
 }
 
 int workspace_service_load_from_path(Workspace* workspace, const char* path)
@@ -163,22 +161,22 @@ int workspace_service_load_from_path(Workspace* workspace, const char* path)
     }
 
     if (!workspace_service_file_exists(path)) {
-        LOG_WARN("Document file not found: %s", path);
-        workspace_set_statusf(workspace, "Document not found: %s", path);
+        LOG_WARN("未找到文档文件：%s", path);
+        workspace_set_statusf(workspace, "未找到文档：%s", path);
         return 0;
     }
 
     if (!document_load_json(&workspace->core.document, path)) {
-        LOG_ERROR("%s", "Load document failed");
-        workspace_set_statusf(workspace, "Load failed: %s", path);
+        LOG_ERROR("%s", "加载文档失败");
+        workspace_set_statusf(workspace, "加载失败：%s", path);
         return 0;
     }
 
     workspace_service_reset_runtime_state(workspace);
     workspace_service_set_document_path(workspace, path);
     workspace_mark_saved(workspace);
-    workspace_set_statusf(workspace, "Loaded document: %s", path);
-    LOG_INFO("Loaded document: %s", path);
+    workspace_set_statusf(workspace, "已加载文档：%s", path);
+    LOG_INFO("已加载文档：%s", path);
     return 1;
 }
 
@@ -188,8 +186,7 @@ int workspace_service_load(Workspace* workspace)
         return 0;
     }
 
-    return workspace_service_load_from_path(workspace,
-                                            workspace_service_document_path(workspace));
+    return workspace_service_load_from_path(workspace, workspace_service_document_path(workspace));
 }
 
 int workspace_service_file_exists(const char* path)
@@ -227,8 +224,9 @@ void workspace_service_set_document_path(Workspace* workspace, const char* path)
         return;
     }
 
-    strncpy(workspace->session.current_document_path, path,
+    strncpy(workspace->session.current_document_path,
+            path,
             sizeof(workspace->session.current_document_path) - 1u);
-    workspace->session.current_document_path
-        [sizeof(workspace->session.current_document_path) - 1u] = '\0';
+    workspace->session
+        .current_document_path[sizeof(workspace->session.current_document_path) - 1u] = '\0';
 }

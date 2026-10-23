@@ -3,14 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-static int expect_true(int condition, const char* message)
-{
-    if (!condition) {
-        fprintf(stderr, "[FAIL] %s\n", message);
-        return 0;
-    }
-    return 1;
-}
+#include <unity.h>
 
 static int write_marker_file(const char* path)
 {
@@ -23,40 +16,33 @@ static int write_marker_file(const char* path)
     return 1;
 }
 
-int main(void)
+static void test_resource_path_lookup(void)
 {
     char resolved[260];
     const char* marker_path = "gldraw_resource_path_test.tmp";
 
     remove(marker_path);
-    if (!expect_true(write_marker_file(marker_path), "failed to create marker file")) {
-        return 1;
-    }
+    TEST_ASSERT_TRUE_MESSAGE(write_marker_file(marker_path), "无法创建标记文件");
 
-    if (!expect_true(resource_path_resolve(marker_path, resolved, sizeof(resolved)),
-                     "existing cwd resource should resolve")) {
-        remove(marker_path);
-        return 1;
-    }
-    if (!expect_true(strcmp(resolved, marker_path) == 0,
-                     "cwd resource should keep the relative path")) {
-        remove(marker_path);
-        return 1;
-    }
+    TEST_ASSERT_TRUE_MESSAGE(resource_path_resolve(marker_path, resolved, sizeof(resolved)),
+                             "当前目录资源应能解析");
+    TEST_ASSERT_EQUAL_STRING(marker_path, resolved);
 
     remove(marker_path);
 
-    if (!expect_true(!resource_path_resolve("missing-resource-path-test.file",
-                                            resolved,
-                                            sizeof(resolved)),
-                     "missing resource should report unresolved")) {
-        return 1;
-    }
-    if (!expect_true(strcmp(resolved, "missing-resource-path-test.file") == 0,
-                     "missing resource should fall back to original path")) {
-        return 1;
-    }
+    TEST_ASSERT_FALSE_MESSAGE(
+        resource_path_resolve("missing-resource-path-test.file", resolved, sizeof(resolved)),
+        "缺失资源应报告未解析");
+    TEST_ASSERT_EQUAL_STRING("missing-resource-path-test.file", resolved);
+}
 
-    printf("[PASS] resource path lookup preserves cwd behavior and fallback\n");
-    return 0;
+void setUp(void) {}
+
+void tearDown(void) {}
+
+int main(void)
+{
+    UNITY_BEGIN();
+    RUN_TEST(test_resource_path_lookup);
+    return UNITY_END();
 }

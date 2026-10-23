@@ -33,9 +33,8 @@ static void script_runtime_env_copy_global(lua_State* state, int env_index, cons
     lua_setfield(state, env_index, name);
 }
 
-static int script_runtime_execute_command(ScriptRuntime* runtime,
-                                          Command* command,
-                                          const char** out_error)
+static int
+script_runtime_execute_command(ScriptRuntime* runtime, Command* command, const char** out_error)
 {
     CommandExecuteCheck check = COMMAND_EXECUTE_CHECK_INVALID_ARGUMENT;
 
@@ -59,7 +58,7 @@ static int script_runtime_execute_command(ScriptRuntime* runtime,
 
     if (!runtime->ports.execute_command(runtime->ports.user, command, runtime->document)) {
         if (out_error) {
-            *out_error = "Command execution failed.";
+            *out_error = "命令执行失败。";
         }
         return 0;
     }
@@ -84,9 +83,7 @@ static int script_runtime_push_style(lua_State* state, GraphicStyle* style, int 
     return 1;
 }
 
-static int script_runtime_build_bag_from_table(lua_State* state,
-                                               int index,
-                                               GraphicPropertyBag* bag)
+static int script_runtime_build_bag_from_table(lua_State* state, int index, GraphicPropertyBag* bag)
 {
     if (!lua_istable(state, index)) {
         return 0;
@@ -149,7 +146,7 @@ static int script_api_document_add_object(lua_State* state)
     command = command_create_create_object(object);
     if (!command || !script_runtime_execute_command(runtime, command, &error_message)) {
         lua_pushnil(state);
-        lua_pushstring(state, error_message ? error_message : "Command creation failed.");
+        lua_pushstring(state, error_message ? error_message : "创建命令失败。");
         return 2;
     }
 
@@ -317,7 +314,7 @@ void script_runtime_set_context(ScriptRuntime* runtime,
 
     runtime->document = document;
     runtime->selection = selection;
-    runtime->ports = ports ? *ports : (ToolPorts){0};
+    runtime->ports = ports ? *ports : (ToolPorts){ 0 };
 }
 
 static int script_runtime_ensure_script_loaded(ScriptRuntime* runtime, const char* script_path)
@@ -325,8 +322,7 @@ static int script_runtime_ensure_script_loaded(ScriptRuntime* runtime, const cha
     if (!runtime || !runtime->state || !script_path || script_path[0] == '\0') {
         return 0;
     }
-    if (runtime->script_loaded &&
-        strcmp(runtime->loaded_script_path, script_path) == 0) {
+    if (runtime->script_loaded && strcmp(runtime->loaded_script_path, script_path) == 0) {
         return 1;
     }
     if (!script_runtime_reset_state(runtime)) {
@@ -347,10 +343,7 @@ static int script_runtime_ensure_script_loaded(ScriptRuntime* runtime, const cha
         return 0;
     }
 
-    snprintf(runtime->loaded_script_path,
-             sizeof(runtime->loaded_script_path),
-             "%s",
-             script_path);
+    snprintf(runtime->loaded_script_path, sizeof(runtime->loaded_script_path), "%s", script_path);
     runtime->script_loaded = 1;
     return 1;
 }

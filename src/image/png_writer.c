@@ -8,9 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-static unsigned int png_crc32_update(unsigned int crc,
-                                     const unsigned char* data,
-                                     size_t size)
+static unsigned int png_crc32_update(unsigned int crc, const unsigned char* data, size_t size)
 {
     size_t i = 0u;
     int bit = 0;
@@ -61,10 +59,7 @@ static int png_write_u32_be(FILE* file, unsigned int value)
     return fwrite(bytes, 1u, sizeof(bytes), file) == sizeof(bytes);
 }
 
-static int png_write_chunk(FILE* file,
-                           const char type[4],
-                           const unsigned char* data,
-                           size_t size)
+static int png_write_chunk(FILE* file, const char type[4], const unsigned char* data, size_t size)
 {
     unsigned int crc = 0u;
 
@@ -151,7 +146,7 @@ int png_writer_write_rgba_file(const char* path,
                                int width,
                                int height)
 {
-    static const unsigned char signature[8] = {137u, 80u, 78u, 71u, 13u, 10u, 26u, 10u};
+    static const unsigned char signature[8] = { 137u, 80u, 78u, 71u, 13u, 10u, 26u, 10u };
     FILE* file = NULL;
     unsigned char ihdr[13];
     unsigned char* filtered = NULL;

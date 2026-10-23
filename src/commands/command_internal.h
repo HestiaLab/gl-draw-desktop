@@ -4,7 +4,7 @@
 #include <commands/command.h>
 
 #define COMMAND_INITIAL_CAPACITY 16u
-#define COMMAND_DEFAULT_MEMORY_BUDGET_BYTES (200u * 1024u * 1024u)
+#define COMMAND_DEFAULT_MEMORY_BUDGET_BYTES ((size_t)200u * 1024u * 1024u)
 
 typedef struct CreateObjectCommand {
     Command base;

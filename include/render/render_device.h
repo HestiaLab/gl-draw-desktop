@@ -50,10 +50,7 @@ typedef struct RenderDeviceVTable {
     int (*draw_geometry)(RenderDevice* device,
                          const RenderGeometry* geometry,
                          const RenderMaterial* material);
-    int (*read_pixels)(RenderDevice* device,
-                       RectF rect,
-                       unsigned char* out_rgba,
-                       int stride_bytes);
+    int (*read_pixels)(RenderDevice* device, RectF rect, unsigned char* out_rgba, int stride_bytes);
     void (*end_frame)(RenderDevice* device);
     void (*destroy)(RenderDevice* device);
 } RenderDeviceVTable;

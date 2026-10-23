@@ -77,8 +77,7 @@ static int select_tool_reserve_drag_ids(SelectToolState* state, int needed)
     return 1;
 }
 
-static int select_tool_pointer_down(Tool* tool, ToolContext* context,
-                                    const ToolEvent* event)
+static int select_tool_pointer_down(Tool* tool, ToolContext* context, const ToolEvent* event)
 {
     SelectToolState* state = tool ? (SelectToolState*)tool->state : NULL;
     GraphicObject* hit = NULL;
@@ -130,11 +129,10 @@ static int select_tool_pointer_down(Tool* tool, ToolContext* context,
     return 1;
 }
 
-static void select_tool_pointer_move(Tool* tool, ToolContext* context,
-                                     const ToolEvent* event)
+static void select_tool_pointer_move(Tool* tool, ToolContext* context, const ToolEvent* event)
 {
     SelectToolState* state = tool ? (SelectToolState*)tool->state : NULL;
-    Vec2 delta = {0.0f, 0.0f};
+    Vec2 delta = { 0.0f, 0.0f };
     if (!state || !context || !event || !state->dragging) {
         return;
     }
@@ -150,8 +148,7 @@ static void select_tool_pointer_move(Tool* tool, ToolContext* context,
     tool_context_set_selection_preview(context, 1, state->drag_delta_total);
 }
 
-static void select_tool_pointer_up(Tool* tool, ToolContext* context,
-                                   const ToolEvent* event)
+static void select_tool_pointer_up(Tool* tool, ToolContext* context, const ToolEvent* event)
 {
     SelectToolState* state = tool ? (SelectToolState*)tool->state : NULL;
     (void)event;
@@ -160,14 +157,10 @@ static void select_tool_pointer_up(Tool* tool, ToolContext* context,
         return;
     }
 
-    if (state->dragging &&
-        state->moved &&
-        state->drag_object_count > 0 &&
-        vec2_length_sq(state->drag_delta_total) > 1e-6f &&
-        context) {
-        Command* command = command_create_move_objects(state->drag_object_ids,
-                                                       state->drag_object_count,
-                                                       state->drag_delta_total);
+    if (state->dragging && state->moved && state->drag_object_count > 0 &&
+        vec2_length_sq(state->drag_delta_total) > 1e-6f && context) {
+        Command* command = command_create_move_objects(
+            state->drag_object_ids, state->drag_object_count, state->drag_delta_total);
         if (command) {
             tool_context_execute_command(context, command);
         }
@@ -191,23 +184,23 @@ static void select_tool_key_down(Tool* tool, ToolContext* context, int key, int 
 }
 
 static const ToolDescriptor g_select_tool_descriptor = {
-    TOOL_ID_SELECT,          /* id */
-    "Select",                /* name */
-    "tool.select",           /* command_id */
-    "Select and edit objects", /* tooltip */
-    "Select",                /* icon */
-    "V",                     /* default_shortcut */
-    0,                       /* requires_editable_layer */
+    TOOL_ID_SELECT,   /* id */
+    "选择",           /* name */
+    "tool.select",    /* command_id */
+    "选择和编辑对象", /* tooltip */
+    "选择",           /* icon */
+    "V",              /* default_shortcut */
+    0,                /* requires_editable_layer */
     select_tool_create,
     select_tool_destroy,
-    NULL,                    /* activate */
+    NULL, /* activate */
     select_tool_deactivate,
     select_tool_pointer_down,
     select_tool_pointer_move,
     select_tool_pointer_up,
     select_tool_key_down,
     default_draw_overlay,
-    NULL                     /* user_data */
+    NULL /* user_data */
 };
 
 int register_select_tool(void)

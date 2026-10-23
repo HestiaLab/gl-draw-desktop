@@ -23,8 +23,9 @@ typedef struct CommandExecutionRoute {
 } CommandExecutionRoute;
 
 static const CommandExecutionRoute COMMAND_EXECUTION_ROUTES[] = {
-#define GLDRAW_COMMAND_ROUTE(command, id, label, scope, menu_id, tool_id, availability, service, execute) \
-    {command, execute},
+#define GLDRAW_COMMAND_ROUTE(                                                                      \
+    command, id, label, scope, menu_id, tool_id, availability, service, execute)                   \
+    { command, execute },
     GLDRAW_STABLE_COMMANDS(GLDRAW_COMMAND_ROUTE)
 #undef GLDRAW_COMMAND_ROUTE
 };
@@ -33,8 +34,8 @@ static CommandExecutionFn command_registry_lookup_execution(EditorCommand comman
 {
     int i = 0;
 
-    for (i = 0; i < (int)(sizeof(COMMAND_EXECUTION_ROUTES) /
-                          sizeof(COMMAND_EXECUTION_ROUTES[0])); ++i) {
+    for (i = 0; i < (int)(sizeof(COMMAND_EXECUTION_ROUTES) / sizeof(COMMAND_EXECUTION_ROUTES[0]));
+         ++i) {
         if (COMMAND_EXECUTION_ROUTES[i].command == command) {
             return COMMAND_EXECUTION_ROUTES[i].execute;
         }
@@ -48,9 +49,7 @@ int command_registry_has_static_handler(EditorCommand command)
     return command_registry_lookup_execution(command) != NULL;
 }
 
-int command_registry_execute(Workspace* workspace,
-                             ToolContext* tool_context,
-                             EditorCommand command)
+int command_registry_execute(Workspace* workspace, ToolContext* tool_context, EditorCommand command)
 {
     CommandExecutionFn execute = NULL;
 

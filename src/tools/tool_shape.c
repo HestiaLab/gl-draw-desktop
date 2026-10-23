@@ -32,50 +32,34 @@ static GraphicObject* create_ellipse_shape(Vec2 anchor, Vec2 current, GraphicSty
 
 static int update_line_shape(GraphicObject* object, Vec2 anchor, Vec2 current)
 {
-    return object_type_is(object, "line") &&
-           object_set_scalar(object, "x1", anchor.x) &&
+    return object_type_is(object, "line") && object_set_scalar(object, "x1", anchor.x) &&
            object_set_scalar(object, "y1", anchor.y) &&
-           object_set_scalar(object, "x2", current.x) &&
-           object_set_scalar(object, "y2", current.y);
+           object_set_scalar(object, "x2", current.x) && object_set_scalar(object, "y2", current.y);
 }
 
 static int update_rect_shape(GraphicObject* object, Vec2 anchor, Vec2 current)
 {
     RectF rect = rect_from_points(anchor, current);
-    return object_type_is(object, "rect") &&
-           object_set_scalar(object, "x", rect.x) &&
-           object_set_scalar(object, "y", rect.y) &&
-           object_set_scalar(object, "width", rect.w) &&
+    return object_type_is(object, "rect") && object_set_scalar(object, "x", rect.x) &&
+           object_set_scalar(object, "y", rect.y) && object_set_scalar(object, "width", rect.w) &&
            object_set_scalar(object, "height", rect.h);
 }
 
 static int update_ellipse_shape(GraphicObject* object, Vec2 anchor, Vec2 current)
 {
     RectF rect = rect_from_points(anchor, current);
-    return object_type_is(object, "ellipse") &&
-           object_set_scalar(object, "x", rect.x) &&
-           object_set_scalar(object, "y", rect.y) &&
-           object_set_scalar(object, "width", rect.w) &&
+    return object_type_is(object, "ellipse") && object_set_scalar(object, "x", rect.x) &&
+           object_set_scalar(object, "y", rect.y) && object_set_scalar(object, "width", rect.w) &&
            object_set_scalar(object, "height", rect.h);
 }
 
-static const ShapeToolConfig g_line_shape_config = {
-    "line",
-    create_line_shape,
-    update_line_shape
-};
+static const ShapeToolConfig g_line_shape_config = { "line", create_line_shape, update_line_shape };
 
-static const ShapeToolConfig g_rect_shape_config = {
-    "rect",
-    create_rect_shape,
-    update_rect_shape
-};
+static const ShapeToolConfig g_rect_shape_config = { "rect", create_rect_shape, update_rect_shape };
 
-static const ShapeToolConfig g_ellipse_shape_config = {
-    "ellipse",
-    create_ellipse_shape,
-    update_ellipse_shape
-};
+static const ShapeToolConfig g_ellipse_shape_config = { "ellipse",
+                                                        create_ellipse_shape,
+                                                        update_ellipse_shape };
 
 static int shape_tool_create(Tool* tool, const ToolDescriptor* descriptor)
 {
@@ -96,20 +80,18 @@ static void shape_tool_deactivate(Tool* tool, ToolContext* context)
     destroy_overlay(tool);
 }
 
-static int shape_tool_pointer_down(Tool* tool, ToolContext* context,
-                                   const ToolEvent* event)
+static int shape_tool_pointer_down(Tool* tool, ToolContext* context, const ToolEvent* event)
 {
     ShapeToolState* state = tool ? (ShapeToolState*)tool->state : NULL;
-    const ShapeToolConfig* config = tool && tool->descriptor
-        ? (const ShapeToolConfig*)tool->descriptor->user_data : NULL;
+    const ShapeToolConfig* config =
+        tool && tool->descriptor ? (const ShapeToolConfig*)tool->descriptor->user_data : NULL;
     GraphicStyle style = object_default_style();
 
     if (!state || !config || !event || event->button != TOOL_POINTER_BUTTON_LEFT) {
         return 0;
     }
     if (!context || !context->document ||
-        document_layer_is_locked(context->document,
-                                 document_active_layer_id(context->document))) {
+        document_layer_is_locked(context->document, document_active_layer_id(context->document))) {
         return 0;
     }
 
@@ -123,12 +105,11 @@ static int shape_tool_pointer_down(Tool* tool, ToolContext* context,
     return tool->overlay_object != NULL;
 }
 
-static void shape_tool_pointer_move(Tool* tool, ToolContext* context,
-                                    const ToolEvent* event)
+static void shape_tool_pointer_move(Tool* tool, ToolContext* context, const ToolEvent* event)
 {
     ShapeToolState* state = tool ? (ShapeToolState*)tool->state : NULL;
-    const ShapeToolConfig* config = tool && tool->descriptor
-        ? (const ShapeToolConfig*)tool->descriptor->user_data : NULL;
+    const ShapeToolConfig* config =
+        tool && tool->descriptor ? (const ShapeToolConfig*)tool->descriptor->user_data : NULL;
 
     (void)context;
     if (!state || !config || !event || !state->drawing) {
@@ -142,12 +123,11 @@ static void shape_tool_pointer_move(Tool* tool, ToolContext* context,
     }
 }
 
-static void shape_tool_pointer_up(Tool* tool, ToolContext* context,
-                                  const ToolEvent* event)
+static void shape_tool_pointer_up(Tool* tool, ToolContext* context, const ToolEvent* event)
 {
     ShapeToolState* state = tool ? (ShapeToolState*)tool->state : NULL;
-    const ShapeToolConfig* config = tool && tool->descriptor
-        ? (const ShapeToolConfig*)tool->descriptor->user_data : NULL;
+    const ShapeToolConfig* config =
+        tool && tool->descriptor ? (const ShapeToolConfig*)tool->descriptor->user_data : NULL;
     GraphicStyle style = object_default_style();
     GraphicObject* object = NULL;
     Command* command = NULL;
@@ -188,65 +168,59 @@ static void shape_tool_key_down(Tool* tool, ToolContext* context, int key, int m
     }
 }
 
-static const ToolDescriptor g_line_tool_descriptor = {
-    TOOL_ID_LINE,            /* id */
-    "Line",                  /* name */
-    "tool.line",             /* command_id */
-    "Draw line",             /* tooltip */
-    "Line",                  /* icon */
-    "L",                     /* default_shortcut */
-    1,                       /* requires_editable_layer */
-    shape_tool_create,
-    default_tool_destroy,
-    NULL,                    /* activate */
-    shape_tool_deactivate,
-    shape_tool_pointer_down,
-    shape_tool_pointer_move,
-    shape_tool_pointer_up,
-    shape_tool_key_down,
-    default_draw_overlay,
-    &g_line_shape_config
-};
+static const ToolDescriptor g_line_tool_descriptor = { TOOL_ID_LINE, /* id */
+                                                       "直线",       /* name */
+                                                       "tool.line",  /* command_id */
+                                                       "绘制直线",   /* tooltip */
+                                                       "直线",       /* icon */
+                                                       "L",          /* default_shortcut */
+                                                       1,            /* requires_editable_layer */
+                                                       shape_tool_create,
+                                                       default_tool_destroy,
+                                                       NULL, /* activate */
+                                                       shape_tool_deactivate,
+                                                       shape_tool_pointer_down,
+                                                       shape_tool_pointer_move,
+                                                       shape_tool_pointer_up,
+                                                       shape_tool_key_down,
+                                                       default_draw_overlay,
+                                                       &g_line_shape_config };
 
-static const ToolDescriptor g_rect_tool_descriptor = {
-    TOOL_ID_RECT,            /* id */
-    "Rectangle",             /* name */
-    "tool.rect",             /* command_id */
-    "Draw rectangle",        /* tooltip */
-    "Rect",                  /* icon */
-    "R",                     /* default_shortcut */
-    1,                       /* requires_editable_layer */
-    shape_tool_create,
-    default_tool_destroy,
-    NULL,                    /* activate */
-    shape_tool_deactivate,
-    shape_tool_pointer_down,
-    shape_tool_pointer_move,
-    shape_tool_pointer_up,
-    shape_tool_key_down,
-    default_draw_overlay,
-    &g_rect_shape_config
-};
+static const ToolDescriptor g_rect_tool_descriptor = { TOOL_ID_RECT, /* id */
+                                                       "矩形",       /* name */
+                                                       "tool.rect",  /* command_id */
+                                                       "绘制矩形",   /* tooltip */
+                                                       "Rect",       /* icon */
+                                                       "R",          /* default_shortcut */
+                                                       1,            /* requires_editable_layer */
+                                                       shape_tool_create,
+                                                       default_tool_destroy,
+                                                       NULL, /* activate */
+                                                       shape_tool_deactivate,
+                                                       shape_tool_pointer_down,
+                                                       shape_tool_pointer_move,
+                                                       shape_tool_pointer_up,
+                                                       shape_tool_key_down,
+                                                       default_draw_overlay,
+                                                       &g_rect_shape_config };
 
-static const ToolDescriptor g_ellipse_tool_descriptor = {
-    TOOL_ID_ELLIPSE,         /* id */
-    "Ellipse",               /* name */
-    "tool.ellipse",          /* command_id */
-    "Draw ellipse",          /* tooltip */
-    "Ellipse",               /* icon */
-    "E",                     /* default_shortcut */
-    1,                       /* requires_editable_layer */
-    shape_tool_create,
-    default_tool_destroy,
-    NULL,                    /* activate */
-    shape_tool_deactivate,
-    shape_tool_pointer_down,
-    shape_tool_pointer_move,
-    shape_tool_pointer_up,
-    shape_tool_key_down,
-    default_draw_overlay,
-    &g_ellipse_shape_config
-};
+static const ToolDescriptor g_ellipse_tool_descriptor = { TOOL_ID_ELLIPSE, /* id */
+                                                          "椭圆",          /* name */
+                                                          "tool.ellipse",  /* command_id */
+                                                          "绘制椭圆",      /* tooltip */
+                                                          "椭圆",          /* icon */
+                                                          "E",             /* default_shortcut */
+                                                          1, /* requires_editable_layer */
+                                                          shape_tool_create,
+                                                          default_tool_destroy,
+                                                          NULL, /* activate */
+                                                          shape_tool_deactivate,
+                                                          shape_tool_pointer_down,
+                                                          shape_tool_pointer_move,
+                                                          shape_tool_pointer_up,
+                                                          shape_tool_key_down,
+                                                          default_draw_overlay,
+                                                          &g_ellipse_shape_config };
 
 int register_shape_tool_line(void)
 {

@@ -2,8 +2,8 @@
 set -euo pipefail
 
 VERSION=""
-GENERATOR="Unix Makefiles"
-BUILD_DIR="build/Release"
+GENERATOR="Ninja"
+BUILD_DIR="build/ninja-release"
 DIST_DIR="dist"
 PLATFORM=""
 SKIP_BUILD=0
@@ -46,7 +46,7 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$REPO_ROOT"
 
 if [[ -z "$VERSION" ]]; then
-    VERSION="$(sed -nE '/project[[:space:]]*\([[:space:]]*GLDraw/,/\)/s/.*VERSION[[:space:]]+([0-9A-Za-z._-]+).*/\1/p' CMakeLists.txt | head -n 1)"
+    VERSION="$(sed -nE '/project[[:space:]]*\([[:space:]]*GlDrawDesktop/,/\)/s/.*VERSION[[:space:]]+([0-9A-Za-z._-]+).*/\1/p' CMakeLists.txt | head -n 1)"
 fi
 
 if [[ -z "$VERSION" ]]; then
@@ -68,7 +68,7 @@ mkdir -p "$DIST_DIR"
 DIST_DIR="$(cd "$DIST_DIR" && pwd)"
 
 STAGE_ROOT="$DIST_DIR/stage"
-PACKAGE_NAME="GLDraw-v$VERSION-$PLATFORM"
+PACKAGE_NAME="gl-draw-desktop-v$VERSION-$PLATFORM"
 PACKAGE_ROOT="$STAGE_ROOT/$PACKAGE_NAME"
 ARCHIVE_PATH="$DIST_DIR/$PACKAGE_NAME.tar.gz"
 
@@ -83,7 +83,7 @@ mkdir -p "$PACKAGE_ROOT"
 
 cmake --install "$BUILD_DIR" --prefix "$PACKAGE_ROOT"
 
-for file in LICENSE.txt README.md README.zh-CN.md doc/build.md doc/controls.md; do
+for file in LICENSE README.md docs/guides/build.md docs/guides/controls.md; do
     if [[ -f "$file" ]]; then
         cp "$file" "$PACKAGE_ROOT/"
     fi

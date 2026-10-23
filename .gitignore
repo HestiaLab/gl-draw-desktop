@@ -74,7 +74,6 @@ xcuserdata/
 # Dependency directories
 deps/
 external/
-third_party/
 
 # Release packages
 dist/
@@ -105,3 +104,12 @@ Thumbs.db
 ### AI Tools
 
 .claude/
+
+### Runtime state
+/document.json
+/*.settings.json
+/*.keymap.json
+
+# Python cache
+__pycache__/
+*.pyc

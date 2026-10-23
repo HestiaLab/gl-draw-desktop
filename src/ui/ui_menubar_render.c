@@ -34,11 +34,11 @@ typedef struct UiTopMenuDef {
 } UiTopMenuDef;
 
 static const UiTopMenuDef g_top_menus[] = {
-    { "File", MENU_ID_FILE, {210.0f, 300.0f}, 58.0f },
-    { "Edit", MENU_ID_EDIT, {210.0f, 300.0f}, 58.0f },
-    { "View", MENU_ID_VIEW, {220.0f, 300.0f}, 62.0f },
-    { "Theme", MENU_PARENT_THEME, {260.0f, 280.0f}, 76.0f },
-    { "Help", MENU_ID_HELP, {220.0f, 220.0f}, 62.0f },
+    { "文件", MENU_ID_FILE, { 210.0f, 300.0f }, 58.0f },
+    { "编辑", MENU_ID_EDIT, { 210.0f, 300.0f }, 58.0f },
+    { "视图", MENU_ID_VIEW, { 220.0f, 300.0f }, 62.0f },
+    { "主题", MENU_PARENT_THEME, { 260.0f, 280.0f }, 76.0f },
+    { "帮助", MENU_ID_HELP, { 220.0f, 220.0f }, 62.0f },
 };
 
 typedef struct UiQuickActionDef {
@@ -49,14 +49,14 @@ typedef struct UiQuickActionDef {
 } UiQuickActionDef;
 
 static const UiQuickActionDef g_quick_actions[] = {
-    { "New", MENU_ID_FILE_NEW, 48.0f, "Create new document (Ctrl+N)" },
-    { "Open", MENU_ID_FILE_OPEN, 52.0f, "Open document (Ctrl+O)" },
-    { "Save", MENU_ID_FILE_SAVE, 52.0f, "Save document (Ctrl+S)" },
-    { "Undo", MENU_ID_EDIT_UNDO, 52.0f, "Undo (Ctrl+Z)" },
-    { "Redo", MENU_ID_EDIT_REDO, 52.0f, "Redo (Ctrl+Y)" },
-    { "+", MENU_ID_VIEW_ZOOM_IN, 30.0f, "Zoom in (Ctrl++)" },
-    { "-", MENU_ID_VIEW_ZOOM_OUT, 30.0f, "Zoom out (Ctrl+-)" },
-    { "Fit", MENU_ID_VIEW_ZOOM_FIT, 40.0f, "Zoom to fit (Ctrl+0)" },
+    { "新建", MENU_ID_FILE_NEW, 48.0f, "新建文档（Ctrl+N）" },
+    { "打开", MENU_ID_FILE_OPEN, 52.0f, "打开文档（Ctrl+O）" },
+    { "保存", MENU_ID_FILE_SAVE, 52.0f, "保存文档（Ctrl+S）" },
+    { "撤销", MENU_ID_EDIT_UNDO, 52.0f, "撤销（Ctrl+Z）" },
+    { "重做", MENU_ID_EDIT_REDO, 52.0f, "重做（Ctrl+Y）" },
+    { "+", MENU_ID_VIEW_ZOOM_IN, 30.0f, "放大（Ctrl++）" },
+    { "-", MENU_ID_VIEW_ZOOM_OUT, 30.0f, "缩小（Ctrl+-）" },
+    { "适应", MENU_ID_VIEW_ZOOM_FIT, 40.0f, "适应窗口（Ctrl+0）" },
 };
 
 static void ui_build_menu_item_text(const EditorViewModel* view_model,
@@ -121,16 +121,13 @@ static void ui_build_command_tooltip(const EditorViewModel* view_model,
     }
 
     if (reason && reason[0] != '\0') {
-        snprintf(buffer + strlen(buffer),
-                 buffer_size - strlen(buffer),
-                 "\nUnavailable: %s",
-                 reason);
+        snprintf(
+            buffer + strlen(buffer), buffer_size - strlen(buffer), "\nUnavailable: %s", reason);
     }
 }
 
-static int ui_render_dropdown(struct nk_context* ctx,
-                              const EditorViewModel* view_model,
-                              int parent_id)
+static int
+ui_render_dropdown(struct nk_context* ctx, const EditorViewModel* view_model, int parent_id)
 {
     int clicked_id = -1;
     const MenuItemDef* items = ui_menu_def_items();
@@ -192,11 +189,11 @@ static int ui_render_theme_dropdown(UiMenuBar* menubar)
     }
 
     if (!menubar->themes || menubar->theme_count <= 0) {
-        nk_label(ctx, "No themes available", NK_TEXT_LEFT);
+        nk_label(ctx, "没有可用主题", NK_TEXT_LEFT);
         return -1;
     }
 
-    if (nk_menu_item_label(ctx, "Reload Themes", NK_TEXT_LEFT)) {
+    if (nk_menu_item_label(ctx, "重新加载主题", NK_TEXT_LEFT)) {
         menubar->requested_theme_reload = 1;
     }
     nk_labelf(ctx, NK_TEXT_CENTERED, "----------------");
@@ -204,7 +201,7 @@ static int ui_render_theme_dropdown(UiMenuBar* menubar)
     for (int i = 0; i < menubar->theme_count; ++i) {
         const UiThemeDescriptor* theme = &menubar->themes[i];
         char item_label[128];
-        const char* label = (theme->label && theme->label[0] != '\0') ? theme->label : "Unnamed Theme";
+        const char* label = (theme->label && theme->label[0] != '\0') ? theme->label : "未命名主题";
         const char* marker = (i == menubar->active_theme_index) ? "[x]" : "[ ]";
 
         snprintf(item_label, sizeof(item_label), "%s %s", marker, label);
@@ -216,9 +213,8 @@ static int ui_render_theme_dropdown(UiMenuBar* menubar)
     return -1;
 }
 
-static int ui_render_top_menu(UiMenuBar* menubar,
-                              const EditorViewModel* view_model,
-                              const UiTopMenuDef* menu)
+static int
+ui_render_top_menu(UiMenuBar* menubar, const EditorViewModel* view_model, const UiTopMenuDef* menu)
 {
     struct nk_context* ctx = NULL;
     int clicked_id = -1;
@@ -263,7 +259,7 @@ static int ui_render_quick_action(UiMenuBar* menubar,
         return -1;
     }
 
-    descriptor = command_catalog_find_by_menu_id(quick_action->menu_id);
+    descriptor = command_catalog_find_by_menu_id((int)quick_action->menu_id);
     enabled = ui_menu_is_action_available(view_model, quick_action->menu_id);
     nk_layout_row_push(ctx, quick_action->width);
     if (!enabled) {
@@ -274,16 +270,13 @@ static int ui_render_quick_action(UiMenuBar* menubar,
         if (!enabled) {
             nk_widget_disable_end(ctx);
         }
-        return quick_action->menu_id;
+        return (int)quick_action->menu_id;
     }
     hovered = nk_input_is_mouse_hovering_rect(&ctx->input, widget_bounds);
     tooltip[0] = '\0';
     if (descriptor) {
-        ui_build_command_tooltip(view_model,
-                                 descriptor->command,
-                                 quick_action->label,
-                                 tooltip,
-                                 sizeof(tooltip));
+        ui_build_command_tooltip(
+            view_model, descriptor->command, quick_action->label, tooltip, sizeof(tooltip));
     } else if (quick_action->tooltip) {
         snprintf(tooltip, sizeof(tooltip), "%s", quick_action->tooltip);
     }
@@ -339,7 +332,8 @@ int ui_menubar_render_contents(UiMenuBar* menubar,
     }
     columns = (int)(menu_count + quick_count + 1u);
 
-    if (nk_begin(ctx, "##menubar##",
+    if (nk_begin(ctx,
+                 "##menubar##",
                  nk_rect(0.0f, 0.0f, (float)window_width, bar_height),
                  NK_WINDOW_NO_SCROLLBAR | NK_WINDOW_BORDER)) {
         nk_menubar_begin(ctx);

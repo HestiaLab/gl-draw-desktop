@@ -82,7 +82,7 @@ int ui_theme_index_of_id(const char* theme_id)
 const char* ui_theme_default_id(void)
 {
     const UiThemeDescriptor* descriptor = ui_theme_builtin_descriptor_at(UI_THEME_LIGHT_INDEX);
-    return descriptor ? descriptor->id : "gldraw-light";
+    return descriptor ? descriptor->id : "gldrawdesktop-light";
 }
 
 /**
