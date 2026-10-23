@@ -32,7 +32,7 @@ jobs:
 
       - name: Cache apt packages
         if: runner.os == 'Linux'
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .cache/apt/archives/*.deb
           key: apt-${{ runner.os }}-v2
@@ -68,7 +68,7 @@ jobs:
 
       - name: Cache GLFW source
         id: glfw-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .cache/glfw
           key: glfw-3.3.9-${{ hashFiles('cmake/Dependencies.cmake') }}
@@ -100,7 +100,7 @@ jobs:
 
       - name: Cache apt packages
         if: runner.os == 'Linux'
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .cache/apt/archives/*.deb
           key: apt-${{ runner.os }}-v2
@@ -126,7 +126,7 @@ jobs:
 
       - name: Cache GLFW source
         id: glfw-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .cache/glfw
           key: glfw-3.3.9-${{ hashFiles('cmake/Dependencies.cmake') }}
@@ -158,7 +158,7 @@ jobs:
 
       - name: Cache apt packages
         if: runner.os == 'Linux'
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .cache/apt/archives/*.deb
           key: apt-${{ runner.os }}-v2
@@ -184,7 +184,7 @@ jobs:
 
       - name: Cache GLFW source
         id: glfw-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .cache/glfw
           key: glfw-3.3.9-${{ hashFiles('cmake/Dependencies.cmake') }}
@@ -216,7 +216,7 @@ jobs:
 
       - name: Cache apt packages
         if: runner.os == 'Linux'
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .cache/apt/archives/*.deb
           key: apt-${{ runner.os }}-v2
@@ -246,7 +246,7 @@ jobs:
 
       - name: Cache GLFW source
         id: glfw-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .cache/glfw
           key: glfw-3.3.9-${{ hashFiles('cmake/Dependencies.cmake') }}
