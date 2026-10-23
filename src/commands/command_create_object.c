@@ -15,8 +15,8 @@ static int create_object_execute(void* cmd, Document* document)
     }
 
     if (command->object_id != 0u) {
-        if (!document_append_object_with_id_to_layer(document, clone, command->object_id,
-                                                     clone->layer_id)) {
+        if (!document_append_object_with_id_to_layer(
+                document, clone, command->object_id, clone->layer_id)) {
             object_destroy(clone);
             return 0;
         }
@@ -62,9 +62,11 @@ static void create_object_destroy(void* cmd)
     g_allocator.free_fn(command);
 }
 
-const CommandVTable CREATE_OBJECT_VTABLE = {create_object_execute, create_object_undo,
-                                            create_object_execute, create_object_merge,
-                                            create_object_destroy};
+const CommandVTable CREATE_OBJECT_VTABLE = { create_object_execute,
+                                             create_object_undo,
+                                             create_object_execute,
+                                             create_object_merge,
+                                             create_object_destroy };
 
 Command* command_create_create_object(GraphicObject* object_snapshot)
 {

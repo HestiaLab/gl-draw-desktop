@@ -99,8 +99,7 @@ int path_utils_has_extension(const char* path, const char* extension)
 
     path += path_length - extension_length;
     for (i = 0u; i < extension_length; ++i) {
-        if (tolower((unsigned char)path[i]) !=
-            tolower((unsigned char)extension[i])) {
+        if (tolower((unsigned char)path[i]) != tolower((unsigned char)extension[i])) {
             return 0;
         }
     }

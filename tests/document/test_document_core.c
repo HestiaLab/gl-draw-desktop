@@ -112,23 +112,23 @@ static void expect_str_eq_impl(const char* actual,
 
 #define EXPECT_TRUE(expr) expect_true_impl((expr), #expr, __FILE__, __LINE__)
 #define EXPECT_FALSE(expr) expect_true_impl(!(expr), "!(" #expr ")", __FILE__, __LINE__)
-#define EXPECT_UINT_EQ(actual, expected) \
+#define EXPECT_UINT_EQ(actual, expected)                                                           \
     expect_uint_eq_impl((actual), (expected), #actual, #expected, __FILE__, __LINE__)
-#define EXPECT_INT_EQ(actual, expected) \
+#define EXPECT_INT_EQ(actual, expected)                                                            \
     expect_int_eq_impl((actual), (expected), #actual, #expected, __FILE__, __LINE__)
-#define EXPECT_FLOAT_EQ(actual, expected) \
+#define EXPECT_FLOAT_EQ(actual, expected)                                                          \
     expect_float_eq_impl((actual), (expected), #actual, #expected, __FILE__, __LINE__)
-#define EXPECT_STR_EQ(actual, expected) \
+#define EXPECT_STR_EQ(actual, expected)                                                            \
     expect_str_eq_impl((actual), (expected), #actual, #expected, __FILE__, __LINE__)
 
 static GraphicObject* create_rect(float x, float y, float w, float h)
 {
-    return object_create_rect((RectF){x, y, w, h}, object_default_style());
+    return object_create_rect((RectF){ x, y, w, h }, object_default_style());
 }
 
 static GraphicObject* create_line(float x1, float y1, float x2, float y2)
 {
-    return object_create_line((Vec2){x1, y1}, (Vec2){x2, y2}, object_default_style());
+    return object_create_line((Vec2){ x1, y1 }, (Vec2){ x2, y2 }, object_default_style());
 }
 
 static int write_text_file(const char* path, const char* text)
@@ -155,7 +155,7 @@ static int write_text_file(const char* path, const char* text)
 static int test_document_selection_and_deletion(void)
 {
     Document document;
-    SelectionSet selection = {0};
+    SelectionSet selection = { 0 };
     GraphicObject* first = NULL;
     GraphicObject* second = NULL;
     ObjectId* ids = NULL;
@@ -215,14 +215,10 @@ static int test_command_executor_create_undo_redo(void)
     document_init(&document);
     EXPECT_TRUE(command_executor_init(&executor));
 
-    EXPECT_TRUE(command_executor_execute(&executor,
-                                         command_create_create_object(
-                                             create_rect(0.0f, 0.0f, 10.0f, 20.0f)),
-                                         &document));
-    EXPECT_TRUE(command_executor_execute(&executor,
-                                         command_create_create_object(
-                                             create_rect(10.0f, 10.0f, 5.0f, 5.0f)),
-                                         &document));
+    EXPECT_TRUE(command_executor_execute(
+        &executor, command_create_create_object(create_rect(0.0f, 0.0f, 10.0f, 20.0f)), &document));
+    EXPECT_TRUE(command_executor_execute(
+        &executor, command_create_create_object(create_rect(10.0f, 10.0f, 5.0f, 5.0f)), &document));
     EXPECT_TRUE(command_executor_can_undo(&executor));
 
     EXPECT_TRUE(command_executor_undo(&executor, &document));
@@ -252,12 +248,10 @@ static int test_command_executor_property_undo_redo(void)
 
     object = document_find_object(&document, 1u);
     EXPECT_TRUE(object != NULL);
-    EXPECT_TRUE(command_executor_execute(&executor,
-                                         command_create_set_property_from_document(&document,
-                                                                                   object->id,
-                                                                                   "width",
-                                                                                   42.0f),
-                                         &document));
+    EXPECT_TRUE(command_executor_execute(
+        &executor,
+        command_create_set_property_from_document(&document, object->id, "width", 42.0f),
+        &document));
 
     EXPECT_TRUE(command_executor_undo(&executor, &document));
     object = document_find_object(&document, 1u);
@@ -281,8 +275,8 @@ static int test_command_executor_move_undo_redo(void)
     Document document;
     CommandExecutor executor;
     GraphicObject* object = NULL;
-    ObjectId ids[1] = {0u};
-    Vec2 delta = {3.0f, -4.0f};
+    ObjectId ids[1] = { 0u };
+    Vec2 delta = { 3.0f, -4.0f };
     float x = 0.0f;
     float y = 0.0f;
 
@@ -293,9 +287,8 @@ static int test_command_executor_move_undo_redo(void)
     object = document_find_object(&document, 1u);
     EXPECT_TRUE(object != NULL);
     ids[0] = object->id;
-    EXPECT_TRUE(command_executor_execute(&executor,
-                                         command_create_move_objects(ids, 1, delta),
-                                         &document));
+    EXPECT_TRUE(
+        command_executor_execute(&executor, command_create_move_objects(ids, 1, delta), &document));
 
     EXPECT_TRUE(command_executor_undo(&executor, &document));
     object = document_find_object(&document, 1u);
@@ -341,9 +334,8 @@ static int test_persistence_round_trip(void)
     EXPECT_TRUE(document_rename_layer(&saved, overlay_layer, "Overlay Locked"));
     EXPECT_TRUE(document_set_layer_visibility(&saved, overlay_layer, 0));
     EXPECT_TRUE(document_set_layer_locked(&saved, overlay_layer, 1));
-    EXPECT_TRUE(document_set_layer_blend_mode(&saved,
-                                              overlay_layer,
-                                              DOCUMENT_LAYER_BLEND_MULTIPLY));
+    EXPECT_TRUE(
+        document_set_layer_blend_mode(&saved, overlay_layer, DOCUMENT_LAYER_BLEND_MULTIPLY));
     EXPECT_TRUE(document_set_active_layer(&saved, overlay_layer));
 
     rect_style = object_default_style();
@@ -352,9 +344,8 @@ static int test_persistence_round_trip(void)
     rect_style.stroke_color.b = 0.75f;
     rect_style.stroke_color.a = 0.90f;
     rect_style.stroke_width = 3.5f;
-    EXPECT_TRUE(document_add_object(&saved,
-                                    object_create_rect((RectF){3.0f, 4.0f, 20.0f, 30.0f},
-                                                       rect_style)));
+    EXPECT_TRUE(document_add_object(
+        &saved, object_create_rect((RectF){ 3.0f, 4.0f, 20.0f, 30.0f }, rect_style)));
     EXPECT_TRUE(document_add_object(&saved, create_line(1.0f, 2.0f, 9.0f, 10.0f)));
 
     EXPECT_TRUE(test_temp_make_path(path, sizeof(path), "document-core", ".json"));
@@ -439,28 +430,32 @@ static int test_persistence_ignores_unknown_fields(void)
 
     document_init(&document);
     EXPECT_TRUE(test_temp_make_path(path, sizeof(path), "document-core", ".json"));
-    EXPECT_TRUE(write_text_file(path,
-                                "{\n"
-                                "  \"format\": \"gldraw-document\",\n"
-                                "  \"version\": 2,\n"
-                                "  \"unknown_root\": { \"ignored\": true },\n"
-                                "  \"next_id\": 8,\n"
-                                "  \"active_layer_id\": 2,\n"
-                                "  \"layers\": [\n"
-                                "    { \"id\": 1, \"name\": \"Layer 1\", \"visible\": true, \"locked\": false, \"blend_mode\": \"normal\", \"unknown\": [1, 2] },\n"
-                                "    { \"id\": 2, \"name\": \"Work\", \"visible\": false, \"locked\": true, \"blend_mode\": \"screen\", \"unknown\": null }\n"
-                                "  ],\n"
-                                "  \"objects\": [\n"
-                                "    {\n"
-                                "      \"id\": 7,\n"
-                                "      \"layer_id\": 2,\n"
-                                "      \"type\": \"rect\",\n"
-                                "      \"unknown_object\": { \"nested\": [false] },\n"
-                                "      \"stroke\": { \"r\": 1, \"g\": 0.5, \"b\": 0.25, \"a\": 1, \"width\": 2, \"ignored\": 42 },\n"
-                                "      \"properties\": { \"x\": 11, \"y\": 12, \"width\": 13, \"height\": 14 }\n"
-                                "    }\n"
-                                "  ]\n"
-                                "}\n"));
+    EXPECT_TRUE(write_text_file(
+        path,
+        "{\n"
+        "  \"format\": \"gldraw-document\",\n"
+        "  \"version\": 2,\n"
+        "  \"unknown_root\": { \"ignored\": true },\n"
+        "  \"next_id\": 8,\n"
+        "  \"active_layer_id\": 2,\n"
+        "  \"layers\": [\n"
+        "    { \"id\": 1, \"name\": \"Layer 1\", \"visible\": true, \"locked\": false, "
+        "\"blend_mode\": \"normal\", \"unknown\": [1, 2] },\n"
+        "    { \"id\": 2, \"name\": \"Work\", \"visible\": false, \"locked\": true, "
+        "\"blend_mode\": \"screen\", \"unknown\": null }\n"
+        "  ],\n"
+        "  \"objects\": [\n"
+        "    {\n"
+        "      \"id\": 7,\n"
+        "      \"layer_id\": 2,\n"
+        "      \"type\": \"rect\",\n"
+        "      \"unknown_object\": { \"nested\": [false] },\n"
+        "      \"stroke\": { \"r\": 1, \"g\": 0.5, \"b\": 0.25, \"a\": 1, \"width\": 2, "
+        "\"ignored\": 42 },\n"
+        "      \"properties\": { \"x\": 11, \"y\": 12, \"width\": 13, \"height\": 14 }\n"
+        "    }\n"
+        "  ]\n"
+        "}\n"));
 
     EXPECT_TRUE(document_load_json(&document, path));
     EXPECT_INT_EQ(document_layer_count(&document), 2);
@@ -491,7 +486,8 @@ static int test_persistence_rejects_invalid_json(void)
     EXPECT_TRUE(document_add_object(&document, create_rect(0.0f, 0.0f, 1.0f, 1.0f)));
 
     EXPECT_TRUE(test_temp_make_path(path, sizeof(path), "document-core", ".json"));
-    EXPECT_TRUE(write_text_file(path, "{\"format\":\"gldraw-document\",\"version\":99,\"objects\":[]}"));
+    EXPECT_TRUE(
+        write_text_file(path, "{\"format\":\"gldraw-document\",\"version\":99,\"objects\":[]}"));
     EXPECT_FALSE(document_load_json(&document, path));
     EXPECT_INT_EQ(document.count, 1);
     EXPECT_UINT_EQ(document.objects[0]->id, 1u);
@@ -513,8 +509,7 @@ static int test_path_utils_common_cases(void)
 
     EXPECT_STR_EQ(path_utils_basename_or_default("C:\\dir\\file.json", "fallback.json"),
                   "file.json");
-    EXPECT_STR_EQ(path_utils_basename_or_default("dir/file.json", "fallback.json"),
-                  "file.json");
+    EXPECT_STR_EQ(path_utils_basename_or_default("dir/file.json", "fallback.json"), "file.json");
     EXPECT_STR_EQ(path_utils_basename_or_default("", "fallback.json"), "fallback.json");
     EXPECT_STR_EQ(path_utils_basename_or_default("dir/", "fallback.json"), "fallback.json");
 
@@ -540,17 +535,11 @@ static int test_path_utils_common_cases(void)
     EXPECT_FALSE(path_utils_is_safe_filename("."));
     EXPECT_FALSE(path_utils_is_safe_filename(".."));
 
-    EXPECT_TRUE(path_utils_join_same_directory("dir/base.json",
-                                               "copy",
-                                               ".json",
-                                               buffer,
-                                               sizeof(buffer)));
+    EXPECT_TRUE(
+        path_utils_join_same_directory("dir/base.json", "copy", ".json", buffer, sizeof(buffer)));
     EXPECT_STR_EQ(buffer, "dir/copy.json");
-    EXPECT_TRUE(path_utils_join_same_directory("C:\\dir\\base.json",
-                                               "copy.JSON",
-                                               ".json",
-                                               buffer,
-                                               sizeof(buffer)));
+    EXPECT_TRUE(path_utils_join_same_directory(
+        "C:\\dir\\base.json", "copy.JSON", ".json", buffer, sizeof(buffer)));
     EXPECT_STR_EQ(buffer, "C:\\dir\\copy.JSON");
 
     return g_failures == 0;
@@ -579,10 +568,8 @@ static int test_layer_visibility_and_spatial_query(void)
 
     indices = (int*)calloc((size_t)document.count, sizeof(indices[0]));
     EXPECT_TRUE(indices != NULL);
-    count = document_query_visible_indices(&document,
-                                           (RectF){-10.0f, -10.0f, 200.0f, 200.0f},
-                                           indices,
-                                           document.count);
+    count = document_query_visible_indices(
+        &document, (RectF){ -10.0f, -10.0f, 200.0f, 200.0f }, indices, document.count);
     EXPECT_INT_EQ(count, 1);
     EXPECT_UINT_EQ(document.spatial_revision, document.revision);
     EXPECT_UINT_EQ(document.objects[indices[0]]->id, visible->id);
@@ -610,11 +597,8 @@ static int test_stress_5000_objects_and_undo_redo(void)
 
     for (i = 0; i < 100; ++i) {
         EXPECT_TRUE(command_executor_execute(&executor,
-                                             command_create_create_object(
-                                                 create_rect(1500.0f + (float)i * 12.0f,
-                                                             0.0f,
-                                                             10.0f,
-                                                             10.0f)),
+                                             command_create_create_object(create_rect(
+                                                 1500.0f + (float)i * 12.0f, 0.0f, 10.0f, 10.0f)),
                                              &document));
     }
     for (i = 0; i < 100; ++i) {
@@ -634,19 +618,17 @@ int main(void)
     static const struct {
         const char* name;
         TestFn fn;
-    } tests[] = {
-        {"document selection and deletion", test_document_selection_and_deletion},
-        {"command create undo/redo", test_command_executor_create_undo_redo},
-        {"command property undo/redo", test_command_executor_property_undo_redo},
-        {"command move undo/redo", test_command_executor_move_undo_redo},
-        {"persistence round trip", test_persistence_round_trip},
-        {"persistence escapes layer names", test_persistence_escapes_layer_names},
-        {"persistence ignores unknown fields", test_persistence_ignores_unknown_fields},
-        {"persistence rejects invalid json", test_persistence_rejects_invalid_json},
-        {"path utils common cases", test_path_utils_common_cases},
-        {"layer visibility and spatial query", test_layer_visibility_and_spatial_query},
-        {"stress 5000 objects and undo/redo", test_stress_5000_objects_and_undo_redo}
-    };
+    } tests[] = { { "document selection and deletion", test_document_selection_and_deletion },
+                  { "command create undo/redo", test_command_executor_create_undo_redo },
+                  { "command property undo/redo", test_command_executor_property_undo_redo },
+                  { "command move undo/redo", test_command_executor_move_undo_redo },
+                  { "persistence round trip", test_persistence_round_trip },
+                  { "persistence escapes layer names", test_persistence_escapes_layer_names },
+                  { "persistence ignores unknown fields", test_persistence_ignores_unknown_fields },
+                  { "persistence rejects invalid json", test_persistence_rejects_invalid_json },
+                  { "path utils common cases", test_path_utils_common_cases },
+                  { "layer visibility and spatial query", test_layer_visibility_and_spatial_query },
+                  { "stress 5000 objects and undo/redo", test_stress_5000_objects_and_undo_redo } };
     int i = 0;
     int test_count = (int)(sizeof(tests) / sizeof(tests[0]));
     int failures_before = 0;

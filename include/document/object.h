@@ -26,9 +26,7 @@ typedef struct {
     float stroke_width;
 } GraphicStyle;
 
-typedef enum {
-    GRAPHIC_PROPERTY_FLOAT = 0
-} GraphicPropertyType;
+typedef enum { GRAPHIC_PROPERTY_FLOAT = 0 } GraphicPropertyType;
 
 typedef struct {
     const char* name;
@@ -60,9 +58,12 @@ typedef RectF (*GraphicObjectGetBoundsFn)(const GraphicObject* object);
 typedef int (*GraphicObjectHitTestFn)(const GraphicObject* object, Vec2 point, float tolerance);
 typedef int (*GraphicObjectGetPathPointCountFn)(const GraphicObject* object);
 typedef void (*GraphicObjectWritePathPointsFn)(const GraphicObject* object, Vec2* out_points);
-typedef int (*GraphicObjectGetScalarFn)(const GraphicObject* object, const char* key, float* out_value);
+typedef int (*GraphicObjectGetScalarFn)(const GraphicObject* object,
+                                        const char* key,
+                                        float* out_value);
 typedef int (*GraphicObjectSetScalarFn)(GraphicObject* object, const char* key, float value);
-typedef int (*GraphicObjectSerializeFn)(const GraphicObject* object, GraphicPropertyBag* out_properties);
+typedef int (*GraphicObjectSerializeFn)(const GraphicObject* object,
+                                        GraphicPropertyBag* out_properties);
 typedef GraphicObject* (*GraphicObjectDeserializeFn)(const GraphicPropertyBag* properties,
                                                      GraphicStyle style);
 

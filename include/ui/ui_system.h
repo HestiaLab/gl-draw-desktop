@@ -67,10 +67,7 @@ int ui_system_handle_key(UiSystem* ui, int key, int action);
  * @param action GLFW action code.
  * @return Non-zero if the UI consumed the event, zero otherwise.
  */
-int ui_system_handle_mouse_button(UiSystem* ui,
-                                  Vec2 screen_pos,
-                                  int button,
-                                  int action);
+int ui_system_handle_mouse_button(UiSystem* ui, Vec2 screen_pos, int button, int action);
 
 /**
  * @brief Commit UI draw commands.

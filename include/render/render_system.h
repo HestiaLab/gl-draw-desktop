@@ -27,8 +27,7 @@ typedef struct RenderSystemDesc {
  *             owns_device is non-zero, render_system_destroy() destroys device.
  * @return Renderer instance on success, or `NULL` on failure.
  */
-RenderSystem* render_system_create_with_desc(RenderDevice* device,
-                                             const RenderSystemDesc* desc);
+RenderSystem* render_system_create_with_desc(RenderDevice* device, const RenderSystemDesc* desc);
 
 /**
  * @brief Create the rendering system from a platform window.
@@ -79,8 +78,6 @@ void render_system_draw(RenderSystem* renderer, const RenderSceneDesc* scene);
  * @param path Destination PNG path.
  * @return Non-zero on success, zero on failure.
  */
-int render_system_export_png(RenderSystem* renderer,
-                             const CanvasView* canvas,
-                             const char* path);
+int render_system_export_png(RenderSystem* renderer, const CanvasView* canvas, const char* path);
 
 #endif /* GLDRAW_RENDER_RENDER_SYSTEM_H */

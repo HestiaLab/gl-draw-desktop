@@ -9,36 +9,42 @@
 #include <stdio.h>
 #include <string.h>
 
-#define EXPECT_TRUE(expr)                                                     \
-    do {                                                                     \
-        if (!(expr)) {                                                        \
-            fprintf(stderr, "EXPECT_TRUE failed: %s:%d: %s\n",               \
-                    __FILE__, __LINE__, #expr);                              \
-            return 1;                                                        \
-        }                                                                    \
+#define EXPECT_TRUE(expr)                                                                          \
+    do {                                                                                           \
+        if (!(expr)) {                                                                             \
+            fprintf(stderr, "EXPECT_TRUE failed: %s:%d: %s\n", __FILE__, __LINE__, #expr);         \
+            return 1;                                                                              \
+        }                                                                                          \
     } while (0)
 
-#define EXPECT_INT_EQ(actual, expected)                                       \
-    do {                                                                      \
-        int actual_value = (actual);                                          \
-        int expected_value = (expected);                                      \
-        if (actual_value != expected_value) {                                 \
-            fprintf(stderr, "EXPECT_INT_EQ failed: %s:%d: %d != %d\n",        \
-                    __FILE__, __LINE__, actual_value, expected_value);        \
-            return 1;                                                         \
-        }                                                                     \
+#define EXPECT_INT_EQ(actual, expected)                                                            \
+    do {                                                                                           \
+        int actual_value = (actual);                                                               \
+        int expected_value = (expected);                                                           \
+        if (actual_value != expected_value) {                                                      \
+            fprintf(stderr,                                                                        \
+                    "EXPECT_INT_EQ failed: %s:%d: %d != %d\n",                                     \
+                    __FILE__,                                                                      \
+                    __LINE__,                                                                      \
+                    actual_value,                                                                  \
+                    expected_value);                                                               \
+            return 1;                                                                              \
+        }                                                                                          \
     } while (0)
 
-#define EXPECT_FLOAT_EQ(actual, expected)                                     \
-    do {                                                                      \
-        float actual_value = (actual);                                        \
-        float expected_value = (expected);                                    \
-        if ((actual_value - expected_value > 1e-4f) ||                        \
-            (expected_value - actual_value > 1e-4f)) {                        \
-            fprintf(stderr, "EXPECT_FLOAT_EQ failed: %s:%d: %.4f != %.4f\n",  \
-                    __FILE__, __LINE__, actual_value, expected_value);        \
-            return 1;                                                         \
-        }                                                                     \
+#define EXPECT_FLOAT_EQ(actual, expected)                                                          \
+    do {                                                                                           \
+        float actual_value = (actual);                                                             \
+        float expected_value = (expected);                                                         \
+        if ((actual_value - expected_value > 1e-4f) || (expected_value - actual_value > 1e-4f)) {  \
+            fprintf(stderr,                                                                        \
+                    "EXPECT_FLOAT_EQ failed: %s:%d: %.4f != %.4f\n",                               \
+                    __FILE__,                                                                      \
+                    __LINE__,                                                                      \
+                    actual_value,                                                                  \
+                    expected_value);                                                               \
+            return 1;                                                                              \
+        }                                                                                          \
     } while (0)
 
 typedef struct MockDrawCall {
@@ -101,15 +107,13 @@ static int mock_draw_geometry(RenderDevice* device,
     mock->draw_calls[mock->draw_call_count].line_width = material->line_width;
     mock->draw_calls[mock->draw_call_count].color = material->color;
     mock->draw_calls[mock->draw_call_count].first_point =
-        geometry->point_count > 0 ? geometry->points[0] : (Vec2){0.0f, 0.0f};
+        geometry->point_count > 0 ? geometry->points[0] : (Vec2){ 0.0f, 0.0f };
     mock->draw_call_count++;
     return 1;
 }
 
-static int mock_read_pixels(RenderDevice* device,
-                            RectF rect,
-                            unsigned char* out_rgba,
-                            int stride_bytes)
+static int
+mock_read_pixels(RenderDevice* device, RectF rect, unsigned char* out_rgba, int stride_bytes)
 {
     (void)device;
     (void)rect;
@@ -130,19 +134,14 @@ static void mock_destroy(RenderDevice* device)
     mock->destroy_count++;
 }
 
-static const RenderDeviceVTable MOCK_VTABLE = {
-    mock_resize,
-    mock_begin_frame,
-    mock_begin_pass,
-    mock_draw_geometry,
-    mock_read_pixels,
-    mock_end_frame,
-    mock_destroy
-};
+static const RenderDeviceVTable MOCK_VTABLE = { mock_resize,      mock_begin_frame,
+                                                mock_begin_pass,  mock_draw_geometry,
+                                                mock_read_pixels, mock_end_frame,
+                                                mock_destroy };
 
 static GraphicObject* make_rect(float x, float y, float w, float h)
 {
-    return object_create_rect((RectF){x, y, w, h}, object_default_style());
+    return object_create_rect((RectF){ x, y, w, h }, object_default_style());
 }
 
 static void mock_reset_frame_capture(MockRenderDevice* mock)
@@ -180,26 +179,21 @@ static int test_canvas_renderer_submit_sequence(void)
 {
     Document document;
     CanvasView canvas;
-    SelectionSet selection = {0};
+    SelectionSet selection = { 0 };
     CanvasDrawList draw_list;
-    MockRenderDevice mock = {0};
+    MockRenderDevice mock = { 0 };
     RenderFrameDesc frame_desc;
-    RenderTransform transform = {1.0f, 1.0f};
+    RenderTransform transform = { 1.0f, 1.0f };
 
     document_init(&document);
-    canvas_view_init(&canvas, &document, (RectF){0.0f, 0.0f, 800.0f, 600.0f});
+    canvas_view_init(&canvas, &document, (RectF){ 0.0f, 0.0f, 800.0f, 600.0f });
     canvas.show_grid = 0;
     EXPECT_TRUE(document_add_object(&document, make_rect(10.0f, 20.0f, 40.0f, 50.0f)));
     EXPECT_TRUE(document_add_object(&document, make_rect(80.0f, 20.0f, 40.0f, 50.0f)));
 
     canvas_drawlist_init(&draw_list);
-    EXPECT_TRUE(canvas_drawlist_build(&draw_list,
-                                      &document,
-                                      &selection,
-                                      &canvas,
-                                      0,
-                                      (Vec2){0.0f, 0.0f},
-                                      NULL));
+    EXPECT_TRUE(canvas_drawlist_build(
+        &draw_list, &document, &selection, &canvas, 0, (Vec2){ 0.0f, 0.0f }, NULL));
     EXPECT_INT_EQ((int)draw_list.stroke_count, 2);
 
     mock.base.vtable = &MOCK_VTABLE;
@@ -232,23 +226,18 @@ static int test_selected_object_emits_highlight_first(void)
 {
     Document document;
     CanvasView canvas;
-    SelectionSet selection = {0};
+    SelectionSet selection = { 0 };
     CanvasDrawList draw_list;
 
     document_init(&document);
-    canvas_view_init(&canvas, &document, (RectF){0.0f, 0.0f, 640.0f, 480.0f});
+    canvas_view_init(&canvas, &document, (RectF){ 0.0f, 0.0f, 640.0f, 480.0f });
     canvas.show_grid = 0;
     EXPECT_TRUE(document_add_object(&document, make_rect(0.0f, 0.0f, 10.0f, 20.0f)));
     EXPECT_TRUE(selection_set_add(&selection, 1u));
 
     canvas_drawlist_init(&draw_list);
-    EXPECT_TRUE(canvas_drawlist_build(&draw_list,
-                                      &document,
-                                      &selection,
-                                      &canvas,
-                                      0,
-                                      (Vec2){0.0f, 0.0f},
-                                      NULL));
+    EXPECT_TRUE(canvas_drawlist_build(
+        &draw_list, &document, &selection, &canvas, 0, (Vec2){ 0.0f, 0.0f }, NULL));
     EXPECT_INT_EQ((int)draw_list.stroke_count, 2);
     EXPECT_TRUE(draw_list.strokes[0].line_width > draw_list.strokes[1].line_width);
 
@@ -262,10 +251,10 @@ static int test_render_system_invalidates_on_selection_revision(void)
 {
     Document document;
     CanvasView canvas;
-    SelectionSet selection = {0};
+    SelectionSet selection = { 0 };
     RenderSceneDesc scene;
-    MockRenderDevice mock = {0};
-    PlatformWindow window = {0};
+    MockRenderDevice mock = { 0 };
+    PlatformWindow window = { 0 };
     RenderSystem* renderer = NULL;
     const MockDrawCall* first_highlight = NULL;
     const MockDrawCall* second_highlight = NULL;
@@ -273,7 +262,7 @@ static int test_render_system_invalidates_on_selection_revision(void)
     float second_highlight_x = 0.0f;
 
     document_init(&document);
-    canvas_view_init(&canvas, &document, (RectF){0.0f, 0.0f, 640.0f, 480.0f});
+    canvas_view_init(&canvas, &document, (RectF){ 0.0f, 0.0f, 640.0f, 480.0f });
     canvas.show_grid = 0;
     EXPECT_TRUE(document_add_object(&document, make_rect(0.0f, 0.0f, 10.0f, 20.0f)));
     EXPECT_TRUE(document_add_object(&document, make_rect(100.0f, 0.0f, 10.0f, 20.0f)));
@@ -291,7 +280,7 @@ static int test_render_system_invalidates_on_selection_revision(void)
     scene.selection = &selection;
     scene.canvas = &canvas;
     scene.selection_preview_active = 0;
-    scene.selection_preview_delta = (Vec2){0.0f, 0.0f};
+    scene.selection_preview_delta = (Vec2){ 0.0f, 0.0f };
     scene.overlay_object = NULL;
     render_system_draw(renderer, &scene);
     first_highlight = mock_find_widest_draw_call(&mock);
@@ -316,7 +305,7 @@ static int test_render_system_invalidates_on_selection_revision(void)
 
 static int test_render_system_desc_can_borrow_device(void)
 {
-    MockRenderDevice mock = {0};
+    MockRenderDevice mock = { 0 };
     RenderSystemDesc desc;
     RenderSystem* renderer = NULL;
 
@@ -338,37 +327,27 @@ static int test_canvas_drawlist_reuses_scratch_arena_between_builds(void)
 {
     Document document;
     CanvasView canvas;
-    SelectionSet selection = {0};
+    SelectionSet selection = { 0 };
     CanvasDrawList draw_list;
     unsigned char* first_memory = NULL;
     size_t first_capacity = 0u;
 
     document_init(&document);
-    canvas_view_init(&canvas, &document, (RectF){0.0f, 0.0f, 640.0f, 480.0f});
+    canvas_view_init(&canvas, &document, (RectF){ 0.0f, 0.0f, 640.0f, 480.0f });
     canvas.show_grid = 1;
     EXPECT_TRUE(document_add_object(&document, make_rect(0.0f, 0.0f, 120.0f, 80.0f)));
     EXPECT_TRUE(document_add_object(&document, make_rect(240.0f, 120.0f, 100.0f, 60.0f)));
 
     canvas_drawlist_init(&draw_list);
-    EXPECT_TRUE(canvas_drawlist_build(&draw_list,
-                                      &document,
-                                      &selection,
-                                      &canvas,
-                                      0,
-                                      (Vec2){0.0f, 0.0f},
-                                      NULL));
+    EXPECT_TRUE(canvas_drawlist_build(
+        &draw_list, &document, &selection, &canvas, 0, (Vec2){ 0.0f, 0.0f }, NULL));
     EXPECT_TRUE(draw_list.scratch_arena.memory != NULL);
     EXPECT_TRUE(draw_list.scratch_arena.capacity_bytes > 0u);
     first_memory = draw_list.scratch_arena.memory;
     first_capacity = draw_list.scratch_arena.capacity_bytes;
 
-    EXPECT_TRUE(canvas_drawlist_build(&draw_list,
-                                      &document,
-                                      &selection,
-                                      &canvas,
-                                      0,
-                                      (Vec2){0.0f, 0.0f},
-                                      NULL));
+    EXPECT_TRUE(canvas_drawlist_build(
+        &draw_list, &document, &selection, &canvas, 0, (Vec2){ 0.0f, 0.0f }, NULL));
     EXPECT_TRUE(draw_list.scratch_arena.memory == first_memory);
     EXPECT_TRUE(draw_list.scratch_arena.capacity_bytes == first_capacity);
 
@@ -381,11 +360,16 @@ int main(void)
 {
     extension_loader_register_all();
 
-    if (test_canvas_renderer_submit_sequence()) return 1;
-    if (test_selected_object_emits_highlight_first()) return 1;
-    if (test_render_system_invalidates_on_selection_revision()) return 1;
-    if (test_render_system_desc_can_borrow_device()) return 1;
-    if (test_canvas_drawlist_reuses_scratch_arena_between_builds()) return 1;
+    if (test_canvas_renderer_submit_sequence())
+        return 1;
+    if (test_selected_object_emits_highlight_first())
+        return 1;
+    if (test_render_system_invalidates_on_selection_revision())
+        return 1;
+    if (test_render_system_desc_can_borrow_device())
+        return 1;
+    if (test_canvas_drawlist_reuses_scratch_arena_between_builds())
+        return 1;
 
     printf("[PASS] canvas draw list and renderer submission\n");
     return 0;

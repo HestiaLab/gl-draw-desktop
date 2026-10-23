@@ -14,41 +14,32 @@
 #include <stdio.h>
 #include <string.h>
 
-#define EXPECT_TRUE(expr)                                                     \
-    do {                                                                      \
-        if (!(expr)) {                                                        \
-            fprintf(stderr, "EXPECT_TRUE failed: %s:%d: %s\n",                \
-                    __FILE__, __LINE__, #expr);                               \
-            return 1;                                                         \
-        }                                                                     \
+#define EXPECT_TRUE(expr)                                                                          \
+    do {                                                                                           \
+        if (!(expr)) {                                                                             \
+            fprintf(stderr, "EXPECT_TRUE failed: %s:%d: %s\n", __FILE__, __LINE__, #expr);         \
+            return 1;                                                                              \
+        }                                                                                          \
     } while (0)
 
-#define EXPECT_STR_EQ(actual, expected)                                       \
-    do {                                                                      \
-        if (strcmp((actual), (expected)) != 0) {                              \
-            fprintf(stderr, "EXPECT_STR_EQ failed: %s:%d: \"%s\" != \"%s\"\n",\
-                    __FILE__, __LINE__, (actual), (expected));                \
-            return 1;                                                         \
-        }                                                                     \
+#define EXPECT_STR_EQ(actual, expected)                                                            \
+    do {                                                                                           \
+        if (strcmp((actual), (expected)) != 0) {                                                   \
+            fprintf(stderr,                                                                        \
+                    "EXPECT_STR_EQ failed: %s:%d: \"%s\" != \"%s\"\n",                             \
+                    __FILE__,                                                                      \
+                    __LINE__,                                                                      \
+                    (actual),                                                                      \
+                    (expected));                                                                   \
+            return 1;                                                                              \
+        }                                                                                          \
     } while (0)
 
 static const ToolDescriptor G_FAKE_TOOL = {
-    "fake-tool",
-    "Fake Tool",
-    "tool.fake",
-    "Synthetic registry tool",
-    "Fake",
-    "F",
-    1,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
+    "fake-tool", "Fake Tool", "tool.fake", "Synthetic registry tool",
+    "Fake",      "F",         1,           NULL,
+    NULL,        NULL,        NULL,        NULL,
+    NULL,        NULL,        NULL,        NULL,
     NULL
 };
 
@@ -161,12 +152,10 @@ static int test_stable_command_catalog_availability_and_routes(void)
         EXPECT_TRUE(by_id == descriptor);
         EXPECT_TRUE(by_command == descriptor);
         EXPECT_TRUE(command_registry_has_static_handler(descriptor->command));
-        EXPECT_TRUE(command_availability_unavailable_reason(NULL,
-                                                            descriptor->command) != NULL);
+        EXPECT_TRUE(command_availability_unavailable_reason(NULL, descriptor->command) != NULL);
 
         if (descriptor->menu_id > 0) {
-            EXPECT_TRUE(command_catalog_find_by_menu_id(descriptor->menu_id) ==
-                        descriptor);
+            EXPECT_TRUE(command_catalog_find_by_menu_id(descriptor->menu_id) == descriptor);
         }
     }
 
@@ -180,7 +169,7 @@ static int test_stable_command_catalog_availability_and_routes(void)
 static int test_dynamic_tool_shortcut_and_availability(void)
 {
     Workspace workspace;
-    EditorViewModel view_model = {0};
+    EditorViewModel view_model = { 0 };
     LayerId locked_layer = 0u;
     EditorKeymap keymap;
     char shortcut[64];
@@ -194,7 +183,8 @@ static int test_dynamic_tool_shortcut_and_availability(void)
     keymap_init(&keymap, "registry.test.keymap.json");
 
     shortcut[0] = '\0';
-    keymap_format_command_shortcut(&keymap, "tool.fake", KEY_SCOPE_GLOBAL, shortcut, sizeof(shortcut));
+    keymap_format_command_shortcut(
+        &keymap, "tool.fake", KEY_SCOPE_GLOBAL, shortcut, sizeof(shortcut));
     EXPECT_STR_EQ(shortcut, "F");
 
     workspace.session.keymap = keymap;
@@ -227,10 +217,14 @@ static int test_dynamic_tool_shortcut_and_availability(void)
 
 int main(void)
 {
-    if (test_tool_registry_preserves_extension_preload()) return 1;
-    if (test_stable_command_catalog_availability_and_routes()) return 1;
-    if (test_dynamic_tool_command_and_menu_registration()) return 1;
-    if (test_dynamic_tool_shortcut_and_availability()) return 1;
+    if (test_tool_registry_preserves_extension_preload())
+        return 1;
+    if (test_stable_command_catalog_availability_and_routes())
+        return 1;
+    if (test_dynamic_tool_command_and_menu_registration())
+        return 1;
+    if (test_dynamic_tool_shortcut_and_availability())
+        return 1;
 
     printf("[PASS] dynamic tool registry integration\n");
     return 0;

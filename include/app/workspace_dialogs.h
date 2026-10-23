@@ -47,7 +47,8 @@ typedef struct UiDialogDefinition {
 /** Reset one dialog state to an inactive default value. */
 void workspace_dialog_reset(UiDialogState* dialog);
 /** Apply a generic template to a dialog state. */
-void workspace_dialog_apply_template(UiDialogState* dialog, const UiDialogTemplate* dialog_template);
+void workspace_dialog_apply_template(UiDialogState* dialog,
+                                     const UiDialogTemplate* dialog_template);
 /** Append one button definition when capacity allows. Returns non-zero on success. */
 int workspace_dialog_add_button(UiDialogState* dialog, const UiDialogButtonDefinition* button);
 /** Look up one registered dialog definition by kind. */
@@ -80,9 +81,7 @@ int workspace_dialog_open_confirm_unsaved(Workspace* workspace, WorkspaceActionT
 /** Open the keyboard shortcuts help dialog using preformatted content text. */
 int workspace_dialog_open_shortcuts(Workspace* workspace, const char* content_text);
 /** Open a simple informational dialog with a single dismiss action. */
-int workspace_dialog_open_info(Workspace* workspace,
-                               const char* title,
-                               const char* message);
+int workspace_dialog_open_info(Workspace* workspace, const char* title, const char* message);
 /** Open the Save As filename dialog. */
 int workspace_dialog_open_save_as(Workspace* workspace,
                                   const char* initial_filename,

@@ -33,10 +33,7 @@ typedef enum ToolInputModifier {
     TOOL_INPUT_MOD_SUPER = 0x0008
 } ToolInputModifier;
 
-typedef enum ToolInputKey {
-    TOOL_INPUT_KEY_UNKNOWN = 0,
-    TOOL_INPUT_KEY_ESCAPE = 256
-} ToolInputKey;
+typedef enum ToolInputKey { TOOL_INPUT_KEY_UNKNOWN = 0, TOOL_INPUT_KEY_ESCAPE = 256 } ToolInputKey;
 
 /* ShapeToolConfig: reusable configuration for shape-drawing tools.
  * Extension tools can provide their own config and call register_shape_tool()
@@ -82,28 +79,26 @@ typedef struct ToolContext {
 
 static inline int tool_context_execute_command(ToolContext* context, Command* command)
 {
-    return (context && context->document && context->ports.execute_command) ?
-               context->ports.execute_command(context->ports.user, command, context->document) :
-               0;
+    return (context && context->document && context->ports.execute_command)
+               ? context->ports.execute_command(context->ports.user, command, context->document)
+               : 0;
 }
 
 static inline int tool_context_undo(ToolContext* context)
 {
-    return (context && context->document && context->ports.undo) ?
-               context->ports.undo(context->ports.user, context->document) :
-               0;
+    return (context && context->document && context->ports.undo)
+               ? context->ports.undo(context->ports.user, context->document)
+               : 0;
 }
 
 static inline int tool_context_redo(ToolContext* context)
 {
-    return (context && context->document && context->ports.redo) ?
-               context->ports.redo(context->ports.user, context->document) :
-               0;
+    return (context && context->document && context->ports.redo)
+               ? context->ports.redo(context->ports.user, context->document)
+               : 0;
 }
 
-static inline void tool_context_set_selection_preview(ToolContext* context,
-                                                      int active,
-                                                      Vec2 delta)
+static inline void tool_context_set_selection_preview(ToolContext* context, int active, Vec2 delta)
 {
     if (context && context->ports.set_selection_preview) {
         context->ports.set_selection_preview(context->ports.user, active, delta);

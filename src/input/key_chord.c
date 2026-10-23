@@ -15,30 +15,28 @@ typedef struct NamedKey {
     int key;
 } NamedKey;
 
-static const NamedKey g_named_keys[] = {
-    {"Enter", GLFW_KEY_ENTER},
-    {"Esc", GLFW_KEY_ESCAPE},
-    {"Escape", GLFW_KEY_ESCAPE},
-    {"Delete", GLFW_KEY_DELETE},
-    {"Backspace", GLFW_KEY_BACKSPACE},
-    {"Slash", GLFW_KEY_SLASH},
-    {"Plus", GLFW_KEY_EQUAL},
-    {"Minus", GLFW_KEY_MINUS},
-    {"0", GLFW_KEY_0},
-    {"A", GLFW_KEY_A},
-    {"C", GLFW_KEY_C},
-    {"E", GLFW_KEY_E},
-    {"H", GLFW_KEY_H},
-    {"L", GLFW_KEY_L},
-    {"N", GLFW_KEY_N},
-    {"O", GLFW_KEY_O},
-    {"R", GLFW_KEY_R},
-    {"S", GLFW_KEY_S},
-    {"V", GLFW_KEY_V},
-    {"X", GLFW_KEY_X},
-    {"Y", GLFW_KEY_Y},
-    {"Z", GLFW_KEY_Z}
-};
+static const NamedKey g_named_keys[] = { { "Enter", GLFW_KEY_ENTER },
+                                         { "Esc", GLFW_KEY_ESCAPE },
+                                         { "Escape", GLFW_KEY_ESCAPE },
+                                         { "Delete", GLFW_KEY_DELETE },
+                                         { "Backspace", GLFW_KEY_BACKSPACE },
+                                         { "Slash", GLFW_KEY_SLASH },
+                                         { "Plus", GLFW_KEY_EQUAL },
+                                         { "Minus", GLFW_KEY_MINUS },
+                                         { "0", GLFW_KEY_0 },
+                                         { "A", GLFW_KEY_A },
+                                         { "C", GLFW_KEY_C },
+                                         { "E", GLFW_KEY_E },
+                                         { "H", GLFW_KEY_H },
+                                         { "L", GLFW_KEY_L },
+                                         { "N", GLFW_KEY_N },
+                                         { "O", GLFW_KEY_O },
+                                         { "R", GLFW_KEY_R },
+                                         { "S", GLFW_KEY_S },
+                                         { "V", GLFW_KEY_V },
+                                         { "X", GLFW_KEY_X },
+                                         { "Y", GLFW_KEY_Y },
+                                         { "Z", GLFW_KEY_Z } };
 
 static int key_chord_named_key_from_token(const char* token)
 {
@@ -113,8 +111,7 @@ int key_chord_parse(const char* text, KeyChord* out_chord)
             mods |= GLFW_MOD_ALT;
         } else {
             key = key_chord_named_key_from_token(token);
-            if (key == GLFW_KEY_UNKNOWN &&
-                strlen(token) == 1u &&
+            if (key == GLFW_KEY_UNKNOWN && strlen(token) == 1u &&
                 isalpha((unsigned char)token[0])) {
                 key = GLFW_KEY_A + (toupper((unsigned char)token[0]) - 'A');
             }
@@ -146,20 +143,33 @@ void key_chord_format(KeyChord chord, char* buffer, size_t buffer_size)
     }
 
     if ((chord.mods & GLFW_MOD_CONTROL) != 0) {
-        snprintf(buffer + strlen(buffer), buffer_size - strlen(buffer), "%sCtrl", wrote_prefix ? "+" : "");
+        snprintf(buffer + strlen(buffer),
+                 buffer_size - strlen(buffer),
+                 "%sCtrl",
+                 wrote_prefix ? "+" : "");
         wrote_prefix = 1;
     }
     if ((chord.mods & GLFW_MOD_SHIFT) != 0) {
-        snprintf(buffer + strlen(buffer), buffer_size - strlen(buffer), "%sShift", wrote_prefix ? "+" : "");
+        snprintf(buffer + strlen(buffer),
+                 buffer_size - strlen(buffer),
+                 "%sShift",
+                 wrote_prefix ? "+" : "");
         wrote_prefix = 1;
     }
     if ((chord.mods & GLFW_MOD_ALT) != 0) {
-        snprintf(buffer + strlen(buffer), buffer_size - strlen(buffer), "%sAlt", wrote_prefix ? "+" : "");
+        snprintf(buffer + strlen(buffer),
+                 buffer_size - strlen(buffer),
+                 "%sAlt",
+                 wrote_prefix ? "+" : "");
         wrote_prefix = 1;
     }
 
     key_name = key_chord_name_for_key(chord.key);
     if (key_name[0] != '\0') {
-        snprintf(buffer + strlen(buffer), buffer_size - strlen(buffer), "%s%s", wrote_prefix ? "+" : "", key_name);
+        snprintf(buffer + strlen(buffer),
+                 buffer_size - strlen(buffer),
+                 "%s%s",
+                 wrote_prefix ? "+" : "",
+                 key_name);
     }
 }

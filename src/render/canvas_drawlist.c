@@ -50,8 +50,8 @@ static int canvas_drawlist_reserve_strokes(CanvasDrawList* draw_list, size_t nee
         capacity *= 2u;
     }
 
-    strokes = (CanvasStrokeCommand*)realloc(draw_list->strokes,
-                                            capacity * sizeof(draw_list->strokes[0]));
+    strokes =
+        (CanvasStrokeCommand*)realloc(draw_list->strokes, capacity * sizeof(draw_list->strokes[0]));
     if (!strokes) {
         return 0;
     }
@@ -131,8 +131,8 @@ static int count_grid_lines(float start, float end, float spacing)
 static int canvas_drawlist_append_grid(CanvasDrawList* draw_list, const CanvasView* canvas)
 {
     RectF visible = canvas_view_visible_world_rect(canvas);
-    Color grid_color = {0.20f, 0.22f, 0.25f, 1.0f};
-    Color axis_color = {0.32f, 0.35f, 0.40f, 1.0f};
+    Color grid_color = { 0.20f, 0.22f, 0.25f, 1.0f };
+    Color axis_color = { 0.32f, 0.35f, 0.40f, 1.0f };
     float spacing = 100.0f;
     float start_x = floorf(visible.x / spacing) * spacing;
     float end_x = rectf_right(&visible);
@@ -146,47 +146,36 @@ static int canvas_drawlist_append_grid(CanvasDrawList* draw_list, const CanvasVi
     int index = 0;
 
     if (point_count > 0) {
-        points = (Vec2*)render_arena_alloc(&draw_list->scratch_arena,
-                                           (size_t)point_count * sizeof(points[0]),
-                                           sizeof(points[0]));
+        points = (Vec2*)render_arena_alloc(
+            &draw_list->scratch_arena, (size_t)point_count * sizeof(points[0]), sizeof(points[0]));
         if (!points) {
             return 0;
         }
 
         for (float x = start_x; x <= end_x + spacing * 0.5f; x += spacing) {
             points[index++] = canvas_view_world_to_screen(canvas, vec2_make(x, visible.y));
-            points[index++] = canvas_view_world_to_screen(canvas,
-                                                          vec2_make(x, visible.y + visible.h));
+            points[index++] =
+                canvas_view_world_to_screen(canvas, vec2_make(x, visible.y + visible.h));
         }
         for (float y = start_y; y <= end_y + spacing * 0.5f; y += spacing) {
             points[index++] = canvas_view_world_to_screen(canvas, vec2_make(visible.x, y));
-            points[index++] = canvas_view_world_to_screen(canvas,
-                                                          vec2_make(visible.x + visible.w, y));
+            points[index++] =
+                canvas_view_world_to_screen(canvas, vec2_make(visible.x + visible.w, y));
         }
 
-        if (!canvas_drawlist_append_stroke(draw_list,
-                                           points,
-                                           point_count,
-                                           grid_color,
-                                           1.0f,
-                                           RENDER_PRIMITIVE_LINES)) {
+        if (!canvas_drawlist_append_stroke(
+                draw_list, points, point_count, grid_color, 1.0f, RENDER_PRIMITIVE_LINES)) {
             return 0;
         }
     }
 
     axis_points[0] = canvas_view_world_to_screen(canvas, vec2_make(visible.x, 0.0f));
-    axis_points[1] =
-        canvas_view_world_to_screen(canvas, vec2_make(visible.x + visible.w, 0.0f));
+    axis_points[1] = canvas_view_world_to_screen(canvas, vec2_make(visible.x + visible.w, 0.0f));
     axis_points[2] = canvas_view_world_to_screen(canvas, vec2_make(0.0f, visible.y));
-    axis_points[3] =
-        canvas_view_world_to_screen(canvas, vec2_make(0.0f, visible.y + visible.h));
+    axis_points[3] = canvas_view_world_to_screen(canvas, vec2_make(0.0f, visible.y + visible.h));
 
-    return canvas_drawlist_append_stroke(draw_list,
-                                         axis_points,
-                                         4,
-                                         axis_color,
-                                         1.5f,
-                                         RENDER_PRIMITIVE_LINES);
+    return canvas_drawlist_append_stroke(
+        draw_list, axis_points, 4, axis_color, 1.5f, RENDER_PRIMITIVE_LINES);
 }
 
 static int canvas_drawlist_append_object(CanvasDrawList* draw_list,
@@ -198,7 +187,7 @@ static int canvas_drawlist_append_object(CanvasDrawList* draw_list,
     int point_count = 0;
     Vec2* points = NULL;
     int i = 0;
-    Color highlight = {0.98f, 0.86f, 0.24f, 1.0f};
+    Color highlight = { 0.98f, 0.86f, 0.24f, 1.0f };
 
     if (!draw_list || !canvas || !object) {
         return 0;
@@ -209,9 +198,8 @@ static int canvas_drawlist_append_object(CanvasDrawList* draw_list,
         return 1;
     }
 
-    points = (Vec2*)render_arena_alloc(&draw_list->scratch_arena,
-                                       (size_t)point_count * sizeof(points[0]),
-                                       sizeof(points[0]));
+    points = (Vec2*)render_arena_alloc(
+        &draw_list->scratch_arena, (size_t)point_count * sizeof(points[0]), sizeof(points[0]));
     if (!points) {
         return 0;
     }
@@ -222,13 +210,12 @@ static int canvas_drawlist_append_object(CanvasDrawList* draw_list,
         points[i] = canvas_view_world_to_screen(canvas, points[i]);
     }
 
-    if (selected &&
-        !canvas_drawlist_append_stroke(draw_list,
-                                       points,
-                                       point_count,
-                                       highlight,
-                                       object->style.stroke_width + 3.0f,
-                                       RENDER_PRIMITIVE_LINE_STRIP)) {
+    if (selected && !canvas_drawlist_append_stroke(draw_list,
+                                                   points,
+                                                   point_count,
+                                                   highlight,
+                                                   object->style.stroke_width + 3.0f,
+                                                   RENDER_PRIMITIVE_LINE_STRIP)) {
         return 0;
     }
 
@@ -263,8 +250,8 @@ void canvas_drawlist_reset(CanvasDrawList* draw_list)
     draw_list->point_count = 0u;
     draw_list->stroke_count = 0u;
     render_arena_reset(&draw_list->scratch_arena);
-    draw_list->clip_rect = (RectF){0.0f, 0.0f, 0.0f, 0.0f};
-    draw_list->clear_color = (Color){0.0f, 0.0f, 0.0f, 1.0f};
+    draw_list->clip_rect = (RectF){ 0.0f, 0.0f, 0.0f, 0.0f };
+    draw_list->clear_color = (Color){ 0.0f, 0.0f, 0.0f, 1.0f };
 }
 
 void canvas_drawlist_shutdown(CanvasDrawList* draw_list)
@@ -315,10 +302,8 @@ int canvas_drawlist_build(CanvasDrawList* draw_list,
     }
 
     visible_rect = canvas_view_visible_world_rect(canvas);
-    visible_count = document_query_visible_indices(document,
-                                                   visible_rect,
-                                                   visible_indices,
-                                                   object_count);
+    visible_count =
+        document_query_visible_indices(document, visible_rect, visible_indices, object_count);
 
     if (visible_count <= 0 && object_count > 0) {
         int i = 0;
@@ -340,29 +325,21 @@ int canvas_drawlist_build(CanvasDrawList* draw_list,
             const GraphicObject* object =
                 document_get_object_at_const(document, visible_indices[i]);
             int selected = object && selection && selection_set_contains(selection, object->id);
-            Vec2 preview_delta = (selection_preview_active && selected)
-                                     ? selection_preview_delta
-                                     : vec2_make(0.0f, 0.0f);
+            Vec2 preview_delta = (selection_preview_active && selected) ? selection_preview_delta
+                                                                        : vec2_make(0.0f, 0.0f);
 
             if (!object || object->layer_id != layer->id) {
                 continue;
             }
-            if (!canvas_drawlist_append_object(draw_list,
-                                               canvas,
-                                               object,
-                                               selected,
-                                               preview_delta)) {
+            if (!canvas_drawlist_append_object(
+                    draw_list, canvas, object, selected, preview_delta)) {
                 goto cleanup;
             }
         }
     }
 
-    if (overlay_object &&
-        !canvas_drawlist_append_object(draw_list,
-                                       canvas,
-                                       overlay_object,
-                                       0,
-                                       vec2_make(0.0f, 0.0f))) {
+    if (overlay_object && !canvas_drawlist_append_object(
+                              draw_list, canvas, overlay_object, 0, vec2_make(0.0f, 0.0f))) {
         goto cleanup;
     }
 

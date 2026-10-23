@@ -20,8 +20,7 @@ static void workspace_edit_prune_noneditable_selection(Workspace* workspace)
 
     while (i < selection->count) {
         ObjectId id = selection->ids[i];
-        if (!document_find_object(document, id) ||
-            document_object_is_locked(document, id)) {
+        if (!document_find_object(document, id) || document_object_is_locked(document, id)) {
             selection_set_remove(selection, id);
             continue;
         }
@@ -82,8 +81,7 @@ int workspace_edit_delete_selection(Workspace* workspace)
     }
 
     command = command_create_delete_selection(document, selection);
-    if (!command ||
-        !command_executor_execute(executor, command, document)) {
+    if (!command || !command_executor_execute(executor, command, document)) {
         return 0;
     }
 
@@ -107,8 +105,7 @@ int workspace_edit_select_all(Workspace* workspace)
     object_count = document_object_count(document);
     for (i = 0; i < object_count; ++i) {
         GraphicObject* object = document_get_object_at(document, i);
-        if (object &&
-            !document_layer_is_locked(document, object->layer_id)) {
+        if (object && !document_layer_is_locked(document, object->layer_id)) {
             selection_set_add(selection, object->id);
         }
     }

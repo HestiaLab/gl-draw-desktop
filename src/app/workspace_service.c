@@ -47,8 +47,7 @@ static void workspace_service_reset_canvas_state(Workspace* workspace)
         return;
     }
 
-    canvas_view_set_center_zoom(&workspace->core.canvas,
-                                vec2_make(0.0f, 0.0f), 1.0f);
+    canvas_view_set_center_zoom(&workspace->core.canvas, vec2_make(0.0f, 0.0f), 1.0f);
 }
 
 int workspace_init(Workspace* workspace, RectF viewport, const char* keymap_path)
@@ -152,8 +151,7 @@ int workspace_service_save(Workspace* workspace)
         return 0;
     }
 
-    return workspace_service_save_to_path(workspace,
-                                          workspace_service_document_path(workspace));
+    return workspace_service_save_to_path(workspace, workspace_service_document_path(workspace));
 }
 
 int workspace_service_load_from_path(Workspace* workspace, const char* path)
@@ -188,8 +186,7 @@ int workspace_service_load(Workspace* workspace)
         return 0;
     }
 
-    return workspace_service_load_from_path(workspace,
-                                            workspace_service_document_path(workspace));
+    return workspace_service_load_from_path(workspace, workspace_service_document_path(workspace));
 }
 
 int workspace_service_file_exists(const char* path)
@@ -227,8 +224,9 @@ void workspace_service_set_document_path(Workspace* workspace, const char* path)
         return;
     }
 
-    strncpy(workspace->session.current_document_path, path,
+    strncpy(workspace->session.current_document_path,
+            path,
             sizeof(workspace->session.current_document_path) - 1u);
-    workspace->session.current_document_path
-        [sizeof(workspace->session.current_document_path) - 1u] = '\0';
+    workspace->session
+        .current_document_path[sizeof(workspace->session.current_document_path) - 1u] = '\0';
 }

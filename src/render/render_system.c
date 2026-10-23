@@ -22,25 +22,22 @@ struct RenderSystem {
 
 static RenderTransform render_system_make_transform(const RenderSystem* renderer)
 {
-    RenderTransform transform = {1.0f, 1.0f};
+    RenderTransform transform = { 1.0f, 1.0f };
 
     if (!renderer) {
         return transform;
     }
 
     if (renderer->logical_width > 0) {
-        transform.scale_x =
-            (float)renderer->framebuffer_width / (float)renderer->logical_width;
+        transform.scale_x = (float)renderer->framebuffer_width / (float)renderer->logical_width;
     }
     if (renderer->logical_height > 0) {
-        transform.scale_y =
-            (float)renderer->framebuffer_height / (float)renderer->logical_height;
+        transform.scale_y = (float)renderer->framebuffer_height / (float)renderer->logical_height;
     }
     return transform;
 }
 
-RenderSystem* render_system_create_with_desc(RenderDevice* device,
-                                             const RenderSystemDesc* desc)
+RenderSystem* render_system_create_with_desc(RenderDevice* device, const RenderSystemDesc* desc)
 {
     RenderSystem* renderer = NULL;
 
@@ -107,11 +104,8 @@ void render_system_resize(RenderSystem* renderer,
     renderer->framebuffer_width = framebuffer_width;
     renderer->framebuffer_height = framebuffer_height;
     renderer->scene_snapshot_valid = 0;
-    render_device_resize(renderer->device,
-                         logical_width,
-                         logical_height,
-                         framebuffer_width,
-                         framebuffer_height);
+    render_device_resize(
+        renderer->device, logical_width, logical_height, framebuffer_width, framebuffer_height);
 }
 
 void render_system_draw(RenderSystem* renderer, const RenderSceneDesc* scene)
@@ -145,15 +139,10 @@ void render_system_draw(RenderSystem* renderer, const RenderSceneDesc* scene)
     frame_desc.clear_color = renderer->draw_list.clear_color;
     transform = render_system_make_transform(renderer);
 
-    canvas_renderer_submit(renderer->device,
-                           &frame_desc,
-                           &transform,
-                           &renderer->draw_list);
+    canvas_renderer_submit(renderer->device, &frame_desc, &transform, &renderer->draw_list);
 }
 
-int render_system_export_png(RenderSystem* renderer,
-                             const CanvasView* canvas,
-                             const char* path)
+int render_system_export_png(RenderSystem* renderer, const CanvasView* canvas, const char* path)
 {
     RectF viewport;
     RenderTransform transform;

@@ -13,8 +13,7 @@ ToolContext application_runtime_tool_context(Application* app)
     return editor_controller_tool_context(app ? app->workspace : NULL);
 }
 
-int application_runtime_pointer_blocks_canvas(const Application* app,
-                                              Vec2 screen_pos)
+int application_runtime_pointer_blocks_canvas(const Application* app, Vec2 screen_pos)
 {
     if (!app) {
         return 0;
@@ -54,7 +53,7 @@ void application_runtime_sync_canvas_boundary(Application* app)
 void application_runtime_update_canvas_viewport(Application* app)
 {
     RectF viewport;
-    RectF fallback_window = {0.0f, 0.0f, 1.0f, 1.0f};
+    RectF fallback_window = { 0.0f, 0.0f, 1.0f, 1.0f };
 
     if (!app) {
         return;
@@ -89,16 +88,10 @@ void application_runtime_update_canvas_viewport(Application* app)
     application_runtime_sync_canvas_boundary(app);
 }
 
-ToolEvent application_runtime_make_tool_event(Application* app,
-                                              int button,
-                                              int mods,
-                                              float wheel_y)
+ToolEvent application_runtime_make_tool_event(Application* app, int button, int mods, float wheel_y)
 {
     ToolEvent event;
-    event = editor_controller_make_tool_event(app->workspace,
-                                              app->cursor_screen,
-                                              button,
-                                              mods,
-                                              wheel_y);
+    event = editor_controller_make_tool_event(
+        app->workspace, app->cursor_screen, button, mods, wheel_y);
     return event;
 }

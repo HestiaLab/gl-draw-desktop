@@ -10,11 +10,8 @@ int render_device_resize(RenderDevice* device,
         return 0;
     }
 
-    return device->vtable->resize(device,
-                                  logical_width,
-                                  logical_height,
-                                  framebuffer_width,
-                                  framebuffer_height);
+    return device->vtable->resize(
+        device, logical_width, logical_height, framebuffer_width, framebuffer_height);
 }
 
 int render_device_begin_frame(RenderDevice* device, const RenderFrameDesc* frame_desc)

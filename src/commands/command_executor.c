@@ -5,13 +5,26 @@
 #include <stdlib.h>
 #include <string.h>
 
-static void* command_default_malloc(size_t size) { return malloc(size); }
-static void* command_default_calloc(size_t count, size_t size) { return calloc(count, size); }
-static void* command_default_realloc(void* ptr, size_t size) { return realloc(ptr, size); }
-static void command_default_free(void* ptr) { free(ptr); }
+static void* command_default_malloc(size_t size)
+{
+    return malloc(size);
+}
+static void* command_default_calloc(size_t count, size_t size)
+{
+    return calloc(count, size);
+}
+static void* command_default_realloc(void* ptr, size_t size)
+{
+    return realloc(ptr, size);
+}
+static void command_default_free(void* ptr)
+{
+    free(ptr);
+}
 
-CommandAllocator g_allocator = {command_default_malloc, command_default_calloc,
-                                command_default_realloc, command_default_free};
+CommandAllocator g_allocator = {
+    command_default_malloc, command_default_calloc, command_default_realloc, command_default_free
+};
 
 static void command_executor_refresh_counts(CommandExecutor* executor)
 {
@@ -20,8 +33,9 @@ static void command_executor_refresh_counts(CommandExecutor* executor)
     }
 
     executor->undo_count = executor->cursor;
-    executor->redo_count =
-        (executor->entry_count >= executor->cursor) ? (executor->entry_count - executor->cursor) : 0u;
+    executor->redo_count = (executor->entry_count >= executor->cursor)
+                               ? (executor->entry_count - executor->cursor)
+                               : 0u;
 }
 
 static int command_reserve_log(CommandExecutor* executor, size_t needed)
@@ -41,9 +55,8 @@ static int command_reserve_log(CommandExecutor* executor, size_t needed)
         capacity *= 2u;
     }
 
-    entries = (CommandLogEntry*)g_allocator.realloc_fn(
-        executor->entries,
-        capacity * sizeof(executor->entries[0]));
+    entries = (CommandLogEntry*)g_allocator.realloc_fn(executor->entries,
+                                                       capacity * sizeof(executor->entries[0]));
     if (!entries) {
         return 0;
     }
@@ -72,8 +85,7 @@ static int command_reserve_transaction(CommandExecutor* executor, size_t needed)
     }
 
     commands = (Command**)g_allocator.realloc_fn(
-        executor->transaction_commands,
-        capacity * sizeof(executor->transaction_commands[0]));
+        executor->transaction_commands, capacity * sizeof(executor->transaction_commands[0]));
     if (!commands) {
         return 0;
     }
@@ -121,10 +133,9 @@ static void command_executor_prune_budget(CommandExecutor* executor)
 
     while (executor->used_bytes > executor->memory_budget_bytes &&
            prune_count + 1u < executor->cursor) {
-        executor->used_bytes =
-            (executor->used_bytes >= executor->entries[prune_count].bytes)
-                ? executor->used_bytes - executor->entries[prune_count].bytes
-                : 0u;
+        executor->used_bytes = (executor->used_bytes >= executor->entries[prune_count].bytes)
+                                   ? executor->used_bytes - executor->entries[prune_count].bytes
+                                   : 0u;
         command_executor_discard_entry(&executor->entries[prune_count]);
         prune_count++;
     }
@@ -134,9 +145,7 @@ static void command_executor_prune_budget(CommandExecutor* executor)
         memmove(executor->entries,
                 executor->entries + prune_count,
                 remaining_count * sizeof(executor->entries[0]));
-        memset(executor->entries + remaining_count,
-               0,
-               prune_count * sizeof(executor->entries[0]));
+        memset(executor->entries + remaining_count, 0, prune_count * sizeof(executor->entries[0]));
         executor->entry_count = remaining_count;
         executor->cursor -= prune_count;
     }
@@ -166,8 +175,8 @@ int command_executor_append_internal(CommandExecutor* executor, Command* command
             before_bytes = command_measure(previous);
             if (previous->vtable->merge(previous, command)) {
                 after_bytes = command_measure(previous);
-                executor->transaction_bytes += (after_bytes >= before_bytes) ? (after_bytes - before_bytes)
-                                                                             : 0u;
+                executor->transaction_bytes +=
+                    (after_bytes >= before_bytes) ? (after_bytes - before_bytes) : 0u;
                 if (after_bytes < before_bytes) {
                     executor->transaction_bytes -= (before_bytes - after_bytes);
                 }
@@ -191,7 +200,8 @@ int command_executor_append_internal(CommandExecutor* executor, Command* command
         before_bytes = executor->entries[executor->cursor - 1u].bytes;
         if (previous->vtable->merge(previous, command)) {
             after_bytes = command_measure(previous);
-            executor->used_bytes += (after_bytes >= before_bytes) ? (after_bytes - before_bytes) : 0u;
+            executor->used_bytes +=
+                (after_bytes >= before_bytes) ? (after_bytes - before_bytes) : 0u;
             if (after_bytes < before_bytes) {
                 executor->used_bytes -= (before_bytes - after_bytes);
             }
@@ -215,8 +225,8 @@ int command_executor_append_internal(CommandExecutor* executor, Command* command
 
 void command_set_allocator(const CommandAllocator* allocator)
 {
-    if (!allocator || !allocator->malloc_fn || !allocator->calloc_fn ||
-        !allocator->realloc_fn || !allocator->free_fn) {
+    if (!allocator || !allocator->malloc_fn || !allocator->calloc_fn || !allocator->realloc_fn ||
+        !allocator->free_fn) {
         command_reset_allocator();
         return;
     }
@@ -232,8 +242,7 @@ void command_reset_allocator(void)
     g_allocator.free_fn = command_default_free;
 }
 
-int command_executor_init_with_budget(CommandExecutor* executor,
-                                      size_t memory_budget_bytes)
+int command_executor_init_with_budget(CommandExecutor* executor, size_t memory_budget_bytes)
 {
     if (!executor) {
         return 0;
@@ -270,8 +279,7 @@ void command_executor_shutdown(CommandExecutor* executor)
     memset(executor, 0, sizeof(*executor));
 }
 
-int command_executor_execute(CommandExecutor* executor, Command* command,
-                             Document* document)
+int command_executor_execute(CommandExecutor* executor, Command* command, Document* document)
 {
     if (!executor || !command || !command->vtable || !command->vtable->execute || !document) {
         command_destroy(command);
@@ -290,8 +298,9 @@ int command_executor_execute(CommandExecutor* executor, Command* command,
     if (!command_executor_append_internal(executor, command)) {
         if (command->vtable->undo) {
             if (!command->vtable->undo(command, document)) {
-                LOG_ERROR("%s", "command_executor_execute: undo after append failure also "
-                                "failed - document may be in inconsistent state");
+                LOG_ERROR("%s",
+                          "command_executor_execute: undo after append failure also "
+                          "failed - document may be in inconsistent state");
             }
         }
         command_destroy(command);
@@ -359,8 +368,7 @@ int command_executor_can_redo(const CommandExecutor* executor)
     return executor && executor->cursor < executor->entry_count;
 }
 
-void command_executor_set_memory_budget(CommandExecutor* executor,
-                                        size_t memory_budget_bytes)
+void command_executor_set_memory_budget(CommandExecutor* executor, size_t memory_budget_bytes)
 {
     if (!executor) {
         return;

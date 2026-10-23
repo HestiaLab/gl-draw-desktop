@@ -46,10 +46,9 @@ int main(void)
 
     remove(marker_path);
 
-    if (!expect_true(!resource_path_resolve("missing-resource-path-test.file",
-                                            resolved,
-                                            sizeof(resolved)),
-                     "missing resource should report unresolved")) {
+    if (!expect_true(
+            !resource_path_resolve("missing-resource-path-test.file", resolved, sizeof(resolved)),
+            "missing resource should report unresolved")) {
         return 1;
     }
     if (!expect_true(strcmp(resolved, "missing-resource-path-test.file") == 0,

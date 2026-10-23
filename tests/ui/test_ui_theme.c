@@ -6,45 +6,55 @@
 #include <stdio.h>
 #include <string.h>
 
-#define EXPECT_TRUE(expr)                                                     \
-    do {                                                                      \
-        if (!(expr)) {                                                        \
-            fprintf(stderr, "EXPECT_TRUE failed: %s:%d: %s\n",               \
-                    __FILE__, __LINE__, #expr);                              \
-            return 1;                                                         \
-        }                                                                     \
+#define EXPECT_TRUE(expr)                                                                          \
+    do {                                                                                           \
+        if (!(expr)) {                                                                             \
+            fprintf(stderr, "EXPECT_TRUE failed: %s:%d: %s\n", __FILE__, __LINE__, #expr);         \
+            return 1;                                                                              \
+        }                                                                                          \
     } while (0)
 
-#define EXPECT_INT_EQ(actual, expected)                                       \
-    do {                                                                      \
-        int actual_value = (actual);                                          \
-        int expected_value = (expected);                                      \
-        if (actual_value != expected_value) {                                 \
-            fprintf(stderr, "EXPECT_INT_EQ failed: %s:%d: %d != %d\n",        \
-                    __FILE__, __LINE__, actual_value, expected_value);        \
-            return 1;                                                         \
-        }                                                                     \
+#define EXPECT_INT_EQ(actual, expected)                                                            \
+    do {                                                                                           \
+        int actual_value = (actual);                                                               \
+        int expected_value = (expected);                                                           \
+        if (actual_value != expected_value) {                                                      \
+            fprintf(stderr,                                                                        \
+                    "EXPECT_INT_EQ failed: %s:%d: %d != %d\n",                                     \
+                    __FILE__,                                                                      \
+                    __LINE__,                                                                      \
+                    actual_value,                                                                  \
+                    expected_value);                                                               \
+            return 1;                                                                              \
+        }                                                                                          \
     } while (0)
 
-#define EXPECT_FLOAT_EQ(actual, expected)                                     \
-    do {                                                                      \
-        float actual_value = (actual);                                        \
-        float expected_value = (expected);                                    \
-        if (actual_value < expected_value - 0.0001f ||                        \
-            actual_value > expected_value + 0.0001f) {                        \
-            fprintf(stderr, "EXPECT_FLOAT_EQ failed: %s:%d: %.4f != %.4f\n",  \
-                    __FILE__, __LINE__, actual_value, expected_value);        \
-            return 1;                                                         \
-        }                                                                     \
+#define EXPECT_FLOAT_EQ(actual, expected)                                                          \
+    do {                                                                                           \
+        float actual_value = (actual);                                                             \
+        float expected_value = (expected);                                                         \
+        if (actual_value < expected_value - 0.0001f || actual_value > expected_value + 0.0001f) {  \
+            fprintf(stderr,                                                                        \
+                    "EXPECT_FLOAT_EQ failed: %s:%d: %.4f != %.4f\n",                               \
+                    __FILE__,                                                                      \
+                    __LINE__,                                                                      \
+                    actual_value,                                                                  \
+                    expected_value);                                                               \
+            return 1;                                                                              \
+        }                                                                                          \
     } while (0)
 
-#define EXPECT_STR_EQ(actual, expected)                                       \
-    do {                                                                      \
-        if (strcmp((actual), (expected)) != 0) {                              \
-            fprintf(stderr, "EXPECT_STR_EQ failed: %s:%d: \"%s\" != \"%s\"\n", \
-                    __FILE__, __LINE__, (actual), (expected));                \
-            return 1;                                                         \
-        }                                                                     \
+#define EXPECT_STR_EQ(actual, expected)                                                            \
+    do {                                                                                           \
+        if (strcmp((actual), (expected)) != 0) {                                                   \
+            fprintf(stderr,                                                                        \
+                    "EXPECT_STR_EQ failed: %s:%d: \"%s\" != \"%s\"\n",                             \
+                    __FILE__,                                                                      \
+                    __LINE__,                                                                      \
+                    (actual),                                                                      \
+                    (expected));                                                                   \
+            return 1;                                                                              \
+        }                                                                                          \
     } while (0)
 
 static int write_text_file(const char* path, const char* text)
@@ -81,11 +91,8 @@ static void cleanup_theme_test_files(const char* directory)
     test_temp_remove_dir(directory);
 }
 
-static int color_equals(struct nk_color color,
-                        unsigned char r,
-                        unsigned char g,
-                        unsigned char b,
-                        unsigned char a)
+static int color_equals(
+    struct nk_color color, unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
     return color.r == r && color.g == g && color.b == b && color.a == a;
 }
@@ -127,44 +134,37 @@ static int test_json_scalar_values_require_delimiters(void)
     float number_value = 0.0f;
     int bool_value = -1;
 
-    EXPECT_TRUE(ui_extract_json_number_value("{ \"row_height\": 24, \"gap\": 3 }",
-                                             "row_height",
-                                             &number_value));
+    EXPECT_TRUE(ui_extract_json_number_value(
+        "{ \"row_height\": 24, \"gap\": 3 }", "row_height", &number_value));
     EXPECT_FLOAT_EQ(number_value, 24.0f);
 
     number_value = 12.0f;
-    EXPECT_TRUE(!ui_extract_json_number_value("{ \"row_height\": 24px }",
-                                              "row_height",
-                                              &number_value));
+    EXPECT_TRUE(
+        !ui_extract_json_number_value("{ \"row_height\": 24px }", "row_height", &number_value));
     EXPECT_FLOAT_EQ(number_value, 12.0f);
 
     number_value = 12.0f;
-    EXPECT_TRUE(!ui_extract_json_number_value("{ \"row_height\": 24 true }",
-                                              "row_height",
-                                              &number_value));
+    EXPECT_TRUE(
+        !ui_extract_json_number_value("{ \"row_height\": 24 true }", "row_height", &number_value));
     EXPECT_FLOAT_EQ(number_value, 12.0f);
 
-    EXPECT_TRUE(ui_extract_json_bool_value("{ \"enable_transitions\": true }",
-                                           "enable_transitions",
-                                           &bool_value));
+    EXPECT_TRUE(ui_extract_json_bool_value(
+        "{ \"enable_transitions\": true }", "enable_transitions", &bool_value));
     EXPECT_INT_EQ(bool_value, 1);
 
     bool_value = -1;
-    EXPECT_TRUE(ui_extract_json_bool_value("{ \"enable_transitions\": false, \"x\": 1 }",
-                                           "enable_transitions",
-                                           &bool_value));
+    EXPECT_TRUE(ui_extract_json_bool_value(
+        "{ \"enable_transitions\": false, \"x\": 1 }", "enable_transitions", &bool_value));
     EXPECT_INT_EQ(bool_value, 0);
 
     bool_value = -1;
-    EXPECT_TRUE(!ui_extract_json_bool_value("{ \"enable_transitions\": truex }",
-                                            "enable_transitions",
-                                            &bool_value));
+    EXPECT_TRUE(!ui_extract_json_bool_value(
+        "{ \"enable_transitions\": truex }", "enable_transitions", &bool_value));
     EXPECT_INT_EQ(bool_value, -1);
 
     bool_value = -1;
-    EXPECT_TRUE(!ui_extract_json_bool_value("{ \"enable_transitions\": false0 }",
-                                            "enable_transitions",
-                                            &bool_value));
+    EXPECT_TRUE(!ui_extract_json_bool_value(
+        "{ \"enable_transitions\": false0 }", "enable_transitions", &bool_value));
     EXPECT_INT_EQ(bool_value, -1);
 
     return 0;
@@ -213,8 +213,7 @@ static int test_external_theme_load_error_and_clamp_behavior(void)
     EXPECT_FLOAT_EQ(tokens.transition_duration, 2.0f);
     EXPECT_INT_EQ(tokens.enable_transitions, 0);
 
-    EXPECT_TRUE(write_text_file(invalid_path,
-                                "{ \"id\": \"not a safe id\" }\n"));
+    EXPECT_TRUE(write_text_file(invalid_path, "{ \"id\": \"not a safe id\" }\n"));
     EXPECT_INT_EQ(ui_theme_reload_external(directory), -1);
     EXPECT_TRUE(ui_theme_last_reload_error()[0] != '\0');
     EXPECT_TRUE(ui_theme_index_of_id("test-clamped-theme") >= base_count);
@@ -230,22 +229,14 @@ static int test_selected_theme_id_load_save(void)
     char settings_path[TEST_TEMP_PATH_MAX];
 
     EXPECT_TRUE(test_temp_make_dir(directory, sizeof(directory), "ui-theme-settings"));
-    EXPECT_TRUE(test_temp_join_path(settings_path,
-                                    sizeof(settings_path),
-                                    directory,
-                                    "settings.json"));
-    EXPECT_TRUE(ui_theme_save_selected_id(settings_path,
-                                          "gldraw-dark-plus"));
-    EXPECT_TRUE(ui_theme_load_selected_id(settings_path,
-                                          loaded_theme_id,
-                                          sizeof(loaded_theme_id)));
+    EXPECT_TRUE(
+        test_temp_join_path(settings_path, sizeof(settings_path), directory, "settings.json"));
+    EXPECT_TRUE(ui_theme_save_selected_id(settings_path, "gldraw-dark-plus"));
+    EXPECT_TRUE(ui_theme_load_selected_id(settings_path, loaded_theme_id, sizeof(loaded_theme_id)));
     EXPECT_STR_EQ(loaded_theme_id, "gldraw-dark-plus");
 
-    EXPECT_TRUE(write_text_file(settings_path,
-                                "{ \"theme\": \"gldraw-high-contrast\" }\n"));
-    EXPECT_TRUE(ui_theme_load_selected_id(settings_path,
-                                          loaded_theme_id,
-                                          sizeof(loaded_theme_id)));
+    EXPECT_TRUE(write_text_file(settings_path, "{ \"theme\": \"gldraw-high-contrast\" }\n"));
+    EXPECT_TRUE(ui_theme_load_selected_id(settings_path, loaded_theme_id, sizeof(loaded_theme_id)));
     EXPECT_STR_EQ(loaded_theme_id, "gldraw-high-contrast");
 
     cleanup_theme_test_files(directory);
@@ -254,10 +245,14 @@ static int test_selected_theme_id_load_save(void)
 
 int main(void)
 {
-    if (test_builtin_theme_lookup_and_fallback()) return 1;
-    if (test_json_scalar_values_require_delimiters()) return 1;
-    if (test_external_theme_load_error_and_clamp_behavior()) return 1;
-    if (test_selected_theme_id_load_save()) return 1;
+    if (test_builtin_theme_lookup_and_fallback())
+        return 1;
+    if (test_json_scalar_values_require_delimiters())
+        return 1;
+    if (test_external_theme_load_error_and_clamp_behavior())
+        return 1;
+    if (test_selected_theme_id_load_save())
+        return 1;
 
     printf("[PASS] ui theme\n");
     return 0;

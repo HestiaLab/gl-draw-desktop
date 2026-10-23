@@ -184,9 +184,8 @@ int ui_menubar_take_theme_reload_request(UiMenuBar* menubar)
  * @param clicked_id Clicked menu action id.
  * @return None.
  */
-static void ui_dispatch_menu_action(UiMenuBar* menubar,
-                                    const EditorActionSink* sink,
-                                    int clicked_id)
+static void
+ui_dispatch_menu_action(UiMenuBar* menubar, const EditorActionSink* sink, int clicked_id)
 {
     if (!menubar || clicked_id == -1) {
         return;

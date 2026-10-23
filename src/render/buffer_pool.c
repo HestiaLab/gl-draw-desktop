@@ -81,7 +81,7 @@ int buffer_pool_create_vertex_stream(BufferPool* pool,
                                      const RenderVertexStreamDesc* desc,
                                      RenderVertexStream* out_stream)
 {
-    RenderVertexStream stream = {0u, 0u, 0u, 0u};
+    RenderVertexStream stream = { 0u, 0u, 0u, 0u };
     size_t i = 0u;
 
     if (!pool || !desc || !out_stream || !desc->attributes || desc->attribute_count == 0u ||

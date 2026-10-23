@@ -21,8 +21,7 @@ const CommandDescriptor* command_catalog_stable_at(int index);
  * Look up the registered tool descriptor for a dynamic tool command.
  * `out_tool_index` may be NULL.
  */
-const ToolDescriptor* command_catalog_tool_for_command(EditorCommand command,
-                                                       int* out_tool_index);
+const ToolDescriptor* command_catalog_tool_for_command(EditorCommand command, int* out_tool_index);
 
 /** Look up command metadata by stable command identifier. */
 const CommandDescriptor* command_catalog_find_by_id(const char* command_id);

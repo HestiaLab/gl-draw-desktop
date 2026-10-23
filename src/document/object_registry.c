@@ -13,17 +13,15 @@ typedef struct {
     int initialized;
 } ObjectRegistryState;
 
-static ObjectRegistryState g_registry = {0};
+static ObjectRegistryState g_registry = { 0 };
 
 static GraphicObjectDescriptor* object_registry_alloc_slot(void)
 {
     if (g_registry.count >= g_registry.capacity) {
-        int new_capacity = g_registry.capacity > 0 ? g_registry.capacity * 2
-                                                   : OBJECT_REGISTRY_INITIAL_CAPACITY;
-        GraphicObjectDescriptor* new_descriptors =
-            (GraphicObjectDescriptor*)realloc(g_registry.descriptors,
-                                              (size_t)new_capacity *
-                                                  sizeof(g_registry.descriptors[0]));
+        int new_capacity =
+            g_registry.capacity > 0 ? g_registry.capacity * 2 : OBJECT_REGISTRY_INITIAL_CAPACITY;
+        GraphicObjectDescriptor* new_descriptors = (GraphicObjectDescriptor*)realloc(
+            g_registry.descriptors, (size_t)new_capacity * sizeof(g_registry.descriptors[0]));
         if (!new_descriptors) {
             return NULL;
         }
@@ -82,11 +80,10 @@ int register_object_type(const GraphicObjectDescriptor* descriptor)
     GraphicObjectDescriptor copy;
 
     if (!descriptor || !descriptor->type_id || descriptor->type_id[0] == '\0' ||
-        !descriptor->name || descriptor->name[0] == '\0' ||
-        !descriptor->create || !descriptor->clone || !descriptor->destroy ||
-        !descriptor->get_bounds || !descriptor->hit_test ||
-        !descriptor->get_path_point_count || !descriptor->write_path_points ||
-        !descriptor->get_scalar || !descriptor->set_scalar ||
+        !descriptor->name || descriptor->name[0] == '\0' || !descriptor->create ||
+        !descriptor->clone || !descriptor->destroy || !descriptor->get_bounds ||
+        !descriptor->hit_test || !descriptor->get_path_point_count ||
+        !descriptor->write_path_points || !descriptor->get_scalar || !descriptor->set_scalar ||
         !descriptor->serialize || !descriptor->deserialize) {
         return 0;
     }

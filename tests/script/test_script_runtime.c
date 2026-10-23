@@ -8,24 +8,27 @@
 #include <stdio.h>
 #include <string.h>
 
-#define EXPECT_TRUE(expr)                                                     \
-    do {                                                                     \
-        if (!(expr)) {                                                        \
-            fprintf(stderr, "EXPECT_TRUE failed: %s:%d: %s\n",               \
-                    __FILE__, __LINE__, #expr);                              \
-            return 1;                                                        \
-        }                                                                    \
+#define EXPECT_TRUE(expr)                                                                          \
+    do {                                                                                           \
+        if (!(expr)) {                                                                             \
+            fprintf(stderr, "EXPECT_TRUE failed: %s:%d: %s\n", __FILE__, __LINE__, #expr);         \
+            return 1;                                                                              \
+        }                                                                                          \
     } while (0)
 
-#define EXPECT_INT_EQ(actual, expected)                                      \
-    do {                                                                     \
-        int actual_value = (actual);                                         \
-        int expected_value = (expected);                                     \
-        if (actual_value != expected_value) {                                \
-            fprintf(stderr, "EXPECT_INT_EQ failed: %s:%d: %d != %d\n",       \
-                    __FILE__, __LINE__, actual_value, expected_value);       \
-            return 1;                                                        \
-        }                                                                    \
+#define EXPECT_INT_EQ(actual, expected)                                                            \
+    do {                                                                                           \
+        int actual_value = (actual);                                                               \
+        int expected_value = (expected);                                                           \
+        if (actual_value != expected_value) {                                                      \
+            fprintf(stderr,                                                                        \
+                    "EXPECT_INT_EQ failed: %s:%d: %d != %d\n",                                     \
+                    __FILE__,                                                                      \
+                    __LINE__,                                                                      \
+                    actual_value,                                                                  \
+                    expected_value);                                                               \
+            return 1;                                                                              \
+        }                                                                                          \
     } while (0)
 
 typedef struct {
@@ -91,7 +94,8 @@ static int test_script_runtime_uses_safe_env_and_caches_script(void)
     static const char* script_source =
         "local gld = gldraw\n"
         "gld.load_count = (gld.load_count or 0) + 1\n"
-        "if os ~= nil or io ~= nil or package ~= nil or debug ~= nil or dofile ~= nil or loadfile ~= nil or require ~= nil then\n"
+        "if os ~= nil or io ~= nil or package ~= nil or debug ~= nil or dofile ~= nil or loadfile "
+        "~= nil or require ~= nil then\n"
         "    error('unsafe lua libraries are exposed')\n"
         "end\n"
         "function on_event(event)\n"
@@ -111,12 +115,12 @@ static int test_script_runtime_uses_safe_env_and_caches_script(void)
         "end\n";
     Document document;
     CommandExecutor executor;
-    SelectionSet selection = {0};
+    SelectionSet selection = { 0 };
     ScriptRuntime runtime;
     ScriptRuntimeTestPorts ports;
     ToolPorts tool_ports;
-    ToolEvent event = {0};
-    char script_path[TEST_TEMP_PATH_MAX] = {0};
+    ToolEvent event = { 0 };
+    char script_path[TEST_TEMP_PATH_MAX] = { 0 };
 
     extension_loader_register_all();
     document_init(&document);
@@ -150,7 +154,8 @@ static int test_script_runtime_uses_safe_env_and_caches_script(void)
 
 int main(void)
 {
-    if (test_script_runtime_uses_safe_env_and_caches_script()) return 1;
+    if (test_script_runtime_uses_safe_env_and_caches_script())
+        return 1;
 
     printf("[PASS] script runtime uses safe env and caches scripts\n");
     return 0;

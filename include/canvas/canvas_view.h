@@ -173,6 +173,7 @@ RectF canvas_view_visible_world_rect(const CanvasView* canvas);
  * @param tolerance_pixels Tolerance in pixels.
  * @return Pointer to the hit object; returns `NULL` on miss or invalid parameters.
  */
-GraphicObject* canvas_view_pick_object(const CanvasView* canvas, Vec2 screen_point, float tolerance_pixels);
+GraphicObject*
+canvas_view_pick_object(const CanvasView* canvas, Vec2 screen_point, float tolerance_pixels);
 
 #endif /* GLDRAW_CANVAS_CANVAS_VIEW_H */

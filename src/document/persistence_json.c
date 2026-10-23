@@ -33,8 +33,7 @@ static int json_match_keyword(const JsonParser* parser, const char* keyword)
 
 static void json_parser_skip_ws(JsonParser* parser)
 {
-    while (parser->pos < parser->length &&
-           isspace((unsigned char)parser->text[parser->pos])) {
+    while (parser->pos < parser->length && isspace((unsigned char)parser->text[parser->pos])) {
         parser->pos++;
     }
 }
@@ -171,8 +170,7 @@ int json_parse_u32(JsonParser* parser, unsigned int* out_value)
     }
 
     value = parser->number_value;
-    if (value < 0.0 || value > (double)UINT_MAX ||
-        (double)((unsigned int)value) != value) {
+    if (value < 0.0 || value > (double)UINT_MAX || (double)((unsigned int)value) != value) {
         return 0;
     }
 
@@ -215,8 +213,7 @@ int json_parse_string_value(JsonParser* parser, char* buffer, size_t buffer_size
     size_t i = 0u;
     size_t out = 0u;
 
-    if (!parser || !buffer || buffer_size == 0u ||
-        !json_expect(parser, JSON_TOKEN_STRING)) {
+    if (!parser || !buffer || buffer_size == 0u || !json_expect(parser, JSON_TOKEN_STRING)) {
         return 0;
     }
 

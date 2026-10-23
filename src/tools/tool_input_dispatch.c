@@ -46,10 +46,7 @@ void tool_controller_pointer_up(ToolController* controller,
     controller->last_world = event->world_pos;
 }
 
-void tool_controller_key_down(ToolController* controller,
-                              ToolContext* context,
-                              int key,
-                              int mods)
+void tool_controller_key_down(ToolController* controller, ToolContext* context, int key, int mods)
 {
     Tool* tool = tool_controller_get_active(controller);
     if (tool && tool->descriptor && tool->descriptor->key_down) {

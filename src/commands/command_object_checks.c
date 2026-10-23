@@ -108,8 +108,7 @@ static CommandExecuteCheck set_property_check(const Document* document,
     return COMMAND_EXECUTE_CHECK_OK;
 }
 
-CommandExecuteCheck command_check_execute(const Command* command,
-                                          const Document* document)
+CommandExecuteCheck command_check_execute(const Command* command, const Document* document)
 {
     if (!command || !command->vtable || !document) {
         return COMMAND_EXECUTE_CHECK_INVALID_ARGUMENT;

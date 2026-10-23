@@ -18,19 +18,19 @@ typedef struct CommandAvailabilityDef {
 } CommandAvailabilityDef;
 
 static const CommandAvailabilityDef COMMAND_AVAILABILITY_DEFS[] = {
-#define GLDRAW_COMMAND_AVAILABILITY(command, id, label, scope, menu_id, tool_id, availability, service, execute) \
-    {command, availability, service},
+#define GLDRAW_COMMAND_AVAILABILITY(                                                               \
+    command, id, label, scope, menu_id, tool_id, availability, service, execute)                   \
+    { command, availability, service },
     GLDRAW_STABLE_COMMANDS(GLDRAW_COMMAND_AVAILABILITY)
 #undef GLDRAW_COMMAND_AVAILABILITY
 };
 
-static const CommandAvailabilityDef* command_availability_find_def(
-    EditorCommand command)
+static const CommandAvailabilityDef* command_availability_find_def(EditorCommand command)
 {
     int i = 0;
 
-    for (i = 0; i < (int)(sizeof(COMMAND_AVAILABILITY_DEFS) /
-                          sizeof(COMMAND_AVAILABILITY_DEFS[0])); ++i) {
+    for (i = 0; i < (int)(sizeof(COMMAND_AVAILABILITY_DEFS) / sizeof(COMMAND_AVAILABILITY_DEFS[0]));
+         ++i) {
         if (COMMAND_AVAILABILITY_DEFS[i].command == command) {
             return &COMMAND_AVAILABILITY_DEFS[i];
         }
@@ -52,8 +52,7 @@ static int command_availability_editable_selection_count(const Workspace* worksp
 
     for (i = 0; i < selection->count; ++i) {
         ObjectId id = selection->ids[i];
-        if (document_find_object(document, id) &&
-            !document_object_is_locked(document, id)) {
+        if (document_find_object(document, id) && !document_object_is_locked(document, id)) {
             editable_count++;
         }
     }
@@ -72,8 +71,7 @@ static int command_availability_active_layer_editable(const Workspace* workspace
     return !document_layer_is_locked(document, document_active_layer_id(document));
 }
 
-static int command_availability_tool_is_available(const Workspace* workspace,
-                                                  EditorCommand command)
+static int command_availability_tool_is_available(const Workspace* workspace, EditorCommand command)
 {
     const ToolDescriptor* tool = command_catalog_tool_for_command(command, NULL);
 
@@ -102,8 +100,7 @@ static const char* command_availability_selection_unavailable_reason(const Works
     return "";
 }
 
-int command_availability_is_available(const Workspace* workspace,
-                                      EditorCommand command)
+int command_availability_is_available(const Workspace* workspace, EditorCommand command)
 {
     const CommandAvailabilityDef* def = command_availability_find_def(command);
     const CommandExecutor* commands = workspace_get_command_executor_const(workspace);
@@ -132,8 +129,7 @@ int command_availability_is_available(const Workspace* workspace,
     case COMMAND_AVAILABILITY_SELECTION:
         return selection && selection->count > 0;
     case COMMAND_AVAILABILITY_PASTE:
-        return workspace &&
-               workspace_clipboard_count(workspace) > 0 &&
+        return workspace && workspace_clipboard_count(workspace) > 0 &&
                command_availability_active_layer_editable(workspace);
     case COMMAND_AVAILABILITY_NEVER:
     default:
@@ -167,9 +163,7 @@ const char* command_availability_unavailable_reason(const Workspace* workspace,
     case EDITOR_COMMAND_EDIT_DELETE:
         return command_availability_selection_unavailable_reason(workspace);
     case EDITOR_COMMAND_EDIT_COPY:
-        return (!selection || selection->count <= 0)
-                   ? "Selection is empty."
-                   : "";
+        return (!selection || selection->count <= 0) ? "Selection is empty." : "";
     case EDITOR_COMMAND_EDIT_PASTE:
         if (!workspace) {
             return "Workspace is unavailable.";

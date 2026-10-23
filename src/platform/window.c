@@ -59,10 +59,8 @@ static void platform_framebuffer_size_dispatch(GLFWwindow* glfw, int width, int 
     native_window->owner->framebuffer_width = width;
     native_window->owner->framebuffer_height = height;
     if (native_window->framebuffer_size_callback) {
-        native_window->framebuffer_size_callback(native_window->owner,
-                                                 width,
-                                                 height,
-                                                 native_window->framebuffer_size_user_data);
+        native_window->framebuffer_size_callback(
+            native_window->owner, width, height, native_window->framebuffer_size_user_data);
     }
 }
 
@@ -71,10 +69,8 @@ static void platform_cursor_pos_dispatch(GLFWwindow* glfw, double xpos, double y
     GldWindow* native_window = platform_window_find_native(glfw);
 
     if (native_window && native_window->cursor_pos_callback) {
-        native_window->cursor_pos_callback(native_window->owner,
-                                           xpos,
-                                           ypos,
-                                           native_window->cursor_pos_user_data);
+        native_window->cursor_pos_callback(
+            native_window->owner, xpos, ypos, native_window->cursor_pos_user_data);
     }
 }
 
@@ -86,19 +82,12 @@ static void platform_mouse_button_dispatch(GLFWwindow* glfw, int button, int act
         nk_glfw3_mouse_button_callback(glfw, button, action, mods);
     }
     if (native_window && native_window->mouse_button_callback) {
-        native_window->mouse_button_callback(native_window->owner,
-                                             button,
-                                             action,
-                                             mods,
-                                             native_window->mouse_button_user_data);
+        native_window->mouse_button_callback(
+            native_window->owner, button, action, mods, native_window->mouse_button_user_data);
     }
 }
 
-static void platform_key_dispatch(GLFWwindow* glfw,
-                                  int key,
-                                  int scancode,
-                                  int action,
-                                  int mods)
+static void platform_key_dispatch(GLFWwindow* glfw, int key, int scancode, int action, int mods)
 {
     GldWindow* native_window = platform_window_find_native(glfw);
 
@@ -106,12 +95,8 @@ static void platform_key_dispatch(GLFWwindow* glfw,
         nk_glfw3_key_callback(glfw, key, scancode, action, mods);
     }
     if (native_window && native_window->key_callback) {
-        native_window->key_callback(native_window->owner,
-                                    key,
-                                    scancode,
-                                    action,
-                                    mods,
-                                    native_window->key_user_data);
+        native_window->key_callback(
+            native_window->owner, key, scancode, action, mods, native_window->key_user_data);
     }
 }
 
@@ -123,9 +108,8 @@ static void platform_char_dispatch(GLFWwindow* glfw, unsigned int codepoint)
         nk_glfw3_char_callback(glfw, codepoint);
     }
     if (native_window && native_window->char_callback) {
-        native_window->char_callback(native_window->owner,
-                                     codepoint,
-                                     native_window->char_user_data);
+        native_window->char_callback(
+            native_window->owner, codepoint, native_window->char_user_data);
     }
 }
 
@@ -137,10 +121,8 @@ static void platform_scroll_dispatch(GLFWwindow* glfw, double xoffset, double yo
         nk_gflw3_scroll_callback(glfw, xoffset, yoffset);
     }
     if (native_window && native_window->scroll_callback) {
-        native_window->scroll_callback(native_window->owner,
-                                       xoffset,
-                                       yoffset,
-                                       native_window->scroll_user_data);
+        native_window->scroll_callback(
+            native_window->owner, xoffset, yoffset, native_window->scroll_user_data);
     }
 }
 
@@ -149,8 +131,7 @@ static void platform_close_dispatch(GLFWwindow* glfw)
     GldWindow* native_window = platform_window_find_native(glfw);
 
     if (native_window && native_window->close_callback) {
-        native_window->close_callback(native_window->owner,
-                                      native_window->close_user_data);
+        native_window->close_callback(native_window->owner, native_window->close_user_data);
     }
 }
 
@@ -227,9 +208,8 @@ int platform_window_init(PlatformWindow* window, int width, int height, const ch
 
     window->width = width;
     window->height = height;
-    glfwGetFramebufferSize(native_window->glfw,
-                           &window->framebuffer_width,
-                           &window->framebuffer_height);
+    glfwGetFramebufferSize(
+        native_window->glfw, &window->framebuffer_width, &window->framebuffer_height);
     window->title = title;
 
     glfwMakeContextCurrent(native_window->glfw);
@@ -357,9 +337,7 @@ void platform_window_get_framebuffer_size(PlatformWindow* window, int* width, in
     }
 
     if (handle) {
-        glfwGetFramebufferSize(handle,
-                               &window->framebuffer_width,
-                               &window->framebuffer_height);
+        glfwGetFramebufferSize(handle, &window->framebuffer_width, &window->framebuffer_height);
     }
     if (width) {
         *width = window->framebuffer_width;
@@ -410,9 +388,7 @@ void platform_window_on_mouse_button(PlatformWindow* window,
     window->handle->mouse_button_user_data = user_data;
 }
 
-void platform_window_on_key(PlatformWindow* window,
-                            PlatformKeyCallback callback,
-                            void* user_data)
+void platform_window_on_key(PlatformWindow* window, PlatformKeyCallback callback, void* user_data)
 {
     if (!window || !window->handle) {
         return;
@@ -422,9 +398,7 @@ void platform_window_on_key(PlatformWindow* window,
     window->handle->key_user_data = user_data;
 }
 
-void platform_window_on_char(PlatformWindow* window,
-                             PlatformCharCallback callback,
-                             void* user_data)
+void platform_window_on_char(PlatformWindow* window, PlatformCharCallback callback, void* user_data)
 {
     if (!window || !window->handle) {
         return;
@@ -460,9 +434,9 @@ void platform_window_on_close(PlatformWindow* window,
 
 struct nk_context* platform_window_nuklear_init(struct nk_glfw* glfw, PlatformWindow* window)
 {
-    return (glfw && window) ?
-               nk_glfw3_init(glfw, platform_window_glfw_handle(window), NK_GLFW3_DEFAULT) :
-               NULL;
+    return (glfw && window)
+               ? nk_glfw3_init(glfw, platform_window_glfw_handle(window), NK_GLFW3_DEFAULT)
+               : NULL;
 }
 
 void platform_window_nuklear_shutdown(struct nk_glfw* glfw)
@@ -472,8 +446,7 @@ void platform_window_nuklear_shutdown(struct nk_glfw* glfw)
     }
 }
 
-void platform_window_nuklear_font_stash_begin(struct nk_glfw* glfw,
-                                              struct nk_font_atlas** atlas)
+void platform_window_nuklear_font_stash_begin(struct nk_glfw* glfw, struct nk_font_atlas** atlas)
 {
     if (glfw) {
         nk_glfw3_font_stash_begin(glfw, atlas);
@@ -500,9 +473,7 @@ void platform_window_nuklear_render(struct nk_glfw* glfw,
                                     int max_element_buffer)
 {
     if (glfw) {
-        nk_glfw3_render(glfw,
-                        (enum nk_anti_aliasing)anti_aliasing,
-                        max_vertex_buffer,
-                        max_element_buffer);
+        nk_glfw3_render(
+            glfw, (enum nk_anti_aliasing)anti_aliasing, max_vertex_buffer, max_element_buffer);
     }
 }

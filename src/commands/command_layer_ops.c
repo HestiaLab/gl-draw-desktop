@@ -29,8 +29,7 @@ static int set_active_layer_merge(void* cmd, const void* next)
     SetActiveLayerCommand* command = (SetActiveLayerCommand*)cmd;
     const SetActiveLayerCommand* next_command = (const SetActiveLayerCommand*)next;
 
-    if (!command || !next_command ||
-        next_command->base.vtable != &SET_ACTIVE_LAYER_VTABLE) {
+    if (!command || !next_command || next_command->base.vtable != &SET_ACTIVE_LAYER_VTABLE) {
         return 0;
     }
 
@@ -43,13 +42,13 @@ static void set_active_layer_destroy(void* cmd)
     g_allocator.free_fn(cmd);
 }
 
-const CommandVTable SET_ACTIVE_LAYER_VTABLE = {
-    set_active_layer_execute, set_active_layer_undo, set_active_layer_execute,
-    set_active_layer_merge, set_active_layer_destroy};
+const CommandVTable SET_ACTIVE_LAYER_VTABLE = { set_active_layer_execute,
+                                                set_active_layer_undo,
+                                                set_active_layer_execute,
+                                                set_active_layer_merge,
+                                                set_active_layer_destroy };
 
-static int set_layer_visibility_apply(Document* document,
-                                      LayerId layer_id,
-                                      int visible)
+static int set_layer_visibility_apply(Document* document, LayerId layer_id, int visible)
 {
     if (!document) {
         return 0;
@@ -61,17 +60,15 @@ static int set_layer_visibility_apply(Document* document,
 static int set_layer_visibility_execute(void* cmd, Document* document)
 {
     SetLayerVisibilityCommand* command = (SetLayerVisibilityCommand*)cmd;
-    return set_layer_visibility_apply(document,
-                                      command ? command->layer_id : 0u,
-                                      command ? command->after_visible : 0);
+    return set_layer_visibility_apply(
+        document, command ? command->layer_id : 0u, command ? command->after_visible : 0);
 }
 
 static int set_layer_visibility_undo(void* cmd, Document* document)
 {
     SetLayerVisibilityCommand* command = (SetLayerVisibilityCommand*)cmd;
-    return set_layer_visibility_apply(document,
-                                      command ? command->layer_id : 0u,
-                                      command ? command->before_visible : 0);
+    return set_layer_visibility_apply(
+        document, command ? command->layer_id : 0u, command ? command->before_visible : 0);
 }
 
 static int set_layer_visibility_merge(void* cmd, const void* next)
@@ -79,8 +76,7 @@ static int set_layer_visibility_merge(void* cmd, const void* next)
     SetLayerVisibilityCommand* command = (SetLayerVisibilityCommand*)cmd;
     const SetLayerVisibilityCommand* next_command = (const SetLayerVisibilityCommand*)next;
 
-    if (!command || !next_command ||
-        next_command->base.vtable != &SET_LAYER_VISIBILITY_VTABLE ||
+    if (!command || !next_command || next_command->base.vtable != &SET_LAYER_VISIBILITY_VTABLE ||
         command->layer_id != next_command->layer_id) {
         return 0;
     }
@@ -94,12 +90,11 @@ static void set_layer_visibility_destroy(void* cmd)
     g_allocator.free_fn(cmd);
 }
 
-const CommandVTable SET_LAYER_VISIBILITY_VTABLE = {
-    set_layer_visibility_execute,
-    set_layer_visibility_undo,
-    set_layer_visibility_execute,
-    set_layer_visibility_merge,
-    set_layer_visibility_destroy};
+const CommandVTable SET_LAYER_VISIBILITY_VTABLE = { set_layer_visibility_execute,
+                                                    set_layer_visibility_undo,
+                                                    set_layer_visibility_execute,
+                                                    set_layer_visibility_merge,
+                                                    set_layer_visibility_destroy };
 
 static int set_layer_locked_apply(Document* document, LayerId layer_id, int locked)
 {
@@ -113,17 +108,15 @@ static int set_layer_locked_apply(Document* document, LayerId layer_id, int lock
 static int set_layer_locked_execute(void* cmd, Document* document)
 {
     SetLayerLockedCommand* command = (SetLayerLockedCommand*)cmd;
-    return set_layer_locked_apply(document,
-                                  command ? command->layer_id : 0u,
-                                  command ? command->after_locked : 0);
+    return set_layer_locked_apply(
+        document, command ? command->layer_id : 0u, command ? command->after_locked : 0);
 }
 
 static int set_layer_locked_undo(void* cmd, Document* document)
 {
     SetLayerLockedCommand* command = (SetLayerLockedCommand*)cmd;
-    return set_layer_locked_apply(document,
-                                  command ? command->layer_id : 0u,
-                                  command ? command->before_locked : 0);
+    return set_layer_locked_apply(
+        document, command ? command->layer_id : 0u, command ? command->before_locked : 0);
 }
 
 static int set_layer_locked_merge(void* cmd, const void* next)
@@ -131,8 +124,7 @@ static int set_layer_locked_merge(void* cmd, const void* next)
     SetLayerLockedCommand* command = (SetLayerLockedCommand*)cmd;
     const SetLayerLockedCommand* next_command = (const SetLayerLockedCommand*)next;
 
-    if (!command || !next_command ||
-        next_command->base.vtable != &SET_LAYER_LOCKED_VTABLE ||
+    if (!command || !next_command || next_command->base.vtable != &SET_LAYER_LOCKED_VTABLE ||
         command->layer_id != next_command->layer_id) {
         return 0;
     }
@@ -146,12 +138,11 @@ static void set_layer_locked_destroy(void* cmd)
     g_allocator.free_fn(cmd);
 }
 
-const CommandVTable SET_LAYER_LOCKED_VTABLE = {
-    set_layer_locked_execute,
-    set_layer_locked_undo,
-    set_layer_locked_execute,
-    set_layer_locked_merge,
-    set_layer_locked_destroy};
+const CommandVTable SET_LAYER_LOCKED_VTABLE = { set_layer_locked_execute,
+                                                set_layer_locked_undo,
+                                                set_layer_locked_execute,
+                                                set_layer_locked_merge,
+                                                set_layer_locked_destroy };
 
 static int rename_layer_apply(Document* document, LayerId layer_id, const char* name)
 {
@@ -165,17 +156,15 @@ static int rename_layer_apply(Document* document, LayerId layer_id, const char* 
 static int rename_layer_execute(void* cmd, Document* document)
 {
     RenameLayerCommand* command = (RenameLayerCommand*)cmd;
-    return rename_layer_apply(document,
-                              command ? command->layer_id : 0u,
-                              command ? command->after_name : NULL);
+    return rename_layer_apply(
+        document, command ? command->layer_id : 0u, command ? command->after_name : NULL);
 }
 
 static int rename_layer_undo(void* cmd, Document* document)
 {
     RenameLayerCommand* command = (RenameLayerCommand*)cmd;
-    return rename_layer_apply(document,
-                              command ? command->layer_id : 0u,
-                              command ? command->before_name : NULL);
+    return rename_layer_apply(
+        document, command ? command->layer_id : 0u, command ? command->before_name : NULL);
 }
 
 static int rename_layer_merge(void* cmd, const void* next)
@@ -183,14 +172,12 @@ static int rename_layer_merge(void* cmd, const void* next)
     RenameLayerCommand* command = (RenameLayerCommand*)cmd;
     const RenameLayerCommand* next_command = (const RenameLayerCommand*)next;
 
-    if (!command || !next_command ||
-        next_command->base.vtable != &RENAME_LAYER_VTABLE ||
+    if (!command || !next_command || next_command->base.vtable != &RENAME_LAYER_VTABLE ||
         command->layer_id != next_command->layer_id) {
         return 0;
     }
 
-    snprintf(command->after_name, sizeof(command->after_name), "%s",
-             next_command->after_name);
+    snprintf(command->after_name, sizeof(command->after_name), "%s", next_command->after_name);
     return 1;
 }
 
@@ -199,9 +186,11 @@ static void rename_layer_destroy(void* cmd)
     g_allocator.free_fn(cmd);
 }
 
-const CommandVTable RENAME_LAYER_VTABLE = {rename_layer_execute, rename_layer_undo,
-                                           rename_layer_execute, rename_layer_merge,
-                                           rename_layer_destroy};
+const CommandVTable RENAME_LAYER_VTABLE = { rename_layer_execute,
+                                            rename_layer_undo,
+                                            rename_layer_execute,
+                                            rename_layer_merge,
+                                            rename_layer_destroy };
 
 static int move_layer_apply(Document* document, LayerId layer_id, int index)
 {
@@ -215,17 +204,15 @@ static int move_layer_apply(Document* document, LayerId layer_id, int index)
 static int move_layer_execute(void* cmd, Document* document)
 {
     MoveLayerCommand* command = (MoveLayerCommand*)cmd;
-    return move_layer_apply(document,
-                            command ? command->layer_id : 0u,
-                            command ? command->after_index : 0);
+    return move_layer_apply(
+        document, command ? command->layer_id : 0u, command ? command->after_index : 0);
 }
 
 static int move_layer_undo(void* cmd, Document* document)
 {
     MoveLayerCommand* command = (MoveLayerCommand*)cmd;
-    return move_layer_apply(document,
-                            command ? command->layer_id : 0u,
-                            command ? command->before_index : 0);
+    return move_layer_apply(
+        document, command ? command->layer_id : 0u, command ? command->before_index : 0);
 }
 
 static int move_layer_merge(void* cmd, const void* next)
@@ -247,9 +234,9 @@ static void move_layer_destroy(void* cmd)
     g_allocator.free_fn(cmd);
 }
 
-const CommandVTable MOVE_LAYER_VTABLE = {move_layer_execute, move_layer_undo,
-                                         move_layer_execute, move_layer_merge,
-                                         move_layer_destroy};
+const CommandVTable MOVE_LAYER_VTABLE = {
+    move_layer_execute, move_layer_undo, move_layer_execute, move_layer_merge, move_layer_destroy
+};
 
 static int create_layer_execute(void* cmd, Document* document)
 {
@@ -311,17 +298,17 @@ static void create_layer_destroy(void* cmd)
     g_allocator.free_fn(cmd);
 }
 
-const CommandVTable CREATE_LAYER_VTABLE = {
-    create_layer_execute, create_layer_undo, create_layer_execute,
-    create_layer_merge, create_layer_destroy};
+const CommandVTable CREATE_LAYER_VTABLE = { create_layer_execute,
+                                            create_layer_undo,
+                                            create_layer_execute,
+                                            create_layer_merge,
+                                            create_layer_destroy };
 
-Command* command_create_set_active_layer(const Document* document,
-                                         LayerId after_layer_id)
+Command* command_create_set_active_layer(const Document* document, LayerId after_layer_id)
 {
     SetActiveLayerCommand* command = NULL;
 
-    if (!document || after_layer_id == 0u ||
-        !document_layer_find_const(document, after_layer_id) ||
+    if (!document || after_layer_id == 0u || !document_layer_find_const(document, after_layer_id) ||
         document_active_layer_id(document) == after_layer_id) {
         return NULL;
     }
@@ -337,9 +324,8 @@ Command* command_create_set_active_layer(const Document* document,
     return (Command*)command;
 }
 
-Command* command_create_set_layer_visibility(const Document* document,
-                                             LayerId layer_id,
-                                             int visible)
+Command*
+command_create_set_layer_visibility(const Document* document, LayerId layer_id, int visible)
 {
     const DocumentLayer* layer = NULL;
     SetLayerVisibilityCommand* command = NULL;
@@ -365,9 +351,7 @@ Command* command_create_set_layer_visibility(const Document* document,
     return (Command*)command;
 }
 
-Command* command_create_set_layer_locked(const Document* document,
-                                         LayerId layer_id,
-                                         int locked)
+Command* command_create_set_layer_locked(const Document* document, LayerId layer_id, int locked)
 {
     const DocumentLayer* layer = NULL;
     SetLayerLockedCommand* command = NULL;
@@ -394,9 +378,7 @@ Command* command_create_set_layer_locked(const Document* document,
     return (Command*)command;
 }
 
-Command* command_create_rename_layer(const Document* document,
-                                     LayerId layer_id,
-                                     const char* name)
+Command* command_create_rename_layer(const Document* document, LayerId layer_id, const char* name)
 {
     const DocumentLayer* layer = NULL;
     RenameLayerCommand* command = NULL;
@@ -422,9 +404,7 @@ Command* command_create_rename_layer(const Document* document,
     return (Command*)command;
 }
 
-Command* command_create_move_layer(const Document* document,
-                                   LayerId layer_id,
-                                   int target_index)
+Command* command_create_move_layer(const Document* document, LayerId layer_id, int target_index)
 {
     MoveLayerCommand* command = NULL;
     int current_index = 0;
@@ -470,7 +450,9 @@ Command* command_create_create_layer(const char* name)
     }
 
     command->base.vtable = &CREATE_LAYER_VTABLE;
-    snprintf(command->layer.name, sizeof(command->layer.name), "%s",
+    snprintf(command->layer.name,
+             sizeof(command->layer.name),
+             "%s",
              (name && name[0] != '\0') ? name : "Layer");
     command->layer.visible = 1;
     command->layer.locked = 0;

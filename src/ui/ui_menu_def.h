@@ -73,11 +73,11 @@ typedef enum MenuId {
  * @member parent_id Parent menu ID (-1 for top-level).
  */
 typedef struct MenuItemDef {
-    MenuItemType  type;
-    const char*   label;
-    const char*   shortcut;
-    int           id;
-    int           parent_id;
+    MenuItemType type;
+    const char* label;
+    const char* shortcut;
+    int id;
+    int parent_id;
 } MenuItemDef;
 
 /**

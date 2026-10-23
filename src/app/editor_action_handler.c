@@ -23,8 +23,7 @@ static void editor_action_handler_prune_selection(Workspace* workspace)
 
     while (i < selection->count) {
         ObjectId id = selection->ids[i];
-        if (!document_find_object(document, id) ||
-            document_object_is_locked(document, id)) {
+        if (!document_find_object(document, id) || document_object_is_locked(document, id)) {
             selection_set_remove(selection, id);
             continue;
         }
@@ -66,117 +65,96 @@ int editor_action_handler_dispatch(Workspace* workspace, const EditorAction* act
     }
 
     switch (action->type) {
-    case EDITOR_ACTION_EXECUTE_COMMAND:
-    {
+    case EDITOR_ACTION_EXECUTE_COMMAND: {
         ToolContext context = editor_action_handler_tool_context(workspace);
-        return command_registry_execute(workspace,
-                                        &context,
-                                        action->payload.execute_command.command);
+        return command_registry_execute(
+            workspace, &context, action->payload.execute_command.command);
     }
-    case EDITOR_ACTION_SET_TOOL:
-    {
+    case EDITOR_ACTION_SET_TOOL: {
         ToolContext context = editor_action_handler_tool_context(workspace);
         ToolController* tools = workspace_get_tool_controller(workspace);
         return tools &&
-               tool_controller_set_active(tools,
-                                          &context,
-                                          action->payload.set_tool.tool_id);
+               tool_controller_set_active(tools, &context, action->payload.set_tool.tool_id);
     }
-    case EDITOR_ACTION_MODIFY_PROPERTY:
-    {
+    case EDITOR_ACTION_MODIFY_PROPERTY: {
         Document* document = workspace_get_document(workspace);
         CommandExecuteCheck check = COMMAND_EXECUTE_CHECK_INVALID_ARGUMENT;
-        Command* command = command_create_set_property_from_document(
-            document,
-            action->payload.modify_property.object_id,
-            action->payload.modify_property.property_name,
-            action->payload.modify_property.value);
+        Command* command =
+            command_create_set_property_from_document(document,
+                                                      action->payload.modify_property.object_id,
+                                                      action->payload.modify_property.property_name,
+                                                      action->payload.modify_property.value);
 
         if (!command) {
-            editor_action_handler_set_status(workspace,
-                                             "Property edit could not be prepared.");
+            editor_action_handler_set_status(workspace, "Property edit could not be prepared.");
             return 0;
         }
         check = command_check_execute(command, document);
         if (check != COMMAND_EXECUTE_CHECK_OK) {
-            editor_action_handler_set_status(workspace,
-                                             command_execute_check_message(check));
+            editor_action_handler_set_status(workspace, command_execute_check_message(check));
             command->vtable->destroy(command);
             return 0;
         }
         if (!editor_action_handler_execute_command(workspace, command)) {
-            editor_action_handler_set_status(workspace,
-                                             "Property edit failed during execution.");
+            editor_action_handler_set_status(workspace, "Property edit failed during execution.");
             return 0;
         }
 
         return 1;
     }
-    case EDITOR_ACTION_SET_ACTIVE_LAYER:
-    {
+    case EDITOR_ACTION_SET_ACTIVE_LAYER: {
         Document* document = workspace_get_document(workspace);
-        Command* command = command_create_set_active_layer(
-            document,
-            action->payload.set_active_layer.layer_id);
+        Command* command =
+            command_create_set_active_layer(document, action->payload.set_active_layer.layer_id);
         if (!editor_action_handler_execute_command(workspace, command)) {
             return 0;
         }
         editor_action_handler_prune_selection(workspace);
         return 1;
     }
-    case EDITOR_ACTION_SET_LAYER_VISIBILITY:
-    {
+    case EDITOR_ACTION_SET_LAYER_VISIBILITY: {
         Document* document = workspace_get_document(workspace);
-        Command* command = command_create_set_layer_visibility(
-            document,
-            action->payload.set_layer_visibility.layer_id,
-            action->payload.set_layer_visibility.visible);
+        Command* command =
+            command_create_set_layer_visibility(document,
+                                                action->payload.set_layer_visibility.layer_id,
+                                                action->payload.set_layer_visibility.visible);
         if (!editor_action_handler_execute_command(workspace, command)) {
             return 0;
         }
         return 1;
     }
-    case EDITOR_ACTION_SET_LAYER_LOCKED:
-    {
+    case EDITOR_ACTION_SET_LAYER_LOCKED: {
         Document* document = workspace_get_document(workspace);
-        Command* command = command_create_set_layer_locked(
-            document,
-            action->payload.set_layer_locked.layer_id,
-            action->payload.set_layer_locked.locked);
+        Command* command =
+            command_create_set_layer_locked(document,
+                                            action->payload.set_layer_locked.layer_id,
+                                            action->payload.set_layer_locked.locked);
         if (!editor_action_handler_execute_command(workspace, command)) {
             return 0;
         }
         editor_action_handler_prune_selection(workspace);
         return 1;
     }
-    case EDITOR_ACTION_RENAME_LAYER:
-    {
+    case EDITOR_ACTION_RENAME_LAYER: {
         Document* document = workspace_get_document(workspace);
         Command* command = command_create_rename_layer(
-            document,
-            action->payload.rename_layer.layer_id,
-            action->payload.rename_layer.name);
+            document, action->payload.rename_layer.layer_id, action->payload.rename_layer.name);
         if (!editor_action_handler_execute_command(workspace, command)) {
             return 0;
         }
         return 1;
     }
-    case EDITOR_ACTION_MOVE_LAYER:
-    {
+    case EDITOR_ACTION_MOVE_LAYER: {
         Document* document = workspace_get_document(workspace);
         Command* command = command_create_move_layer(
-            document,
-            action->payload.move_layer.layer_id,
-            action->payload.move_layer.target_index);
+            document, action->payload.move_layer.layer_id, action->payload.move_layer.target_index);
         if (!editor_action_handler_execute_command(workspace, command)) {
             return 0;
         }
         return 1;
     }
-    case EDITOR_ACTION_CREATE_LAYER:
-    {
-        Command* command = command_create_create_layer(
-            action->payload.create_layer.name);
+    case EDITOR_ACTION_CREATE_LAYER: {
+        Command* command = command_create_create_layer(action->payload.create_layer.name);
         if (!editor_action_handler_execute_command(workspace, command)) {
             return 0;
         }
@@ -184,14 +162,11 @@ int editor_action_handler_dispatch(Workspace* workspace, const EditorAction* act
     }
     case EDITOR_ACTION_RESOLVE_DIALOG:
         if (workspace_active_dialog_kind(workspace) == UI_DIALOG_SAVE_AS) {
-            workspace_dialog_set_input_text(workspace,
-                                            action->payload.resolve_dialog.text);
+            workspace_dialog_set_input_text(workspace, action->payload.resolve_dialog.text);
         }
-        return workspace_resolve_active_dialog(workspace,
-                                               action->payload.resolve_dialog.result);
+        return workspace_resolve_active_dialog(workspace, action->payload.resolve_dialog.result);
     case EDITOR_ACTION_SET_STATUS_MESSAGE:
-        workspace_set_status_message(workspace,
-                                     action->payload.set_status_message.message);
+        workspace_set_status_message(workspace, action->payload.set_status_message.message);
         return 1;
     case EDITOR_ACTION_NONE:
     default:

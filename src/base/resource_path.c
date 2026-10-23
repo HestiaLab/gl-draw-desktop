@@ -47,10 +47,8 @@ static int resource_path_copy(const char* path, char* output, size_t output_size
     return written >= 0 && (size_t)written < output_size;
 }
 
-static int resource_path_join(const char* base,
-                              const char* relative_path,
-                              char* output,
-                              size_t output_size)
+static int
+resource_path_join(const char* base, const char* relative_path, char* output, size_t output_size)
 {
     size_t base_length = 0u;
     const char* separator = "/";
@@ -135,7 +133,8 @@ int resource_path_resolve(const char* relative_path, char* output, size_t output
             resource_path_try_candidate(candidate, output, output_size)) {
             return 1;
         }
-        if (resource_path_join(executable_dir, "../share/gldraw", install_root, sizeof(install_root)) &&
+        if (resource_path_join(
+                executable_dir, "../share/gldraw", install_root, sizeof(install_root)) &&
             resource_path_join(install_root, relative_path, candidate, sizeof(candidate)) &&
             resource_path_try_candidate(candidate, output, output_size)) {
             return 1;

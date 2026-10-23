@@ -96,17 +96,14 @@ int file_utils_path_exists(const char* path)
     return 1;
 }
 
-int file_utils_replace_file_with_temp(const char* temp_path,
-                                      const char* target_path)
+int file_utils_replace_file_with_temp(const char* temp_path, const char* target_path)
 {
     if (!temp_path || !target_path) {
         return 0;
     }
 
 #ifdef _WIN32
-    if (MoveFileExA(temp_path,
-                    target_path,
-                    MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH)) {
+    if (MoveFileExA(temp_path, target_path, MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH)) {
         return 1;
     }
 #else

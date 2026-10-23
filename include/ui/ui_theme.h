@@ -10,7 +10,9 @@
 #ifndef NK_NUKLEAR_H_
 typedef unsigned char nk_byte;
 typedef int nk_bool;
-struct nk_color { nk_byte r, g, b, a; };
+struct nk_color {
+    nk_byte r, g, b, a;
+};
 struct nk_context;
 #endif
 

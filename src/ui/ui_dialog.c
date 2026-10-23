@@ -26,8 +26,7 @@ static int ui_dialog_supports_header_close(const UiDialogState* dialog)
     return 0;
 }
 
-static void ui_dialog_render_message_lines(struct nk_context* ctx,
-                                           const UiDialogState* dialog)
+static void ui_dialog_render_message_lines(struct nk_context* ctx, const UiDialogState* dialog)
 {
     char local[sizeof(dialog->message)];
     char* line = NULL;
@@ -45,10 +44,8 @@ static void ui_dialog_render_message_lines(struct nk_context* ctx,
     }
 }
 
-UiDialogResult ui_dialog_show(struct nk_context* ctx,
-                              UiDialogState* dialog,
-                              int window_width,
-                              int window_height)
+UiDialogResult
+ui_dialog_show(struct nk_context* ctx, UiDialogState* dialog, int window_width, int window_height)
 {
     struct nk_style_item blocker_background;
     struct nk_rect full_bounds;
@@ -136,8 +133,7 @@ UiDialogResult ui_dialog_show(struct nk_context* ctx,
     }
     nk_end(ctx);
 
-    if (ui_dialog_supports_header_close(dialog) &&
-        nk_window_is_closed(ctx, window_title)) {
+    if (ui_dialog_supports_header_close(dialog) && nk_window_is_closed(ctx, window_title)) {
         result = UI_DIALOG_RESULT_CANCEL;
     }
 

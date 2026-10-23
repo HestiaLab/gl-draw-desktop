@@ -14,9 +14,7 @@ int application_runtime_pointer_blocks_canvas(const Application* app, Vec2 scree
 void application_runtime_sync_tool_pointer_anchor(Application* app);
 void application_runtime_sync_canvas_boundary(Application* app);
 void application_runtime_update_canvas_viewport(Application* app);
-ToolEvent application_runtime_make_tool_event(Application* app,
-                                              int button,
-                                              int mods,
-                                              float wheel_y);
+ToolEvent
+application_runtime_make_tool_event(Application* app, int button, int mods, float wheel_y);
 
 #endif /* GLDRAW_APP_APPLICATION_RUNTIME_H */

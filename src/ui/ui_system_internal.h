@@ -49,87 +49,79 @@
 #define UI_THEME_WATCH_INTERVAL_SECONDS 0.35
 
 typedef enum UiContextMenuMode {
-  UI_CONTEXT_MENU_MODE_TOOLS = 0,
-  UI_CONTEXT_MENU_MODE_SELECTION
+    UI_CONTEXT_MENU_MODE_TOOLS = 0,
+    UI_CONTEXT_MENU_MODE_SELECTION
 } UiContextMenuMode;
 
 typedef enum UiThemeReloadReason {
-  UI_THEME_RELOAD_REASON_STARTUP = 0,
-  UI_THEME_RELOAD_REASON_AUTO,
-  UI_THEME_RELOAD_REASON_MANUAL
+    UI_THEME_RELOAD_REASON_STARTUP = 0,
+    UI_THEME_RELOAD_REASON_AUTO,
+    UI_THEME_RELOAD_REASON_MANUAL
 } UiThemeReloadReason;
 
 typedef struct UiContextMenuState {
-  int open;
-  int close_requested;
-  UiContextMenuMode mode;
-  Vec2 anchor_screen;
-  RectF canvas_bounds;
-  RectF popup_bounds;
+    int open;
+    int close_requested;
+    UiContextMenuMode mode;
+    Vec2 anchor_screen;
+    RectF canvas_bounds;
+    RectF popup_bounds;
 } UiContextMenuState;
 
 typedef struct UiSystem UiSystem;
 
 struct UiSystem {
-  struct nk_glfw glfw;
-  struct nk_context *ctx;
-  PlatformWindow *window;
-  UiMenuBar *menu_bar;
-  UiThemeTokens theme;
-  char active_theme_id[UI_THEME_ID_CAPACITY];
-  char theme_settings_path[GLDRAW_PATH_MAX];
-  char theme_directory_path[GLDRAW_PATH_MAX];
-  UiThemeDescriptor theme_descriptors_cache[UI_THEME_DESCRIPTOR_CACHE_MAX];
-  unsigned long long theme_directory_signature;
-  double theme_watch_last_check_seconds;
-  RectF appbar_bounds;
-  RectF rail_bounds;
-  RectF panel_bounds;
-  RectF status_bounds;
-  RectF content_bounds;
-  WorkspaceLayout layout_snapshot;
-  EditorActionSink action_sink;
-  float inspector_anim_t;
-  int inspector_target_visible;
-  int inspector_anim_initialized;
-  int last_selection_count;
-  LayerId editing_layer_id;
-  char layer_name_buffer[EDITOR_VIEWMODEL_NAME_CAPACITY];
-  UiDialogKind dialog_kind_snapshot;
-  char dialog_input_buffer[EDITOR_ACTION_TEXT_CAPACITY];
-  int modal_active;
-  UiContextMenuState context_menu;
-  double last_frame_seconds;
+    struct nk_glfw glfw;
+    struct nk_context* ctx;
+    PlatformWindow* window;
+    UiMenuBar* menu_bar;
+    UiThemeTokens theme;
+    char active_theme_id[UI_THEME_ID_CAPACITY];
+    char theme_settings_path[GLDRAW_PATH_MAX];
+    char theme_directory_path[GLDRAW_PATH_MAX];
+    UiThemeDescriptor theme_descriptors_cache[UI_THEME_DESCRIPTOR_CACHE_MAX];
+    unsigned long long theme_directory_signature;
+    double theme_watch_last_check_seconds;
+    RectF appbar_bounds;
+    RectF rail_bounds;
+    RectF panel_bounds;
+    RectF status_bounds;
+    RectF content_bounds;
+    WorkspaceLayout layout_snapshot;
+    EditorActionSink action_sink;
+    float inspector_anim_t;
+    int inspector_target_visible;
+    int inspector_anim_initialized;
+    int last_selection_count;
+    LayerId editing_layer_id;
+    char layer_name_buffer[EDITOR_VIEWMODEL_NAME_CAPACITY];
+    UiDialogKind dialog_kind_snapshot;
+    char dialog_input_buffer[EDITOR_ACTION_TEXT_CAPACITY];
+    int modal_active;
+    UiContextMenuState context_menu;
+    double last_frame_seconds;
 };
 
-void ui_system_emit_action(UiSystem *ui, const EditorAction *action);
-void ui_system_emit_status(UiSystem *ui, const char *fmt, ...);
-void ui_system_sync_menubar_themes(UiSystem *ui);
-int ui_system_set_theme(UiSystem *ui, const char *theme_id, int persist_selection);
-void ui_system_reload_themes(UiSystem *ui,
-                             int notify_status,
-                             UiThemeReloadReason reason);
-void ui_system_load_theme_from_settings(UiSystem *ui);
-void ui_system_poll_theme_hot_reload(UiSystem *ui, double now_seconds);
+void ui_system_emit_action(UiSystem* ui, const EditorAction* action);
+void ui_system_emit_status(UiSystem* ui, const char* fmt, ...);
+void ui_system_sync_menubar_themes(UiSystem* ui);
+int ui_system_set_theme(UiSystem* ui, const char* theme_id, int persist_selection);
+void ui_system_reload_themes(UiSystem* ui, int notify_status, UiThemeReloadReason reason);
+void ui_system_load_theme_from_settings(UiSystem* ui);
+void ui_system_poll_theme_hot_reload(UiSystem* ui, double now_seconds);
 float ui_clampf(float value, float min_value, float max_value);
 float ui_smoothstep(float t);
-void ui_publish_layout(UiSystem *ui, int width, int height);
-void ui_modal_dialogs(UiSystem *ui,
-                      const EditorViewModel *view_model,
+void ui_publish_layout(UiSystem* ui, int width, int height);
+void ui_modal_dialogs(UiSystem* ui,
+                      const EditorViewModel* view_model,
                       int window_width,
                       int window_height);
-void ui_tool_rail(UiSystem *ui,
-                  const EditorViewModel *view_model,
-                  RectF bounds);
-void ui_status_bar(UiSystem *ui,
-                   const EditorViewModel *view_model,
+void ui_tool_rail(UiSystem* ui, const EditorViewModel* view_model, RectF bounds);
+void ui_status_bar(UiSystem* ui,
+                   const EditorViewModel* view_model,
                    int window_width,
                    int window_height);
-void ui_layers_panel(UiSystem *ui,
-                     struct nk_context *ctx,
-                     const EditorViewModel *view_model);
-void ui_selection_panel(UiSystem *ui,
-                        const EditorViewModel *view_model,
-                        RectF bounds);
+void ui_layers_panel(UiSystem* ui, struct nk_context* ctx, const EditorViewModel* view_model);
+void ui_selection_panel(UiSystem* ui, const EditorViewModel* view_model, RectF bounds);
 
 #endif /* GLDRAW_UI_UI_SYSTEM_INTERNAL_H */

@@ -10,22 +10,25 @@
 #include <stdio.h>
 #include <string.h>
 
-#define EXPECT_TRUE(expr)                                                     \
-    do {                                                                     \
-        if (!(expr)) {                                                        \
-            fprintf(stderr, "EXPECT_TRUE failed: %s:%d: %s\n",               \
-                    __FILE__, __LINE__, #expr);                              \
-            return 1;                                                        \
-        }                                                                    \
+#define EXPECT_TRUE(expr)                                                                          \
+    do {                                                                                           \
+        if (!(expr)) {                                                                             \
+            fprintf(stderr, "EXPECT_TRUE failed: %s:%d: %s\n", __FILE__, __LINE__, #expr);         \
+            return 1;                                                                              \
+        }                                                                                          \
     } while (0)
 
-#define EXPECT_STR_EQ(actual, expected)                                       \
-    do {                                                                      \
-        if (strcmp((actual), (expected)) != 0) {                              \
-            fprintf(stderr, "EXPECT_STR_EQ failed: %s:%d: \"%s\" != \"%s\"\n",\
-                    __FILE__, __LINE__, (actual), (expected));                \
-            return 1;                                                         \
-        }                                                                     \
+#define EXPECT_STR_EQ(actual, expected)                                                            \
+    do {                                                                                           \
+        if (strcmp((actual), (expected)) != 0) {                                                   \
+            fprintf(stderr,                                                                        \
+                    "EXPECT_STR_EQ failed: %s:%d: \"%s\" != \"%s\"\n",                             \
+                    __FILE__,                                                                      \
+                    __LINE__,                                                                      \
+                    (actual),                                                                      \
+                    (expected));                                                                   \
+            return 1;                                                                              \
+        }                                                                                          \
     } while (0)
 
 int main(void)
@@ -78,19 +81,19 @@ int main(void)
     /* ------------------------------------------------------------------ */
     {
         GraphicObject* line = object_create_line(
-            (Vec2){0.0f, 0.0f}, (Vec2){10.0f, 10.0f}, object_default_style());
+            (Vec2){ 0.0f, 0.0f }, (Vec2){ 10.0f, 10.0f }, object_default_style());
         EXPECT_TRUE(line != NULL);
         EXPECT_STR_EQ(object_type_id(line), "line");
         object_destroy(line);
 
-        GraphicObject* rect = object_create_rect(
-            (RectF){0.0f, 0.0f, 10.0f, 10.0f}, object_default_style());
+        GraphicObject* rect =
+            object_create_rect((RectF){ 0.0f, 0.0f, 10.0f, 10.0f }, object_default_style());
         EXPECT_TRUE(rect != NULL);
         EXPECT_STR_EQ(object_type_id(rect), "rect");
         object_destroy(rect);
 
-        GraphicObject* ellipse = object_create_ellipse(
-            (RectF){0.0f, 0.0f, 10.0f, 10.0f}, object_default_style());
+        GraphicObject* ellipse =
+            object_create_ellipse((RectF){ 0.0f, 0.0f, 10.0f, 10.0f }, object_default_style());
         EXPECT_TRUE(ellipse != NULL);
         EXPECT_STR_EQ(object_type_id(ellipse), "ellipse");
         object_destroy(ellipse);

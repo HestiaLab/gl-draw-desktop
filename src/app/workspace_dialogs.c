@@ -8,104 +8,73 @@
 #include <stdio.h>
 #include <string.h>
 
-static int workspace_dialog_resolve_confirm_unsaved(Workspace* workspace,
-                                                    UiDialogResult result);
-static int workspace_dialog_resolve_shortcuts(Workspace* workspace,
-                                              UiDialogResult result);
-static int workspace_dialog_resolve_info(Workspace* workspace,
-                                         UiDialogResult result);
-static int workspace_dialog_resolve_save_as(Workspace* workspace,
-                                            UiDialogResult result);
+static int workspace_dialog_resolve_confirm_unsaved(Workspace* workspace, UiDialogResult result);
+static int workspace_dialog_resolve_shortcuts(Workspace* workspace, UiDialogResult result);
+static int workspace_dialog_resolve_info(Workspace* workspace, UiDialogResult result);
+static int workspace_dialog_resolve_save_as(Workspace* workspace, UiDialogResult result);
 
 static const UiDialogButtonDefinition UI_DIALOG_BUTTONS_CONFIRM_UNSAVED[] = {
-    {"Save", UI_DIALOG_RESULT_PRIMARY, 1},
-    {"Don't Save", UI_DIALOG_RESULT_SECONDARY, 0},
-    {"Cancel", UI_DIALOG_RESULT_CANCEL, 0}
+    { "Save", UI_DIALOG_RESULT_PRIMARY, 1 },
+    { "Don't Save", UI_DIALOG_RESULT_SECONDARY, 0 },
+    { "Cancel", UI_DIALOG_RESULT_CANCEL, 0 }
 };
 
 static const UiDialogDefinition UI_DIALOG_DEFINITION_CONFIRM_UNSAVED = {
-    {
-        UI_DIALOG_CONFIRM_UNSAVED,
-        "Unsaved Changes",
-        "You have unsaved changes.\nDo you want to save before continuing?",
-        360.0f,
-        170.0f,
-        1
-    },
+    { UI_DIALOG_CONFIRM_UNSAVED,
+      "Unsaved Changes",
+      "You have unsaved changes.\nDo you want to save before continuing?",
+      360.0f,
+      170.0f,
+      1 },
     UI_DIALOG_BUTTONS_CONFIRM_UNSAVED,
     (int)(sizeof(UI_DIALOG_BUTTONS_CONFIRM_UNSAVED) / sizeof(UI_DIALOG_BUTTONS_CONFIRM_UNSAVED[0])),
     workspace_dialog_resolve_confirm_unsaved
 };
 
 static const UiDialogButtonDefinition UI_DIALOG_BUTTONS_SHORTCUTS[] = {
-    {"Close", UI_DIALOG_RESULT_CANCEL, 1}
+    { "Close", UI_DIALOG_RESULT_CANCEL, 1 }
 };
 
 static const UiDialogDefinition UI_DIALOG_DEFINITION_SHORTCUTS = {
-    {
-        UI_DIALOG_SHORTCUTS,
-        "Keyboard Shortcuts",
-        "",
-        520.0f,
-        420.0f,
-        1
-    },
+    { UI_DIALOG_SHORTCUTS, "Keyboard Shortcuts", "", 520.0f, 420.0f, 1 },
     UI_DIALOG_BUTTONS_SHORTCUTS,
     (int)(sizeof(UI_DIALOG_BUTTONS_SHORTCUTS) / sizeof(UI_DIALOG_BUTTONS_SHORTCUTS[0])),
     workspace_dialog_resolve_shortcuts
 };
 
 static const UiDialogButtonDefinition UI_DIALOG_BUTTONS_INFO[] = {
-    {"OK", UI_DIALOG_RESULT_PRIMARY, 1}
+    { "OK", UI_DIALOG_RESULT_PRIMARY, 1 }
 };
 
 static const UiDialogDefinition UI_DIALOG_DEFINITION_INFO = {
-    {
-        UI_DIALOG_INFO,
-        "Information",
-        "",
-        420.0f,
-        190.0f,
-        1
-    },
+    { UI_DIALOG_INFO, "Information", "", 420.0f, 190.0f, 1 },
     UI_DIALOG_BUTTONS_INFO,
     (int)(sizeof(UI_DIALOG_BUTTONS_INFO) / sizeof(UI_DIALOG_BUTTONS_INFO[0])),
     workspace_dialog_resolve_info
 };
 
 static const UiDialogButtonDefinition UI_DIALOG_BUTTONS_SAVE_AS[] = {
-    {"Save", UI_DIALOG_RESULT_PRIMARY, 1},
-    {"Cancel", UI_DIALOG_RESULT_CANCEL, 0}
+    { "Save", UI_DIALOG_RESULT_PRIMARY, 1 }, { "Cancel", UI_DIALOG_RESULT_CANCEL, 0 }
 };
 
 static const UiDialogDefinition UI_DIALOG_DEFINITION_SAVE_AS = {
-    {
-        UI_DIALOG_SAVE_AS,
-        "Save As",
-        "",
-        460.0f,
-        220.0f,
-        1
-    },
+    { UI_DIALOG_SAVE_AS, "Save As", "", 460.0f, 220.0f, 1 },
     UI_DIALOG_BUTTONS_SAVE_AS,
     (int)(sizeof(UI_DIALOG_BUTTONS_SAVE_AS) / sizeof(UI_DIALOG_BUTTONS_SAVE_AS[0])),
     workspace_dialog_resolve_save_as
 };
 
-static int workspace_dialog_execute_action_now(Workspace* workspace,
-                                               WorkspaceActionType action)
+static int workspace_dialog_execute_action_now(Workspace* workspace, WorkspaceActionType action)
 {
     if (!workspace || action == WORKSPACE_ACTION_NONE || !workspace->services.execute_action) {
         return 0;
     }
 
-    return workspace->services.execute_action(workspace,
-                                              action,
-                                              workspace->services.command_user_data);
+    return workspace->services.execute_action(
+        workspace, action, workspace->services.command_user_data);
 }
 
-static int workspace_dialog_resolve_confirm_unsaved(Workspace* workspace,
-                                                    UiDialogResult result)
+static int workspace_dialog_resolve_confirm_unsaved(Workspace* workspace, UiDialogResult result)
 {
     WorkspaceActionType action = WORKSPACE_ACTION_NONE;
 
@@ -136,8 +105,7 @@ static int workspace_dialog_resolve_confirm_unsaved(Workspace* workspace,
     }
 }
 
-static int workspace_dialog_resolve_shortcuts(Workspace* workspace,
-                                              UiDialogResult result)
+static int workspace_dialog_resolve_shortcuts(Workspace* workspace, UiDialogResult result)
 {
     if (!workspace) {
         return 0;
@@ -155,8 +123,7 @@ static int workspace_dialog_resolve_shortcuts(Workspace* workspace,
     }
 }
 
-static int workspace_dialog_resolve_info(Workspace* workspace,
-                                         UiDialogResult result)
+static int workspace_dialog_resolve_info(Workspace* workspace, UiDialogResult result)
 {
     if (!workspace) {
         return 0;
@@ -174,8 +141,7 @@ static int workspace_dialog_resolve_info(Workspace* workspace,
     }
 }
 
-static int workspace_dialog_resolve_save_as(Workspace* workspace,
-                                            UiDialogResult result)
+static int workspace_dialog_resolve_save_as(Workspace* workspace, UiDialogResult result)
 {
     if (!workspace) {
         return 0;
@@ -261,10 +227,8 @@ int workspace_dialog_add_button(UiDialogState* dialog, const UiDialogButtonDefin
         return 0;
     }
 
-    snprintf(dialog->buttons[index].label,
-             sizeof(dialog->buttons[index].label),
-             "%s",
-             button->label);
+    snprintf(
+        dialog->buttons[index].label, sizeof(dialog->buttons[index].label), "%s", button->label);
     dialog->buttons[index].result = button->result;
     dialog->buttons[index].is_default = button->is_default;
     dialog->button_count += 1;
@@ -393,9 +357,8 @@ int workspace_dialog_open_confirm_unsaved(Workspace* workspace, WorkspaceActionT
 
     memset(&payload, 0, sizeof(payload));
     payload.int_values[0] = (int)pending_action;
-    return workspace_dialog_open_definition(workspace,
-                                            &UI_DIALOG_DEFINITION_CONFIRM_UNSAVED,
-                                            &payload);
+    return workspace_dialog_open_definition(
+        workspace, &UI_DIALOG_DEFINITION_CONFIRM_UNSAVED, &payload);
 }
 
 int workspace_dialog_open_shortcuts(Workspace* workspace, const char* content_text)
@@ -406,16 +369,13 @@ int workspace_dialog_open_shortcuts(Workspace* workspace, const char* content_te
         return 0;
     }
 
-    workspace_dialog_apply_template(&dialog,
-                                    &UI_DIALOG_DEFINITION_SHORTCUTS.dialog_template);
+    workspace_dialog_apply_template(&dialog, &UI_DIALOG_DEFINITION_SHORTCUTS.dialog_template);
     snprintf(dialog.message, sizeof(dialog.message), "%s", content_text);
     return workspace_dialog_add_button(&dialog, &UI_DIALOG_BUTTONS_SHORTCUTS[0]) &&
            workspace_dialog_open(workspace, &dialog);
 }
 
-int workspace_dialog_open_info(Workspace* workspace,
-                               const char* title,
-                               const char* message)
+int workspace_dialog_open_info(Workspace* workspace, const char* title, const char* message)
 {
     UiDialogState dialog;
 
@@ -423,8 +383,7 @@ int workspace_dialog_open_info(Workspace* workspace,
         return 0;
     }
 
-    workspace_dialog_apply_template(&dialog,
-                                    &UI_DIALOG_DEFINITION_INFO.dialog_template);
+    workspace_dialog_apply_template(&dialog, &UI_DIALOG_DEFINITION_INFO.dialog_template);
     snprintf(dialog.title, sizeof(dialog.title), "%s", title);
     snprintf(dialog.message, sizeof(dialog.message), "%s", message);
     return workspace_dialog_add_button(&dialog, &UI_DIALOG_BUTTONS_INFO[0]) &&
@@ -446,8 +405,7 @@ int workspace_dialog_open_save_as(Workspace* workspace,
         directory = ".";
     }
 
-    workspace_dialog_apply_template(&dialog,
-                                    &UI_DIALOG_DEFINITION_SAVE_AS.dialog_template);
+    workspace_dialog_apply_template(&dialog, &UI_DIALOG_DEFINITION_SAVE_AS.dialog_template);
     snprintf(dialog.message,
              sizeof(dialog.message),
              "Enter a new filename.\nThe file will be saved in the same directory:\n%s",

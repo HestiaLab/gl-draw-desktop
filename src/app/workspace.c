@@ -46,7 +46,7 @@ static void workspace_tool_set_selection_preview(void* user, int active, Vec2 de
     }
 
     workspace->session.selection_preview_active = active;
-    workspace->session.selection_preview_delta = active ? delta : (Vec2){0.0f, 0.0f};
+    workspace->session.selection_preview_delta = active ? delta : (Vec2){ 0.0f, 0.0f };
 }
 
 static void workspace_tool_sync_document_dirty(void* user)
@@ -137,7 +137,7 @@ const char* workspace_get_status_message(const Workspace* workspace)
 
 WorkspaceLayout workspace_get_layout(const Workspace* workspace)
 {
-    return workspace ? workspace->session.layout : (WorkspaceLayout){0};
+    return workspace ? workspace->session.layout : (WorkspaceLayout){ 0 };
 }
 
 UiRequestType workspace_get_active_request_type(const Workspace* workspace)
@@ -254,10 +254,8 @@ void workspace_set_statusf(Workspace* workspace, const char* fmt, ...)
     }
 
     va_start(args, fmt);
-    vsnprintf(workspace->session.status_message,
-              sizeof(workspace->session.status_message),
-              fmt,
-              args);
+    vsnprintf(
+        workspace->session.status_message, sizeof(workspace->session.status_message), fmt, args);
     va_end(args);
 }
 
@@ -295,8 +293,7 @@ int workspace_selection_preview_active(const Workspace* workspace)
 
 Vec2 workspace_selection_preview_delta(const Workspace* workspace)
 {
-    return workspace ? workspace->session.selection_preview_delta
-                     : (Vec2){0.0f, 0.0f};
+    return workspace ? workspace->session.selection_preview_delta : (Vec2){ 0.0f, 0.0f };
 }
 
 void workspace_mark_saved(Workspace* workspace)

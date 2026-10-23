@@ -36,7 +36,8 @@ void ui_theme_apply(struct nk_context* ctx, const UiThemeTokens* tokens)
 
     table[NK_COLOR_TEXT] = local_tokens.text;
     table[NK_COLOR_WINDOW] = local_tokens.panel;
-    table[NK_COLOR_HEADER] = ui_theme_mix_channel(local_tokens.panel, local_tokens.background, 0.60f);
+    table[NK_COLOR_HEADER] =
+        ui_theme_mix_channel(local_tokens.panel, local_tokens.background, 0.60f);
     table[NK_COLOR_BORDER] = local_tokens.border;
     table[NK_COLOR_BUTTON] = subtle_panel;
     table[NK_COLOR_BUTTON_HOVER] = local_tokens.panel_hover;
@@ -77,9 +78,12 @@ void ui_theme_apply(struct nk_context* ctx, const UiThemeTokens* tokens)
     ctx->style.window.border = 1.0f;
     ctx->style.window.spacing = nk_vec2(local_tokens.padding * 0.8f, local_tokens.padding * 0.8f);
     ctx->style.window.padding = nk_vec2(local_tokens.padding * 1.6f, local_tokens.padding * 1.3f);
-    ctx->style.window.group_padding = nk_vec2(local_tokens.padding * 1.6f, local_tokens.padding * 1.3f);
-    ctx->style.window.tooltip_padding = nk_vec2(local_tokens.padding * 1.8f, local_tokens.padding * 1.4f);
-    ctx->style.window.menu_padding = nk_vec2(local_tokens.padding * 1.3f, local_tokens.padding * 1.1f);
+    ctx->style.window.group_padding =
+        nk_vec2(local_tokens.padding * 1.6f, local_tokens.padding * 1.3f);
+    ctx->style.window.tooltip_padding =
+        nk_vec2(local_tokens.padding * 1.8f, local_tokens.padding * 1.4f);
+    ctx->style.window.menu_padding =
+        nk_vec2(local_tokens.padding * 1.3f, local_tokens.padding * 1.1f);
     ctx->style.window.tooltip_border = 1.0f;
     ctx->style.window.tooltip_border_color = local_tokens.border_hover;
 

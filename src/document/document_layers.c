@@ -40,7 +40,9 @@ void document_reset_layers(Document* document)
 
     memset(document->layers, 0, (size_t)document->layer_capacity * sizeof(document->layers[0]));
     document->layers[0].id = DOCUMENT_DEFAULT_LAYER_ID;
-    snprintf(document->layers[0].name, sizeof(document->layers[0].name), "%s",
+    snprintf(document->layers[0].name,
+             sizeof(document->layers[0].name),
+             "%s",
              DOCUMENT_DEFAULT_LAYER_NAME);
     document->layers[0].visible = 1;
     document->layers[0].locked = 0;
@@ -67,14 +69,15 @@ int document_reserve_layers(Document* document, int needed)
         capacity *= 2;
     }
 
-    layers = (DocumentLayer*)realloc(document->layers,
-                                     (size_t)capacity * sizeof(document->layers[0]));
+    layers =
+        (DocumentLayer*)realloc(document->layers, (size_t)capacity * sizeof(document->layers[0]));
     if (!layers) {
         return 0;
     }
 
     if (capacity > document->layer_capacity) {
-        memset(layers + document->layer_capacity, 0,
+        memset(layers + document->layer_capacity,
+               0,
                (size_t)(capacity - document->layer_capacity) * sizeof(layers[0]));
     }
     document->layers = layers;
@@ -144,8 +147,7 @@ DocumentLayer* document_layer_find(Document* document, LayerId layer_id)
     return NULL;
 }
 
-const DocumentLayer* document_layer_find_const(const Document* document,
-                                               LayerId layer_id)
+const DocumentLayer* document_layer_find_const(const Document* document, LayerId layer_id)
 {
     int i = 0;
 
@@ -207,16 +209,13 @@ LayerId document_create_layer(Document* document, const char* name)
     layer->visible = 1;
     layer->locked = 0;
     layer->blend_mode = DOCUMENT_LAYER_BLEND_NORMAL;
-    snprintf(layer->name, sizeof(layer->name), "%s",
-             (name && name[0] != '\0') ? name : "Layer");
+    snprintf(layer->name, sizeof(layer->name), "%s", (name && name[0] != '\0') ? name : "Layer");
     document->revision++;
     document_spatial_invalidate(document);
     return layer->id;
 }
 
-LayerId document_create_layer_with_id(Document* document,
-                                      const char* name,
-                                      LayerId layer_id)
+LayerId document_create_layer_with_id(Document* document, const char* name, LayerId layer_id)
 {
     DocumentLayer layer;
 
@@ -231,8 +230,7 @@ LayerId document_create_layer_with_id(Document* document,
     layer.visible = 1;
     layer.locked = 0;
     layer.blend_mode = DOCUMENT_LAYER_BLEND_NORMAL;
-    snprintf(layer.name, sizeof(layer.name), "%s",
-             (name && name[0] != '\0') ? name : "Layer");
+    snprintf(layer.name, sizeof(layer.name), "%s", (name && name[0] != '\0') ? name : "Layer");
 
     if (!document_insert_layer_at(document, &layer, document->layer_count)) {
         return 0u;
@@ -241,9 +239,7 @@ LayerId document_create_layer_with_id(Document* document,
     return layer_id;
 }
 
-int document_insert_layer_at(Document* document,
-                             const DocumentLayer* layer,
-                             int index)
+int document_insert_layer_at(Document* document, const DocumentLayer* layer, int index)
 {
     int i = 0;
 
@@ -293,7 +289,8 @@ int document_delete_layer(Document* document, LayerId layer_id)
     for (i = index; i < document->layer_count - 1; ++i) {
         document->layers[i] = document->layers[i + 1];
     }
-    memset(&document->layers[document->layer_count - 1], 0,
+    memset(&document->layers[document->layer_count - 1],
+           0,
            sizeof(document->layers[document->layer_count - 1]));
     document->layer_count--;
     if (document->active_layer_id == layer_id) {
@@ -368,9 +365,7 @@ int document_move_layer(Document* document, LayerId layer_id, int target_index)
     return 1;
 }
 
-int document_set_layer_visibility(Document* document,
-                                  LayerId layer_id,
-                                  int visible)
+int document_set_layer_visibility(Document* document, LayerId layer_id, int visible)
 {
     DocumentLayer* layer = document_layer_find(document, layer_id);
 

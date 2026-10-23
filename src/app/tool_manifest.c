@@ -18,11 +18,8 @@ int register_shape_tool_rect(void);
 int register_shape_tool_ellipse(void);
 
 static const ManifestInitFn g_tool_extensions[] = {
-    register_select_tool,
-    register_pan_tool,
-    register_shape_tool_line,
-    register_shape_tool_rect,
-    register_shape_tool_ellipse,
+    register_select_tool,     register_pan_tool,           register_shape_tool_line,
+    register_shape_tool_rect, register_shape_tool_ellipse,
 };
 
 int tool_manifest_register_all(void)

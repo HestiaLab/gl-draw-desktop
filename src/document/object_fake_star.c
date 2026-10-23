@@ -53,7 +53,7 @@ static void fake_star_translate(GraphicObject* object, Vec2 delta)
 static RectF fake_star_get_bounds(const GraphicObject* object)
 {
     const FakeStarData* data = object ? (const FakeStarData*)object->impl : NULL;
-    return data ? data->bounds : (RectF){0.0f, 0.0f, 0.0f, 0.0f};
+    return data ? data->bounds : (RectF){ 0.0f, 0.0f, 0.0f, 0.0f };
 }
 
 static int fake_star_hit_test(const GraphicObject* object, Vec2 point, float tolerance)
@@ -87,15 +87,12 @@ static void fake_star_write_path_points(const GraphicObject* object, Vec2* out_p
     for (i = 0; i < 10; ++i) {
         float angle = -1.57079632679f + (float)i * 0.62831853072f;
         float radius = (i % 2 == 0) ? outer_radius : inner_radius;
-        out_points[i] = vec2_make(center.x + cosf(angle) * radius,
-                                  center.y + sinf(angle) * radius);
+        out_points[i] = vec2_make(center.x + cosf(angle) * radius, center.y + sinf(angle) * radius);
     }
     out_points[10] = out_points[0];
 }
 
-static int fake_star_get_scalar(const GraphicObject* object,
-                                const char* key,
-                                float* out_value)
+static int fake_star_get_scalar(const GraphicObject* object, const char* key, float* out_value)
 {
     const FakeStarData* data = object ? (const FakeStarData*)object->impl : NULL;
 
@@ -103,10 +100,22 @@ static int fake_star_get_scalar(const GraphicObject* object,
         return 0;
     }
 
-    if (strcmp(key, "x") == 0) { *out_value = data->bounds.x; return 1; }
-    if (strcmp(key, "y") == 0) { *out_value = data->bounds.y; return 1; }
-    if (strcmp(key, "width") == 0) { *out_value = data->bounds.w; return 1; }
-    if (strcmp(key, "height") == 0) { *out_value = data->bounds.h; return 1; }
+    if (strcmp(key, "x") == 0) {
+        *out_value = data->bounds.x;
+        return 1;
+    }
+    if (strcmp(key, "y") == 0) {
+        *out_value = data->bounds.y;
+        return 1;
+    }
+    if (strcmp(key, "width") == 0) {
+        *out_value = data->bounds.w;
+        return 1;
+    }
+    if (strcmp(key, "height") == 0) {
+        *out_value = data->bounds.h;
+        return 1;
+    }
     return style_get_scalar(object, key, out_value);
 }
 
@@ -118,10 +127,22 @@ static int fake_star_set_scalar(GraphicObject* object, const char* key, float va
         return 0;
     }
 
-    if (strcmp(key, "x") == 0) { data->bounds.x = value; return 1; }
-    if (strcmp(key, "y") == 0) { data->bounds.y = value; return 1; }
-    if (strcmp(key, "width") == 0 && value > 0.0f) { data->bounds.w = value; return 1; }
-    if (strcmp(key, "height") == 0 && value > 0.0f) { data->bounds.h = value; return 1; }
+    if (strcmp(key, "x") == 0) {
+        data->bounds.x = value;
+        return 1;
+    }
+    if (strcmp(key, "y") == 0) {
+        data->bounds.y = value;
+        return 1;
+    }
+    if (strcmp(key, "width") == 0 && value > 0.0f) {
+        data->bounds.w = value;
+        return 1;
+    }
+    if (strcmp(key, "height") == 0 && value > 0.0f) {
+        data->bounds.h = value;
+        return 1;
+    }
     return style_set_scalar(object, key, value);
 }
 
@@ -133,15 +154,14 @@ static int fake_star_serialize(const GraphicObject* object, GraphicPropertyBag* 
 static GraphicObject* fake_star_deserialize(const GraphicPropertyBag* properties,
                                             GraphicStyle style)
 {
-    RectF bounds = {0.0f, 0.0f, 0.0f, 0.0f};
+    RectF bounds = { 0.0f, 0.0f, 0.0f, 0.0f };
     GraphicObject* object = NULL;
 
-    if (!properties ||
-        !graphic_property_bag_get(properties, "x", &bounds.x) ||
+    if (!properties || !graphic_property_bag_get(properties, "x", &bounds.x) ||
         !graphic_property_bag_get(properties, "y", &bounds.y) ||
         !graphic_property_bag_get(properties, "width", &bounds.w) ||
-        !graphic_property_bag_get(properties, "height", &bounds.h) ||
-        bounds.w <= 0.0f || bounds.h <= 0.0f) {
+        !graphic_property_bag_get(properties, "height", &bounds.h) || bounds.w <= 0.0f ||
+        bounds.h <= 0.0f) {
         return NULL;
     }
 
@@ -155,15 +175,15 @@ static GraphicObject* fake_star_deserialize(const GraphicPropertyBag* properties
 }
 
 static const GraphicPropertyDef g_fake_star_schema[] = {
-    {"x", GRAPHIC_PROPERTY_FLOAT, -5000.0f, 5000.0f, 1.0f, 0.5f},
-    {"y", GRAPHIC_PROPERTY_FLOAT, -5000.0f, 5000.0f, 1.0f, 0.5f},
-    {"width", GRAPHIC_PROPERTY_FLOAT, 1.0f, 5000.0f, 1.0f, 0.5f},
-    {"height", GRAPHIC_PROPERTY_FLOAT, 1.0f, 5000.0f, 1.0f, 0.5f},
-    {"stroke_r", GRAPHIC_PROPERTY_FLOAT, 0.0f, 1.0f, 0.01f, 0.01f},
-    {"stroke_g", GRAPHIC_PROPERTY_FLOAT, 0.0f, 1.0f, 0.01f, 0.01f},
-    {"stroke_b", GRAPHIC_PROPERTY_FLOAT, 0.0f, 1.0f, 0.01f, 0.01f},
-    {"stroke_a", GRAPHIC_PROPERTY_FLOAT, 0.0f, 1.0f, 0.01f, 0.01f},
-    {"stroke_width", GRAPHIC_PROPERTY_FLOAT, 1.0f, 12.0f, 0.1f, 0.1f}
+    { "x", GRAPHIC_PROPERTY_FLOAT, -5000.0f, 5000.0f, 1.0f, 0.5f },
+    { "y", GRAPHIC_PROPERTY_FLOAT, -5000.0f, 5000.0f, 1.0f, 0.5f },
+    { "width", GRAPHIC_PROPERTY_FLOAT, 1.0f, 5000.0f, 1.0f, 0.5f },
+    { "height", GRAPHIC_PROPERTY_FLOAT, 1.0f, 5000.0f, 1.0f, 0.5f },
+    { "stroke_r", GRAPHIC_PROPERTY_FLOAT, 0.0f, 1.0f, 0.01f, 0.01f },
+    { "stroke_g", GRAPHIC_PROPERTY_FLOAT, 0.0f, 1.0f, 0.01f, 0.01f },
+    { "stroke_b", GRAPHIC_PROPERTY_FLOAT, 0.0f, 1.0f, 0.01f, 0.01f },
+    { "stroke_a", GRAPHIC_PROPERTY_FLOAT, 0.0f, 1.0f, 0.01f, 0.01f },
+    { "stroke_width", GRAPHIC_PROPERTY_FLOAT, 1.0f, 12.0f, 0.1f, 0.1f }
 };
 
 static const GraphicObjectDescriptor g_fake_star_descriptor = {

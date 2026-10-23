@@ -38,9 +38,8 @@ static int app_workspace_load(Workspace* workspace, void* user_data)
     return application_load_document((Application*)user_data);
 }
 
-static int app_workspace_execute_action(Workspace* workspace,
-                                        WorkspaceActionType action,
-                                        void* user_data)
+static int
+app_workspace_execute_action(Workspace* workspace, WorkspaceActionType action, void* user_data)
 {
     Application* app = (Application*)user_data;
     (void)workspace;

@@ -41,8 +41,7 @@ Vec2 tool_controller_last_world(const ToolController* controller);
 void tool_controller_set_pointer_anchor(ToolController* controller,
                                         Vec2 screen_pos,
                                         Vec2 world_pos);
-GraphicObject* tool_controller_overlay_object(ToolController* controller,
-                                              ToolContext* context);
+GraphicObject* tool_controller_overlay_object(ToolController* controller, ToolContext* context);
 int tool_controller_tool_count(const ToolController* controller);
 const ToolDescriptor* tool_controller_tool_descriptor_at(const ToolController* controller,
                                                          int index);
@@ -55,10 +54,7 @@ void tool_controller_pointer_move(ToolController* controller,
 void tool_controller_pointer_up(ToolController* controller,
                                 ToolContext* context,
                                 const ToolEvent* event);
-void tool_controller_key_down(ToolController* controller,
-                              ToolContext* context,
-                              int key,
-                              int mods);
+void tool_controller_key_down(ToolController* controller, ToolContext* context, int key, int mods);
 void tool_controller_scroll(ToolController* controller,
                             ToolContext* context,
                             Vec2 screen_pos,

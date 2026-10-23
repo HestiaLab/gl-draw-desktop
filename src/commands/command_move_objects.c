@@ -9,8 +9,7 @@ static GraphicObject* document_find_for_command(Document* document, ObjectId id)
     return document_find_object(document, id);
 }
 
-static int move_objects_apply(Document* document, const MoveObjectsCommand* command,
-                              Vec2 delta)
+static int move_objects_apply(Document* document, const MoveObjectsCommand* command, Vec2 delta)
 {
     int i = 0;
     int moved = 0;
@@ -36,8 +35,7 @@ static int move_objects_apply(Document* document, const MoveObjectsCommand* comm
 static int move_objects_execute(void* cmd, Document* document)
 {
     MoveObjectsCommand* command = (MoveObjectsCommand*)cmd;
-    return move_objects_apply(document, command,
-                              command ? command->delta : vec2_make(0.0f, 0.0f));
+    return move_objects_apply(document, command, command ? command->delta : vec2_make(0.0f, 0.0f));
 }
 
 static int move_objects_undo(void* cmd, Document* document)
@@ -92,12 +90,13 @@ static void move_objects_destroy(void* cmd)
     g_allocator.free_fn(command);
 }
 
-const CommandVTable MOVE_OBJECTS_VTABLE = {move_objects_execute, move_objects_undo,
-                                           move_objects_execute, move_objects_merge,
-                                           move_objects_destroy};
+const CommandVTable MOVE_OBJECTS_VTABLE = { move_objects_execute,
+                                            move_objects_undo,
+                                            move_objects_execute,
+                                            move_objects_merge,
+                                            move_objects_destroy };
 
-Command* command_create_move_objects(const ObjectId* object_ids, int object_count,
-                                     Vec2 delta)
+Command* command_create_move_objects(const ObjectId* object_ids, int object_count, Vec2 delta)
 {
     MoveObjectsCommand* command = NULL;
 

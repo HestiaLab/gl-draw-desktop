@@ -26,15 +26,15 @@ static int workspace_clipboard_reserve(Workspace* workspace, int needed)
         return 1;
     }
 
-    capacity = workspace->session.clipboard_capacity > 0
-                   ? workspace->session.clipboard_capacity
-                   : 8;
+    capacity =
+        workspace->session.clipboard_capacity > 0 ? workspace->session.clipboard_capacity : 8;
     while (capacity < needed) {
         capacity *= 2;
     }
 
     objects = (GraphicObject**)realloc(workspace->session.clipboard_objects,
-                                       (size_t)capacity * sizeof(workspace->session.clipboard_objects[0]));
+                                       (size_t)capacity *
+                                           sizeof(workspace->session.clipboard_objects[0]));
     if (!objects) {
         return 0;
     }
@@ -75,12 +75,10 @@ static int workspace_clipboard_delete_selection(Workspace* workspace)
         return 0;
     }
 
-    command = command_create_delete_selection(&workspace->core.document,
-                                              &workspace->session.selection);
+    command =
+        command_create_delete_selection(&workspace->core.document, &workspace->session.selection);
     if (!command ||
-        !command_executor_execute(&workspace->core.commands,
-                                  command,
-                                  &workspace->core.document)) {
+        !command_executor_execute(&workspace->core.commands, command, &workspace->core.document)) {
         return 0;
     }
 
@@ -104,14 +102,15 @@ int workspace_clipboard_copy_selection(Workspace* workspace)
         return 0;
     }
 
-    clipboard_objects = (GraphicObject**)calloc((size_t)selection_count, sizeof(clipboard_objects[0]));
+    clipboard_objects =
+        (GraphicObject**)calloc((size_t)selection_count, sizeof(clipboard_objects[0]));
     if (!clipboard_objects) {
         return 0;
     }
 
     for (i = 0; i < selection_count; ++i) {
-        GraphicObject* source = document_find_object(&workspace->core.document,
-                                                     workspace->session.selection.ids[i]);
+        GraphicObject* source =
+            document_find_object(&workspace->core.document, workspace->session.selection.ids[i]);
 
         if (!source) {
             break;
@@ -151,7 +150,7 @@ int workspace_clipboard_copy_selection(Workspace* workspace)
 
 int workspace_clipboard_paste(Workspace* workspace)
 {
-    SelectionSet pasted_selection = {0};
+    SelectionSet pasted_selection = { 0 };
     Command* command = NULL;
     Vec2 paste_delta = vec2_make(0.0f, 0.0f);
     float world_offset = 0.0f;
@@ -172,8 +171,9 @@ int workspace_clipboard_paste(Workspace* workspace)
 
     world_offset = canvas_view_world_tolerance_for_pixels(&workspace->core.canvas,
                                                           CLIPBOARD_PASTE_OFFSET_PIXELS);
-    paste_delta = vec2_make(world_offset * (float)(workspace->session.clipboard_paste_serial + 1u),
-                            -world_offset * (float)(workspace->session.clipboard_paste_serial + 1u));
+    paste_delta =
+        vec2_make(world_offset * (float)(workspace->session.clipboard_paste_serial + 1u),
+                  -world_offset * (float)(workspace->session.clipboard_paste_serial + 1u));
     command = command_create_paste_objects(&workspace->core.document,
                                            workspace->session.clipboard_objects,
                                            paste_count,
@@ -181,9 +181,7 @@ int workspace_clipboard_paste(Workspace* workspace)
                                            document_active_layer_id(&workspace->core.document),
                                            &pasted_selection);
     if (!command ||
-        !command_executor_execute(&workspace->core.commands,
-                                  command,
-                                  &workspace->core.document)) {
+        !command_executor_execute(&workspace->core.commands, command, &workspace->core.document)) {
         selection_set_shutdown(&pasted_selection);
         return 0;
     }
@@ -219,8 +217,7 @@ int workspace_clipboard_cut_selection(Workspace* workspace)
     }
 
     if (!workspace_clipboard_delete_selection(workspace)) {
-        command_executor_rollback_transaction(&workspace->core.commands,
-                                              &workspace->core.document);
+        command_executor_rollback_transaction(&workspace->core.commands, &workspace->core.document);
         workspace_clear_clipboard(workspace);
         return 0;
     }

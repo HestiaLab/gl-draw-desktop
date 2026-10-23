@@ -8,8 +8,7 @@
 
 #include <stdio.h>
 
-void application_dialog_actions_update_save_as_message(Application* app,
-                                                       const char* error_text)
+void application_dialog_actions_update_save_as_message(Application* app, const char* error_text)
 {
     char directory[GLDRAW_PATH_MAX];
 
@@ -17,9 +16,8 @@ void application_dialog_actions_update_save_as_message(Application* app,
         return;
     }
 
-    if (!path_utils_dirname(workspace_service_document_path(app->workspace),
-                            directory,
-                            sizeof(directory))) {
+    if (!path_utils_dirname(
+            workspace_service_document_path(app->workspace), directory, sizeof(directory))) {
         snprintf(directory, sizeof(directory), ".");
     }
 
@@ -46,8 +44,7 @@ void application_dialog_actions_update_save_as_message(Application* app,
     }
 }
 
-void application_dialog_actions_report_startup_load_failure(Application* app,
-                                                            const char* path)
+void application_dialog_actions_report_startup_load_failure(Application* app, const char* path)
 {
     if (!app || !path) {
         return;
@@ -71,8 +68,7 @@ void application_dialog_actions_report_open_picker_error(Application* app)
         return;
     }
 
-    workspace_set_status_message(app->workspace,
-                                 "Open failed: file picker unavailable or failed.");
+    workspace_set_status_message(app->workspace, "Open failed: file picker unavailable or failed.");
 }
 
 void application_dialog_actions_report_export_cancelled(Application* app)

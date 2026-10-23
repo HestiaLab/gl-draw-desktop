@@ -12,8 +12,7 @@ static int canvas_renderer_can_merge_strokes(const CanvasStrokeCommand* a,
         return 0;
     }
 
-    return a->primitive == b->primitive &&
-           a->line_width == b->line_width &&
+    return a->primitive == b->primitive && a->line_width == b->line_width &&
            canvas_renderer_same_color(a->color, b->color) &&
            a->point_offset + (size_t)a->point_count == b->point_offset;
 }

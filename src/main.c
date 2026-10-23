@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-static void print_usage(FILE *stream, const char *program)
+static void print_usage(FILE* stream, const char* program)
 {
     fprintf(stream,
             "用法：%s [选项]\n"
@@ -14,12 +14,12 @@ static void print_usage(FILE *stream, const char *program)
             program);
 }
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
-    const char *program = (argc > 0 && argv[0] != NULL) ? argv[0] : "gl-draw-desktop";
+    const char* program = (argc > 0 && argv[0] != NULL) ? argv[0] : "gl-draw-desktop";
 
     for (int i = 1; i < argc; ++i) {
-        const char *arg = argv[i];
+        const char* arg = argv[i];
         if (strcmp(arg, "-h") == 0 || strcmp(arg, "--help") == 0) {
             print_usage(stdout, program);
             return 0;

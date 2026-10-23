@@ -27,8 +27,8 @@ static int delete_selection_undo(void* cmd, Document* document)
     }
 
     for (i = 0; i < command->object_count; ++i) {
-        if (!document_insert_object_clone_at(document, command->objects[i],
-                                             command->original_indices[i])) {
+        if (!document_insert_object_clone_at(
+                document, command->objects[i], command->original_indices[i])) {
             return 0;
         }
     }
@@ -60,12 +60,13 @@ static void delete_selection_destroy(void* cmd)
     g_allocator.free_fn(command);
 }
 
-const CommandVTable DELETE_SELECTION_VTABLE = {delete_selection_execute, delete_selection_undo,
-                                               delete_selection_execute, delete_selection_merge,
-                                               delete_selection_destroy};
+const CommandVTable DELETE_SELECTION_VTABLE = { delete_selection_execute,
+                                                delete_selection_undo,
+                                                delete_selection_execute,
+                                                delete_selection_merge,
+                                                delete_selection_destroy };
 
-Command* command_create_delete_selection(const Document* document,
-                                         const SelectionSet* selection)
+Command* command_create_delete_selection(const Document* document, const SelectionSet* selection)
 {
     DeleteSelectionCommand* command = NULL;
     int i = 0;
@@ -83,8 +84,8 @@ Command* command_create_delete_selection(const Document* document,
     command->base.vtable = &DELETE_SELECTION_VTABLE;
     command->objects = (GraphicObject**)g_allocator.calloc_fn((size_t)selection->count,
                                                               sizeof(command->objects[0]));
-    command->original_indices = (int*)g_allocator.calloc_fn((size_t)selection->count,
-                                                            sizeof(command->original_indices[0]));
+    command->original_indices =
+        (int*)g_allocator.calloc_fn((size_t)selection->count, sizeof(command->original_indices[0]));
     if (!command->objects || !command->original_indices) {
         delete_selection_destroy(command);
         return NULL;

@@ -9,22 +9,25 @@
 #include <stdio.h>
 #include <string.h>
 
-#define EXPECT_TRUE(expr)                                                     \
-    do {                                                                      \
-        if (!(expr)) {                                                        \
-            fprintf(stderr, "EXPECT_TRUE failed: %s:%d: %s\n",                \
-                    __FILE__, __LINE__, #expr);                               \
-            return 1;                                                         \
-        }                                                                     \
+#define EXPECT_TRUE(expr)                                                                          \
+    do {                                                                                           \
+        if (!(expr)) {                                                                             \
+            fprintf(stderr, "EXPECT_TRUE failed: %s:%d: %s\n", __FILE__, __LINE__, #expr);         \
+            return 1;                                                                              \
+        }                                                                                          \
     } while (0)
 
-#define EXPECT_STR_EQ(actual, expected)                                       \
-    do {                                                                      \
-        if (strcmp((actual), (expected)) != 0) {                              \
-            fprintf(stderr, "EXPECT_STR_EQ failed: %s:%d: \"%s\" != \"%s\"\n",\
-                    __FILE__, __LINE__, (actual), (expected));                \
-            return 1;                                                         \
-        }                                                                     \
+#define EXPECT_STR_EQ(actual, expected)                                                            \
+    do {                                                                                           \
+        if (strcmp((actual), (expected)) != 0) {                                                   \
+            fprintf(stderr,                                                                        \
+                    "EXPECT_STR_EQ failed: %s:%d: \"%s\" != \"%s\"\n",                             \
+                    __FILE__,                                                                      \
+                    __LINE__,                                                                      \
+                    (actual),                                                                      \
+                    (expected));                                                                   \
+            return 1;                                                                              \
+        }                                                                                          \
     } while (0)
 
 int main(void)
@@ -34,14 +37,14 @@ int main(void)
     CanvasView canvas;
     GraphicObject* created = NULL;
     GraphicObject* picked = NULL;
-    RectF bounds = {-50.0f, -50.0f, 100.0f, 100.0f};
+    RectF bounds = { -50.0f, -50.0f, 100.0f, 100.0f };
     char path[TEST_TEMP_PATH_MAX];
 
     EXPECT_TRUE(extension_loader_register_fake_star());
 
     document_init(&document);
     document_init(&loaded);
-    canvas_view_init(&canvas, &document, (RectF){0.0f, 0.0f, 800.0f, 600.0f});
+    canvas_view_init(&canvas, &document, (RectF){ 0.0f, 0.0f, 800.0f, 600.0f });
 
     created = object_create("fake_star", &bounds, object_default_style());
     EXPECT_TRUE(created != NULL);
@@ -49,7 +52,7 @@ int main(void)
     EXPECT_STR_EQ(object_type_id(document.objects[0]), "fake_star");
     EXPECT_TRUE(object_get_path_point_count(document.objects[0]) == 11);
 
-    picked = canvas_view_pick_object(&canvas, (Vec2){400.0f, 300.0f}, 4.0f);
+    picked = canvas_view_pick_object(&canvas, (Vec2){ 400.0f, 300.0f }, 4.0f);
     EXPECT_TRUE(picked != NULL);
     EXPECT_STR_EQ(object_type_id(picked), "fake_star");
 

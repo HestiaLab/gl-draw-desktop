@@ -23,7 +23,7 @@ typedef struct {
     int builtins_registering;
 } ToolRegistryState;
 
-static ToolRegistryState g_tool_registry = {0};
+static ToolRegistryState g_tool_registry = { 0 };
 
 static const ToolDescriptor* tool_registry_find(const char* tool_id)
 {
@@ -54,27 +54,20 @@ static int tool_registry_string_equal(const char* a, const char* b)
     return strcmp(a, b) == 0;
 }
 
-static int tool_registry_descriptor_matches(const ToolDescriptor* a,
-                                            const ToolDescriptor* b)
+static int tool_registry_descriptor_matches(const ToolDescriptor* a, const ToolDescriptor* b)
 {
-    return a && b &&
-           tool_registry_string_equal(a->id, b->id) &&
+    return a && b && tool_registry_string_equal(a->id, b->id) &&
            tool_registry_string_equal(a->name, b->name) &&
            tool_registry_string_equal(a->command_id, b->command_id) &&
            tool_registry_string_equal(a->tooltip, b->tooltip) &&
            tool_registry_string_equal(a->icon, b->icon) &&
            tool_registry_string_equal(a->default_shortcut, b->default_shortcut) &&
            a->requires_editable_layer == b->requires_editable_layer &&
-           a->create_tool == b->create_tool &&
-           a->destroy_tool == b->destroy_tool &&
-           a->activate == b->activate &&
-           a->deactivate == b->deactivate &&
-           a->pointer_down == b->pointer_down &&
-           a->pointer_move == b->pointer_move &&
-           a->pointer_up == b->pointer_up &&
-           a->key_down == b->key_down &&
-           a->draw_overlay == b->draw_overlay &&
-           a->user_data == b->user_data;
+           a->create_tool == b->create_tool && a->destroy_tool == b->destroy_tool &&
+           a->activate == b->activate && a->deactivate == b->deactivate &&
+           a->pointer_down == b->pointer_down && a->pointer_move == b->pointer_move &&
+           a->pointer_up == b->pointer_up && a->key_down == b->key_down &&
+           a->draw_overlay == b->draw_overlay && a->user_data == b->user_data;
 }
 
 void tool_registry_init(void)
@@ -91,8 +84,8 @@ int register_tool(const ToolDescriptor* descriptor)
 
     tool_registry_init();
 
-    if (!descriptor || !descriptor->id || descriptor->id[0] == '\0' ||
-        !descriptor->name || descriptor->name[0] == '\0') {
+    if (!descriptor || !descriptor->id || descriptor->id[0] == '\0' || !descriptor->name ||
+        descriptor->name[0] == '\0') {
         return 0;
     }
 
@@ -106,8 +99,7 @@ int register_tool(const ToolDescriptor* descriptor)
                                                         : TOOL_REGISTRY_INITIAL_CAPACITY;
         ToolDescriptor* new_descriptors =
             (ToolDescriptor*)realloc(g_tool_registry.descriptors,
-                                     (size_t)new_capacity *
-                                         sizeof(g_tool_registry.descriptors[0]));
+                                     (size_t)new_capacity * sizeof(g_tool_registry.descriptors[0]));
         if (!new_descriptors) {
             return 0;
         }
@@ -143,8 +135,7 @@ int register_builtin_tools(void)
 static void ensure_builtin_tools(void)
 {
     tool_registry_init();
-    if (!g_tool_registry.builtins_registered &&
-        !g_tool_registry.builtins_registering) {
+    if (!g_tool_registry.builtins_registered && !g_tool_registry.builtins_registering) {
         register_builtin_tools();
     }
 }

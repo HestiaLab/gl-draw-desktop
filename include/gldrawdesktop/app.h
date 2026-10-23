@@ -9,7 +9,7 @@ extern "C" {
 int gldrawdesktop_run(void);
 
 /* 返回编译期写入的版本字符串（形如 "3.0.0"）。 */
-const char *gldrawdesktop_version(void);
+const char* gldrawdesktop_version(void);
 
 #ifdef __cplusplus
 }

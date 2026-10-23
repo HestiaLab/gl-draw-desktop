@@ -30,7 +30,7 @@ static float line_distance_to_segment(Vec2 point, Vec2 a, Vec2 b)
     Vec2 ab = vec2_sub(b, a);
     float ab_len_sq = vec2_length_sq(ab);
     float t = 0.0f;
-    Vec2 nearest = {0.0f, 0.0f};
+    Vec2 nearest = { 0.0f, 0.0f };
 
     if (ab_len_sq <= 1e-6f) {
         return vec2_length(vec2_sub(point, a));
@@ -91,7 +91,7 @@ static void line_translate(GraphicObject* object, Vec2 delta)
 static RectF line_get_bounds(const GraphicObject* object)
 {
     const LineData* data = object ? (const LineData*)object->impl : NULL;
-    RectF empty = {0.0f, 0.0f, 0.0f, 0.0f};
+    RectF empty = { 0.0f, 0.0f, 0.0f, 0.0f };
 
     if (!data) {
         return empty;
@@ -102,7 +102,7 @@ static RectF line_get_bounds(const GraphicObject* object)
         float min_y = (data->p1.y < data->p2.y) ? data->p1.y : data->p2.y;
         float max_x = (data->p1.x > data->p2.x) ? data->p1.x : data->p2.x;
         float max_y = (data->p1.y > data->p2.y) ? data->p1.y : data->p2.y;
-        RectF bounds = {min_x, min_y, max_x - min_x, max_y - min_y};
+        RectF bounds = { min_x, min_y, max_x - min_x, max_y - min_y };
         return bounds;
     }
 }
@@ -144,10 +144,22 @@ static int line_get_scalar(const GraphicObject* object, const char* key, float* 
         return 0;
     }
 
-    if (strcmp(key, "x1") == 0) { *out_value = data->p1.x; return 1; }
-    if (strcmp(key, "y1") == 0) { *out_value = data->p1.y; return 1; }
-    if (strcmp(key, "x2") == 0) { *out_value = data->p2.x; return 1; }
-    if (strcmp(key, "y2") == 0) { *out_value = data->p2.y; return 1; }
+    if (strcmp(key, "x1") == 0) {
+        *out_value = data->p1.x;
+        return 1;
+    }
+    if (strcmp(key, "y1") == 0) {
+        *out_value = data->p1.y;
+        return 1;
+    }
+    if (strcmp(key, "x2") == 0) {
+        *out_value = data->p2.x;
+        return 1;
+    }
+    if (strcmp(key, "y2") == 0) {
+        *out_value = data->p2.y;
+        return 1;
+    }
     return style_get_scalar(object, key, out_value);
 }
 
@@ -159,10 +171,22 @@ static int line_set_scalar(GraphicObject* object, const char* key, float value)
         return 0;
     }
 
-    if (strcmp(key, "x1") == 0) { data->p1.x = value; return 1; }
-    if (strcmp(key, "y1") == 0) { data->p1.y = value; return 1; }
-    if (strcmp(key, "x2") == 0) { data->p2.x = value; return 1; }
-    if (strcmp(key, "y2") == 0) { data->p2.y = value; return 1; }
+    if (strcmp(key, "x1") == 0) {
+        data->p1.x = value;
+        return 1;
+    }
+    if (strcmp(key, "y1") == 0) {
+        data->p1.y = value;
+        return 1;
+    }
+    if (strcmp(key, "x2") == 0) {
+        data->p2.x = value;
+        return 1;
+    }
+    if (strcmp(key, "y2") == 0) {
+        data->p2.y = value;
+        return 1;
+    }
     return style_set_scalar(object, key, value);
 }
 
@@ -175,14 +199,12 @@ static int line_serialize(const GraphicObject* object, GraphicPropertyBag* out_p
     return default_serialize_from_schema(object, out_properties);
 }
 
-static GraphicObject* line_deserialize(const GraphicPropertyBag* properties,
-                                       GraphicStyle style)
+static GraphicObject* line_deserialize(const GraphicPropertyBag* properties, GraphicStyle style)
 {
-    Vec2 points[2] = {{0.0f, 0.0f}, {0.0f, 0.0f}};
+    Vec2 points[2] = { { 0.0f, 0.0f }, { 0.0f, 0.0f } };
     GraphicObject* object = NULL;
 
-    if (!properties ||
-        !graphic_property_bag_get(properties, "x1", &points[0].x) ||
+    if (!properties || !graphic_property_bag_get(properties, "x1", &points[0].x) ||
         !graphic_property_bag_get(properties, "y1", &points[0].y) ||
         !graphic_property_bag_get(properties, "x2", &points[1].x) ||
         !graphic_property_bag_get(properties, "y2", &points[1].y)) {
@@ -203,15 +225,15 @@ static GraphicObject* line_deserialize(const GraphicPropertyBag* properties,
 /* ------------------------------------------------------------------ */
 
 static const GraphicPropertyDef g_line_schema[] = {
-    {"x1", GRAPHIC_PROPERTY_FLOAT, -5000.0f, 5000.0f, 1.0f, 0.5f},
-    {"y1", GRAPHIC_PROPERTY_FLOAT, -5000.0f, 5000.0f, 1.0f, 0.5f},
-    {"x2", GRAPHIC_PROPERTY_FLOAT, -5000.0f, 5000.0f, 1.0f, 0.5f},
-    {"y2", GRAPHIC_PROPERTY_FLOAT, -5000.0f, 5000.0f, 1.0f, 0.5f},
-    {"stroke_r", GRAPHIC_PROPERTY_FLOAT, 0.0f, 1.0f, 0.01f, 0.01f},
-    {"stroke_g", GRAPHIC_PROPERTY_FLOAT, 0.0f, 1.0f, 0.01f, 0.01f},
-    {"stroke_b", GRAPHIC_PROPERTY_FLOAT, 0.0f, 1.0f, 0.01f, 0.01f},
-    {"stroke_a", GRAPHIC_PROPERTY_FLOAT, 0.0f, 1.0f, 0.01f, 0.01f},
-    {"stroke_width", GRAPHIC_PROPERTY_FLOAT, 1.0f, 12.0f, 0.1f, 0.1f}
+    { "x1", GRAPHIC_PROPERTY_FLOAT, -5000.0f, 5000.0f, 1.0f, 0.5f },
+    { "y1", GRAPHIC_PROPERTY_FLOAT, -5000.0f, 5000.0f, 1.0f, 0.5f },
+    { "x2", GRAPHIC_PROPERTY_FLOAT, -5000.0f, 5000.0f, 1.0f, 0.5f },
+    { "y2", GRAPHIC_PROPERTY_FLOAT, -5000.0f, 5000.0f, 1.0f, 0.5f },
+    { "stroke_r", GRAPHIC_PROPERTY_FLOAT, 0.0f, 1.0f, 0.01f, 0.01f },
+    { "stroke_g", GRAPHIC_PROPERTY_FLOAT, 0.0f, 1.0f, 0.01f, 0.01f },
+    { "stroke_b", GRAPHIC_PROPERTY_FLOAT, 0.0f, 1.0f, 0.01f, 0.01f },
+    { "stroke_a", GRAPHIC_PROPERTY_FLOAT, 0.0f, 1.0f, 0.01f, 0.01f },
+    { "stroke_width", GRAPHIC_PROPERTY_FLOAT, 1.0f, 12.0f, 0.1f, 0.1f }
 };
 
 static const GraphicObjectDescriptor g_line_descriptor = {
@@ -244,6 +266,6 @@ int register_line_object_type(void)
 
 GraphicObject* object_create_line(Vec2 p1, Vec2 p2, GraphicStyle style)
 {
-    Vec2 points[2] = {p1, p2};
+    Vec2 points[2] = { p1, p2 };
     return object_create("line", points, style);
 }

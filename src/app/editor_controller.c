@@ -30,16 +30,11 @@ void editor_controller_sync_pointer_anchor(Workspace* workspace, Vec2 screen_pos
     }
 
     tool_controller_set_pointer_anchor(
-        tools,
-        screen_pos,
-        canvas_view_screen_to_world(canvas, screen_pos));
+        tools, screen_pos, canvas_view_screen_to_world(canvas, screen_pos));
 }
 
-ToolEvent editor_controller_make_tool_event(Workspace* workspace,
-                                            Vec2 cursor_screen,
-                                            int button,
-                                            int mods,
-                                            float wheel_y)
+ToolEvent editor_controller_make_tool_event(
+    Workspace* workspace, Vec2 cursor_screen, int button, int mods, float wheel_y)
 {
     CanvasView* canvas = workspace_get_canvas(workspace);
     ToolController* tools = workspace_get_tool_controller(workspace);
@@ -53,8 +48,8 @@ ToolEvent editor_controller_make_tool_event(Workspace* workspace,
     }
 
     event.screen_pos = cursor_screen;
-    event.world_pos = canvas ? canvas_view_screen_to_world(canvas, cursor_screen)
-                             : vec2_make(0.0f, 0.0f);
+    event.world_pos =
+        canvas ? canvas_view_screen_to_world(canvas, cursor_screen) : vec2_make(0.0f, 0.0f);
     event.delta_screen = vec2_sub(event.screen_pos, last_screen);
     event.delta_world = vec2_sub(event.world_pos, last_world);
     event.button = button;
@@ -116,10 +111,7 @@ void editor_controller_scroll(Workspace* workspace,
     tool_controller_scroll(tools, context, screen_pos, yoffset);
 }
 
-void editor_controller_key_down(Workspace* workspace,
-                                ToolContext* context,
-                                int key,
-                                int mods)
+void editor_controller_key_down(Workspace* workspace, ToolContext* context, int key, int mods)
 {
     ToolController* tools = workspace_get_tool_controller(workspace);
 
@@ -157,7 +149,7 @@ RectF editor_controller_canvas_content_bounds(const Workspace* workspace)
     WorkspaceLayout layout = workspace_get_layout(workspace);
 
     if (!workspace) {
-        return (RectF){0.0f, 0.0f, 0.0f, 0.0f};
+        return (RectF){ 0.0f, 0.0f, 0.0f, 0.0f };
     }
 
     return layout.canvas_content_bounds;
@@ -181,11 +173,8 @@ int editor_controller_render_scene(Workspace* workspace, EditorRenderScene* out_
     out_scene->document = workspace_get_document(workspace);
     out_scene->selection = workspace_get_selection_const(workspace);
     out_scene->canvas = workspace_get_canvas_const(workspace);
-    out_scene->selection_preview_active =
-        workspace_selection_preview_active(workspace);
-    out_scene->selection_preview_delta =
-        workspace_selection_preview_delta(workspace);
-    out_scene->overlay_object =
-        tool_controller_overlay_object(tools, &context);
+    out_scene->selection_preview_active = workspace_selection_preview_active(workspace);
+    out_scene->selection_preview_delta = workspace_selection_preview_delta(workspace);
+    out_scene->overlay_object = tool_controller_overlay_object(tools, &context);
     return 1;
 }

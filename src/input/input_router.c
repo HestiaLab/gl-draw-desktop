@@ -69,11 +69,9 @@ int input_router_handle_key(const InputRouterContext* context, const KeyEvent* e
     if (command_id) {
         descriptor = command_catalog_find_by_id(command_id);
         if (descriptor &&
-            command_availability_is_available(context->workspace,
-                                              descriptor->command)) {
-            return command_registry_execute(context->workspace,
-                                            context->tool_context,
-                                            descriptor->command);
+            command_availability_is_available(context->workspace, descriptor->command)) {
+            return command_registry_execute(
+                context->workspace, context->tool_context, descriptor->command);
         }
     }
 

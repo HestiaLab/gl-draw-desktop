@@ -14,11 +14,26 @@ int style_get_scalar(const GraphicObject* object, const char* key, float* out_va
         return 0;
     }
 
-    if (strcmp(key, "stroke_r") == 0) { *out_value = object->style.stroke_color.r; return 1; }
-    if (strcmp(key, "stroke_g") == 0) { *out_value = object->style.stroke_color.g; return 1; }
-    if (strcmp(key, "stroke_b") == 0) { *out_value = object->style.stroke_color.b; return 1; }
-    if (strcmp(key, "stroke_a") == 0) { *out_value = object->style.stroke_color.a; return 1; }
-    if (strcmp(key, "stroke_width") == 0) { *out_value = object->style.stroke_width; return 1; }
+    if (strcmp(key, "stroke_r") == 0) {
+        *out_value = object->style.stroke_color.r;
+        return 1;
+    }
+    if (strcmp(key, "stroke_g") == 0) {
+        *out_value = object->style.stroke_color.g;
+        return 1;
+    }
+    if (strcmp(key, "stroke_b") == 0) {
+        *out_value = object->style.stroke_color.b;
+        return 1;
+    }
+    if (strcmp(key, "stroke_a") == 0) {
+        *out_value = object->style.stroke_color.a;
+        return 1;
+    }
+    if (strcmp(key, "stroke_width") == 0) {
+        *out_value = object->style.stroke_width;
+        return 1;
+    }
     return 0;
 }
 
@@ -28,11 +43,26 @@ int style_set_scalar(GraphicObject* object, const char* key, float value)
         return 0;
     }
 
-    if (strcmp(key, "stroke_r") == 0) { object->style.stroke_color.r = value; return 1; }
-    if (strcmp(key, "stroke_g") == 0) { object->style.stroke_color.g = value; return 1; }
-    if (strcmp(key, "stroke_b") == 0) { object->style.stroke_color.b = value; return 1; }
-    if (strcmp(key, "stroke_a") == 0) { object->style.stroke_color.a = value; return 1; }
-    if (strcmp(key, "stroke_width") == 0) { object->style.stroke_width = value; return 1; }
+    if (strcmp(key, "stroke_r") == 0) {
+        object->style.stroke_color.r = value;
+        return 1;
+    }
+    if (strcmp(key, "stroke_g") == 0) {
+        object->style.stroke_color.g = value;
+        return 1;
+    }
+    if (strcmp(key, "stroke_b") == 0) {
+        object->style.stroke_color.b = value;
+        return 1;
+    }
+    if (strcmp(key, "stroke_a") == 0) {
+        object->style.stroke_color.a = value;
+        return 1;
+    }
+    if (strcmp(key, "stroke_width") == 0) {
+        object->style.stroke_width = value;
+        return 1;
+    }
     return 0;
 }
 
@@ -62,10 +92,7 @@ int graphic_property_bag_set(GraphicPropertyBag* bag, const char* name, float va
         return 0;
     }
 
-    snprintf(bag->values[bag->count].name,
-             sizeof(bag->values[bag->count].name),
-             "%s",
-             name);
+    snprintf(bag->values[bag->count].name, sizeof(bag->values[bag->count].name), "%s", name);
     bag->values[bag->count].value = value;
     bag->count++;
     return 1;
@@ -121,8 +148,7 @@ int default_serialize_from_schema(const GraphicObject* object, GraphicPropertyBa
     return 1;
 }
 
-void default_apply_style_properties(const GraphicPropertyBag* properties,
-                                    GraphicObject* object)
+void default_apply_style_properties(const GraphicPropertyBag* properties, GraphicObject* object)
 {
     float value = 0.0f;
 
@@ -142,8 +168,7 @@ void default_apply_style_properties(const GraphicPropertyBag* properties,
     if (graphic_property_bag_get(properties, "stroke_a", &value)) {
         object->style.stroke_color.a = value;
     }
-    if (graphic_property_bag_get(properties, "stroke_width", &value) &&
-        value > 0.0f) {
+    if (graphic_property_bag_get(properties, "stroke_width", &value) && value > 0.0f) {
         object->style.stroke_width = value;
     }
 }

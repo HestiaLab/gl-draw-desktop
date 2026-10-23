@@ -82,17 +82,15 @@ typedef struct EditorActionSink {
 void editor_action_init(EditorAction* action);
 EditorAction editor_action_make_execute_command(EditorCommand command);
 EditorAction editor_action_make_set_tool(const char* tool_id);
-EditorAction editor_action_make_modify_property(ObjectId object_id,
-                                                const char* property_name,
-                                                float value);
+EditorAction
+editor_action_make_modify_property(ObjectId object_id, const char* property_name, float value);
 EditorAction editor_action_make_set_active_layer(LayerId layer_id);
 EditorAction editor_action_make_set_layer_visibility(LayerId layer_id, int visible);
 EditorAction editor_action_make_set_layer_locked(LayerId layer_id, int locked);
 EditorAction editor_action_make_rename_layer(LayerId layer_id, const char* name);
 EditorAction editor_action_make_move_layer(LayerId layer_id, int target_index);
 EditorAction editor_action_make_create_layer(const char* name);
-EditorAction editor_action_make_resolve_dialog(UiDialogResult result,
-                                               const char* text);
+EditorAction editor_action_make_resolve_dialog(UiDialogResult result, const char* text);
 EditorAction editor_action_make_set_status_message(const char* message);
 void editor_action_emit(const EditorActionSink* sink, const EditorAction* action);
 

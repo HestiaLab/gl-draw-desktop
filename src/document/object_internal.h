@@ -41,8 +41,7 @@ GraphicObject* default_clone_object(const GraphicObject* object);
  * @brief Serialize an object by walking its descriptor's property_schema
  * and reading every property via get_scalar / style_get_scalar.
  */
-int default_serialize_from_schema(const GraphicObject* object,
-                                  GraphicPropertyBag* out_properties);
+int default_serialize_from_schema(const GraphicObject* object, GraphicPropertyBag* out_properties);
 
 /**
  * @brief Apply serialized style properties to an existing object.
@@ -50,8 +49,7 @@ int default_serialize_from_schema(const GraphicObject* object,
  * Reads optional "stroke_r", "stroke_g", "stroke_b", "stroke_a", and
  * positive "stroke_width" values from @p properties.
  */
-void default_apply_style_properties(const GraphicPropertyBag* properties,
-                                    GraphicObject* object);
+void default_apply_style_properties(const GraphicPropertyBag* properties, GraphicObject* object);
 
 /**
  * @brief Allocate and initialize a GraphicObject with the given fields.

@@ -14,8 +14,7 @@
 #include <commdlg.h>
 #endif
 
-PlatformFileDialogResult platform_file_dialog_open_document(char* out_path,
-                                                            size_t out_path_size)
+PlatformFileDialogResult platform_file_dialog_open_document(char* out_path, size_t out_path_size)
 {
     if (!out_path || out_path_size == 0u) {
         return PLATFORM_FILE_DIALOG_ERROR;
@@ -37,10 +36,7 @@ PlatformFileDialogResult platform_file_dialog_open_document(char* out_path,
         dialog.lpstrFile = path_buffer;
         dialog.nMaxFile = sizeof(path_buffer);
         dialog.lpstrDefExt = "json";
-        dialog.Flags = OFN_FILEMUSTEXIST |
-                       OFN_PATHMUSTEXIST |
-                       OFN_NOCHANGEDIR |
-                       OFN_HIDEREADONLY;
+        dialog.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR | OFN_HIDEREADONLY;
 
         if (GetOpenFileNameA(&dialog)) {
             if (strlen(path_buffer) + 1u > out_path_size) {
@@ -62,9 +58,8 @@ PlatformFileDialogResult platform_file_dialog_open_document(char* out_path,
 #endif
 }
 
-PlatformFileDialogResult platform_file_dialog_save_png(char* out_path,
-                                                       size_t out_path_size,
-                                                       const char* suggested_filename)
+PlatformFileDialogResult
+platform_file_dialog_save_png(char* out_path, size_t out_path_size, const char* suggested_filename)
 {
     if (!out_path || out_path_size == 0u) {
         return PLATFORM_FILE_DIALOG_ERROR;
@@ -92,10 +87,7 @@ PlatformFileDialogResult platform_file_dialog_save_png(char* out_path,
         dialog.lpstrFile = path_buffer;
         dialog.nMaxFile = sizeof(path_buffer);
         dialog.lpstrDefExt = "png";
-        dialog.Flags = OFN_PATHMUSTEXIST |
-                       OFN_NOCHANGEDIR |
-                       OFN_OVERWRITEPROMPT |
-                       OFN_HIDEREADONLY;
+        dialog.Flags = OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR | OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY;
 
         if (GetSaveFileNameA(&dialog)) {
             if (strlen(path_buffer) + 1u > out_path_size) {

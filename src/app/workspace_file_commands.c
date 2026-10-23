@@ -39,17 +39,13 @@ int workspace_file_save_document_as(Workspace* workspace)
     }
 
     path = workspace_get_current_document_path(workspace);
-    path = path && path[0] != '\0'
-               ? path
-               : "document.json";
+    path = path && path[0] != '\0' ? path : "document.json";
     if (!path_utils_dirname(path, directory, sizeof(directory))) {
         snprintf(directory, sizeof(directory), ".");
     }
 
-    return workspace_dialog_open_save_as(workspace,
-                                         path_utils_basename_or_default(path,
-                                                                        "document.json"),
-                                         directory);
+    return workspace_dialog_open_save_as(
+        workspace, path_utils_basename_or_default(path, "document.json"), directory);
 }
 
 int workspace_file_export_png(Workspace* workspace)

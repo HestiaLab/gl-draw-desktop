@@ -65,7 +65,8 @@ static int parse_document_root(JsonParser* parser, Document* document)
 
         if (json_token_is_string(parser, "format")) {
             json_parser_next(parser);
-            if (!json_expect(parser, JSON_TOKEN_COLON)) return 0;
+            if (!json_expect(parser, JSON_TOKEN_COLON))
+                return 0;
             json_parser_next(parser);
             if (!json_expect(parser, JSON_TOKEN_STRING) ||
                 !json_token_is_string(parser, "gldraw-document")) {
@@ -75,39 +76,51 @@ static int parse_document_root(JsonParser* parser, Document* document)
             json_parser_next(parser);
         } else if (json_token_is_string(parser, "version")) {
             json_parser_next(parser);
-            if (!json_expect(parser, JSON_TOKEN_COLON)) return 0;
+            if (!json_expect(parser, JSON_TOKEN_COLON))
+                return 0;
             json_parser_next(parser);
-            if (!json_parse_u32(parser, &version)) return 0;
+            if (!json_parse_u32(parser, &version))
+                return 0;
             got_version = 1;
         } else if (json_token_is_string(parser, "next_id")) {
             json_parser_next(parser);
-            if (!json_expect(parser, JSON_TOKEN_COLON)) return 0;
+            if (!json_expect(parser, JSON_TOKEN_COLON))
+                return 0;
             json_parser_next(parser);
-            if (!json_parse_u32(parser, &next_id)) return 0;
+            if (!json_parse_u32(parser, &next_id))
+                return 0;
             got_next_id = 1;
         } else if (json_token_is_string(parser, "active_layer_id")) {
             json_parser_next(parser);
-            if (!json_expect(parser, JSON_TOKEN_COLON)) return 0;
+            if (!json_expect(parser, JSON_TOKEN_COLON))
+                return 0;
             json_parser_next(parser);
-            if (!json_parse_u32(parser, &active_layer_id)) return 0;
+            if (!json_parse_u32(parser, &active_layer_id))
+                return 0;
             got_active_layer_id = 1;
         } else if (json_token_is_string(parser, "layers")) {
             json_parser_next(parser);
-            if (!json_expect(parser, JSON_TOKEN_COLON)) return 0;
+            if (!json_expect(parser, JSON_TOKEN_COLON))
+                return 0;
             json_parser_next(parser);
-            if (!parse_layers_array(parser, document)) return 0;
+            if (!parse_layers_array(parser, document))
+                return 0;
             got_layers = 1;
         } else if (json_token_is_string(parser, "objects")) {
             json_parser_next(parser);
-            if (!json_expect(parser, JSON_TOKEN_COLON)) return 0;
+            if (!json_expect(parser, JSON_TOKEN_COLON))
+                return 0;
             json_parser_next(parser);
-            if (!parse_objects_array(parser, document)) return 0;
+            if (!parse_objects_array(parser, document))
+                return 0;
             got_objects = 1;
         } else {
             json_parser_next(parser);
-            if (!json_expect(parser, JSON_TOKEN_COLON)) return 0;
+            if (!json_expect(parser, JSON_TOKEN_COLON))
+                return 0;
             json_parser_next(parser);
-            if (!json_skip_value(parser)) return 0;
+            if (!json_skip_value(parser))
+                return 0;
         }
 
         if (parser->type == JSON_TOKEN_COMMA) {
@@ -122,7 +135,9 @@ static int parse_document_root(JsonParser* parser, Document* document)
     }
 
     if (!got_format || !got_version || (version != 1 && version != 2) || !got_objects) {
-        LOG_ERROR("%s", "[persistence][parse][top-level] missing or invalid required keys (format/version/objects)");
+        LOG_ERROR("%s",
+                  "[persistence][parse][top-level] missing or invalid required keys "
+                  "(format/version/objects)");
         return 0;
     }
 

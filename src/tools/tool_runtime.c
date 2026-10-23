@@ -202,9 +202,7 @@ Vec2 tool_controller_last_world(const ToolController* controller)
     return controller ? controller->last_world : vec2_make(0.0f, 0.0f);
 }
 
-void tool_controller_set_pointer_anchor(ToolController* controller,
-                                        Vec2 screen_pos,
-                                        Vec2 world_pos)
+void tool_controller_set_pointer_anchor(ToolController* controller, Vec2 screen_pos, Vec2 world_pos)
 {
     if (!controller) {
         return;
@@ -214,8 +212,7 @@ void tool_controller_set_pointer_anchor(ToolController* controller,
     controller->last_world = world_pos;
 }
 
-GraphicObject* tool_controller_overlay_object(ToolController* controller,
-                                              ToolContext* context)
+GraphicObject* tool_controller_overlay_object(ToolController* controller, ToolContext* context)
 {
     Tool* tool = tool_controller_get_active(controller);
     if (!tool) {

@@ -20,7 +20,8 @@ static UiCustomThemeEntry g_custom_theme_entries[UI_THEME_MAX_CUSTOM];
 static int g_custom_theme_count = 0;
 static char g_last_reload_error[256] = "";
 
-static unsigned long long ui_theme_hash_bytes(unsigned long long seed, const void* data, size_t size)
+static unsigned long long
+ui_theme_hash_bytes(unsigned long long seed, const void* data, size_t size)
 {
     const unsigned char* bytes = (const unsigned char*)data;
     unsigned long long hash = seed;
@@ -84,9 +85,8 @@ UiThemeTokens ui_theme_custom_tokens_at(int custom_index)
     return g_custom_theme_entries[custom_index].tokens;
 }
 
-static int ui_theme_store_custom_entry(const char* theme_id,
-                                       const char* label,
-                                       const UiThemeTokens* tokens)
+static int
+ui_theme_store_custom_entry(const char* theme_id, const char* label, const UiThemeTokens* tokens)
 {
     int existing_index = -1;
     int target_index = -1;
@@ -121,7 +121,8 @@ static int ui_theme_store_custom_entry(const char* theme_id,
              (label && label[0] != '\0') ? label : theme_id);
 
     g_custom_theme_entries[target_index].descriptor.id = g_custom_theme_entries[target_index].id;
-    g_custom_theme_entries[target_index].descriptor.label = g_custom_theme_entries[target_index].label;
+    g_custom_theme_entries[target_index].descriptor.label =
+        g_custom_theme_entries[target_index].label;
     g_custom_theme_entries[target_index].tokens = *tokens;
     return 1;
 }
@@ -153,9 +154,7 @@ static int ui_theme_load_external_file(const char* path)
         ui_theme_id_from_path(path, theme_id, sizeof(theme_id));
     }
     if (!ui_theme_id_is_safe_for_json(theme_id)) {
-        LOG_WARN("[theme][parse][id] invalid theme id path=%s id=%s",
-                 path,
-                 theme_id);
+        LOG_WARN("[theme][parse][id] invalid theme id path=%s id=%s", path, theme_id);
         free(text);
         return 0;
     }
@@ -170,7 +169,8 @@ static int ui_theme_load_external_file(const char* path)
     base_index = ui_theme_index_of_id(base_theme_id);
     if (base_index >= 0) {
         const UiThemeDescriptor* base_descriptor = ui_theme_descriptor_at(base_index);
-        tokens = ui_theme_tokens_for_id(base_descriptor ? base_descriptor->id : ui_theme_default_id());
+        tokens =
+            ui_theme_tokens_for_id(base_descriptor ? base_descriptor->id : ui_theme_default_id());
     } else {
         tokens = ui_theme_default_tokens();
     }
@@ -181,9 +181,8 @@ static int ui_theme_load_external_file(const char* path)
     ui_theme_clamp_tokens(&tokens);
     loaded = ui_theme_store_custom_entry(theme_id, theme_label, &tokens);
     if (!loaded) {
-        LOG_WARN("[theme][parse][store] failed to store parsed theme path=%s id=%s",
-                 path,
-                 theme_id);
+        LOG_WARN(
+            "[theme][parse][store] failed to store parsed theme path=%s id=%s", path, theme_id);
     }
 
     free(text);

@@ -14,13 +14,11 @@
 #include <stdio.h>
 #include <string.h>
 
-static void application_suggest_png_export_filename(const Application* app,
-                                                    char* buffer,
-                                                    size_t buffer_size)
+static void
+application_suggest_png_export_filename(const Application* app, char* buffer, size_t buffer_size)
 {
     const char* basename = path_utils_basename_or_default(
-        workspace_service_document_path(app->workspace),
-        "document.json");
+        workspace_service_document_path(app->workspace), "document.json");
     size_t length = 0u;
 
     if (!buffer || buffer_size == 0u) {
@@ -45,9 +43,8 @@ static void application_suggest_png_export_filename(const Application* app,
     memcpy(buffer + length, ".png", 5u);
 }
 
-static int application_copy_png_export_path(const char* selected_path,
-                                            char* output,
-                                            size_t output_size)
+static int
+application_copy_png_export_path(const char* selected_path, char* output, size_t output_size)
 {
     size_t path_length = 0u;
 
@@ -116,7 +113,8 @@ int application_save_as_document(Application* app)
         workspace_set_status_message(app->workspace, "Save As failed: invalid filename");
         application_dialog_actions_update_save_as_message(
             app,
-            "Invalid filename. Use a simple file name without path separators or reserved characters.");
+            "Invalid filename. Use a simple file name without path separators or reserved "
+            "characters.");
         return 0;
     }
 
@@ -127,8 +125,7 @@ int application_save_as_document(Application* app)
                                         sizeof(target_path))) {
         workspace_set_status_message(app->workspace, "Save As failed: path too long");
         application_dialog_actions_update_save_as_message(
-            app,
-            "Invalid filename. The resulting path is too long.");
+            app, "Invalid filename. The resulting path is too long.");
         return 0;
     }
 
@@ -185,12 +182,9 @@ int application_request_export_png(Application* app)
         return 0;
     }
 
-    application_suggest_png_export_filename(app,
-                                            suggested_filename,
-                                            sizeof(suggested_filename));
-    result = platform_file_dialog_save_png(selected_path,
-                                           sizeof(selected_path),
-                                           suggested_filename);
+    application_suggest_png_export_filename(app, suggested_filename, sizeof(suggested_filename));
+    result =
+        platform_file_dialog_save_png(selected_path, sizeof(selected_path), suggested_filename);
     if (result == PLATFORM_FILE_DIALOG_CANCELLED) {
         application_dialog_actions_report_export_cancelled(app);
         return 1;
@@ -200,17 +194,14 @@ int application_request_export_png(Application* app)
         return 0;
     }
 
-    if (!application_copy_png_export_path(selected_path,
-                                          app->pending_export_png_path,
-                                          sizeof(app->pending_export_png_path))) {
+    if (!application_copy_png_export_path(
+            selected_path, app->pending_export_png_path, sizeof(app->pending_export_png_path))) {
         workspace_set_status_message(app->workspace, "Export PNG failed: path too long.");
         return 0;
     }
 
     app->pending_export_png = 1;
-    workspace_set_statusf(app->workspace,
-                          "Export PNG queued: %s",
-                          app->pending_export_png_path);
+    workspace_set_statusf(app->workspace, "Export PNG queued: %s", app->pending_export_png_path);
     return 1;
 }
 
@@ -226,9 +217,8 @@ void application_flush_pending_export_png(Application* app)
     app->pending_export_png = 0;
     app->pending_export_png_path[0] = '\0';
 
-    if (render_system_export_png(app->renderer,
-                                 editor_controller_canvas(app->workspace),
-                                 export_path)) {
+    if (render_system_export_png(
+            app->renderer, editor_controller_canvas(app->workspace), export_path)) {
         workspace_set_statusf(app->workspace, "Exported PNG: %s", export_path);
         LOG_INFO("Exported PNG: %s", export_path);
         return;

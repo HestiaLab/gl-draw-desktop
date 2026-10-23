@@ -51,14 +51,16 @@ static CanvasViewportState canvas_view_state(const CanvasView* canvas)
  */
 static Vec2 canvas_viewport_world_to_screen(const CanvasViewportState* state, Vec2 world)
 {
-    Vec2 screen = {0.0f, 0.0f};
+    Vec2 screen = { 0.0f, 0.0f };
 
     if (!state) {
         return screen;
     }
 
-    screen.x = state->viewport.x + (state->viewport.w * 0.5f) + (world.x - state->center.x) * state->zoom;
-    screen.y = state->viewport.y + (state->viewport.h * 0.5f) - (world.y - state->center.y) * state->zoom;
+    screen.x =
+        state->viewport.x + (state->viewport.w * 0.5f) + (world.x - state->center.x) * state->zoom;
+    screen.y =
+        state->viewport.y + (state->viewport.h * 0.5f) - (world.y - state->center.y) * state->zoom;
     return screen;
 }
 
@@ -70,14 +72,16 @@ static Vec2 canvas_viewport_world_to_screen(const CanvasViewportState* state, Ve
  */
 static Vec2 canvas_viewport_screen_to_world(const CanvasViewportState* state, Vec2 screen)
 {
-    Vec2 world = {0.0f, 0.0f};
+    Vec2 world = { 0.0f, 0.0f };
 
     if (!state || state->zoom <= 0.0f) {
         return world;
     }
 
-    world.x = state->center.x + (screen.x - (state->viewport.x + state->viewport.w * 0.5f)) / state->zoom;
-    world.y = state->center.y - (screen.y - (state->viewport.y + state->viewport.h * 0.5f)) / state->zoom;
+    world.x =
+        state->center.x + (screen.x - (state->viewport.x + state->viewport.w * 0.5f)) / state->zoom;
+    world.y =
+        state->center.y - (screen.y - (state->viewport.y + state->viewport.h * 0.5f)) / state->zoom;
     return world;
 }
 
@@ -110,10 +114,11 @@ static void canvas_viewport_pan_screen_delta(CanvasViewportState* state, Vec2 de
  *
  * Complexity: `O(1)`.
  */
-static void canvas_viewport_zoom_at_screen_point(CanvasViewportState* state, float factor, Vec2 screen_anchor)
+static void
+canvas_viewport_zoom_at_screen_point(CanvasViewportState* state, float factor, Vec2 screen_anchor)
 {
-    Vec2 before = {0.0f, 0.0f};
-    Vec2 after = {0.0f, 0.0f};
+    Vec2 before = { 0.0f, 0.0f };
+    Vec2 after = { 0.0f, 0.0f };
 
     if (!state || factor <= 0.0f) {
         return;
@@ -132,7 +137,7 @@ static void canvas_viewport_zoom_at_screen_point(CanvasViewportState* state, flo
  */
 static RectF canvas_viewport_visible_world_rect(const CanvasViewportState* state)
 {
-    RectF rect = {0.0f, 0.0f, 0.0f, 0.0f};
+    RectF rect = { 0.0f, 0.0f, 0.0f, 0.0f };
 
     if (!state || state->zoom <= 0.0f) {
         return rect;
@@ -382,9 +387,10 @@ RectF canvas_view_visible_world_rect(const CanvasView* canvas)
  * @param tolerance_pixels Pick tolerance in pixels.
  * @return Pointer to hit object or NULL.
  */
-GraphicObject* canvas_view_pick_object(const CanvasView* canvas, Vec2 screen_point, float tolerance_pixels)
+GraphicObject*
+canvas_view_pick_object(const CanvasView* canvas, Vec2 screen_point, float tolerance_pixels)
 {
-    Vec2 world_point = {0.0f, 0.0f};
+    Vec2 world_point = { 0.0f, 0.0f };
     float tolerance_world = 0.0f;
     int* indices = NULL;
     int candidate_count = 0;
@@ -405,11 +411,8 @@ GraphicObject* canvas_view_pick_object(const CanvasView* canvas, Vec2 screen_poi
         }
     }
 
-    candidate_count = document_query_point_indices(canvas->document,
-                                                   world_point,
-                                                   tolerance_world,
-                                                   indices,
-                                                   object_count);
+    candidate_count = document_query_point_indices(
+        canvas->document, world_point, tolerance_world, indices, object_count);
     if (candidate_count <= 0) {
         candidate_count = object_count;
         for (i = 0; i < candidate_count; ++i) {
@@ -419,8 +422,7 @@ GraphicObject* canvas_view_pick_object(const CanvasView* canvas, Vec2 screen_poi
 
     for (i = candidate_count - 1; i >= 0; --i) {
         GraphicObject* object = document_get_object_at(canvas->document, indices[i]);
-        if (object &&
-            !document_layer_is_locked(canvas->document, object->layer_id) &&
+        if (object && !document_layer_is_locked(canvas->document, object->layer_id) &&
             object_hit_test(object, world_point, tolerance_world)) {
             free(indices);
             return object;

@@ -46,8 +46,10 @@ typedef struct {
  * @struct RectF
  * @brief Floating-point rectangle (x/y/w/h).
  *
- * @member x X coordinate of the bottom-left corner (or top-left, depending on caller's coordinate system).
- * @member y Y coordinate of the bottom-left corner (or top-left, depending on caller's coordinate system).
+ * @member x X coordinate of the bottom-left corner (or top-left, depending on caller's coordinate
+ * system).
+ * @member y Y coordinate of the bottom-left corner (or top-left, depending on caller's coordinate
+ * system).
  * @member w Width.
  * @member h Height.
  */

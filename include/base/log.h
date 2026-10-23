@@ -20,11 +20,8 @@
  * @return No return value.
  * @note Callers must ensure the format string matches the argument types.
  */
-static inline void log_write_impl(const char* level,
-                                  const char* file,
-                                  int line,
-                                  const char* fmt,
-                                  ...)
+static inline void
+log_write_impl(const char* level, const char* file, int line, const char* fmt, ...)
 {
     va_list args;
     va_start(args, fmt);

@@ -88,8 +88,8 @@ static void ui_menu_def_rebuild(void)
     tool_count = tool_registry_count();
     needed = core_count + tool_count;
     if (needed > g_menu_item_capacity) {
-        MenuItemDef* new_items = (MenuItemDef*)realloc(g_menu_items,
-                                                       (size_t)needed * sizeof(g_menu_items[0]));
+        MenuItemDef* new_items =
+            (MenuItemDef*)realloc(g_menu_items, (size_t)needed * sizeof(g_menu_items[0]));
         if (!new_items) {
             return;
         }

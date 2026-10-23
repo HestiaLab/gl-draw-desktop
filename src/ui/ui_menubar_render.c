@@ -34,11 +34,11 @@ typedef struct UiTopMenuDef {
 } UiTopMenuDef;
 
 static const UiTopMenuDef g_top_menus[] = {
-    { "File", MENU_ID_FILE, {210.0f, 300.0f}, 58.0f },
-    { "Edit", MENU_ID_EDIT, {210.0f, 300.0f}, 58.0f },
-    { "View", MENU_ID_VIEW, {220.0f, 300.0f}, 62.0f },
-    { "Theme", MENU_PARENT_THEME, {260.0f, 280.0f}, 76.0f },
-    { "Help", MENU_ID_HELP, {220.0f, 220.0f}, 62.0f },
+    { "File", MENU_ID_FILE, { 210.0f, 300.0f }, 58.0f },
+    { "Edit", MENU_ID_EDIT, { 210.0f, 300.0f }, 58.0f },
+    { "View", MENU_ID_VIEW, { 220.0f, 300.0f }, 62.0f },
+    { "Theme", MENU_PARENT_THEME, { 260.0f, 280.0f }, 76.0f },
+    { "Help", MENU_ID_HELP, { 220.0f, 220.0f }, 62.0f },
 };
 
 typedef struct UiQuickActionDef {
@@ -121,16 +121,13 @@ static void ui_build_command_tooltip(const EditorViewModel* view_model,
     }
 
     if (reason && reason[0] != '\0') {
-        snprintf(buffer + strlen(buffer),
-                 buffer_size - strlen(buffer),
-                 "\nUnavailable: %s",
-                 reason);
+        snprintf(
+            buffer + strlen(buffer), buffer_size - strlen(buffer), "\nUnavailable: %s", reason);
     }
 }
 
-static int ui_render_dropdown(struct nk_context* ctx,
-                              const EditorViewModel* view_model,
-                              int parent_id)
+static int
+ui_render_dropdown(struct nk_context* ctx, const EditorViewModel* view_model, int parent_id)
 {
     int clicked_id = -1;
     const MenuItemDef* items = ui_menu_def_items();
@@ -204,7 +201,8 @@ static int ui_render_theme_dropdown(UiMenuBar* menubar)
     for (int i = 0; i < menubar->theme_count; ++i) {
         const UiThemeDescriptor* theme = &menubar->themes[i];
         char item_label[128];
-        const char* label = (theme->label && theme->label[0] != '\0') ? theme->label : "Unnamed Theme";
+        const char* label =
+            (theme->label && theme->label[0] != '\0') ? theme->label : "Unnamed Theme";
         const char* marker = (i == menubar->active_theme_index) ? "[x]" : "[ ]";
 
         snprintf(item_label, sizeof(item_label), "%s %s", marker, label);
@@ -216,9 +214,8 @@ static int ui_render_theme_dropdown(UiMenuBar* menubar)
     return -1;
 }
 
-static int ui_render_top_menu(UiMenuBar* menubar,
-                              const EditorViewModel* view_model,
-                              const UiTopMenuDef* menu)
+static int
+ui_render_top_menu(UiMenuBar* menubar, const EditorViewModel* view_model, const UiTopMenuDef* menu)
 {
     struct nk_context* ctx = NULL;
     int clicked_id = -1;
@@ -279,11 +276,8 @@ static int ui_render_quick_action(UiMenuBar* menubar,
     hovered = nk_input_is_mouse_hovering_rect(&ctx->input, widget_bounds);
     tooltip[0] = '\0';
     if (descriptor) {
-        ui_build_command_tooltip(view_model,
-                                 descriptor->command,
-                                 quick_action->label,
-                                 tooltip,
-                                 sizeof(tooltip));
+        ui_build_command_tooltip(
+            view_model, descriptor->command, quick_action->label, tooltip, sizeof(tooltip));
     } else if (quick_action->tooltip) {
         snprintf(tooltip, sizeof(tooltip), "%s", quick_action->tooltip);
     }
@@ -339,7 +333,8 @@ int ui_menubar_render_contents(UiMenuBar* menubar,
     }
     columns = (int)(menu_count + quick_count + 1u);
 
-    if (nk_begin(ctx, "##menubar##",
+    if (nk_begin(ctx,
+                 "##menubar##",
                  nk_rect(0.0f, 0.0f, (float)window_width, bar_height),
                  NK_WINDOW_NO_SCROLLBAR | NK_WINDOW_BORDER)) {
         nk_menubar_begin(ctx);

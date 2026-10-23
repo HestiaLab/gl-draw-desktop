@@ -21,8 +21,7 @@ static void pan_tool_deactivate(Tool* tool, ToolContext* context)
     }
 }
 
-static int pan_tool_pointer_down(Tool* tool, ToolContext* context,
-                                 const ToolEvent* event)
+static int pan_tool_pointer_down(Tool* tool, ToolContext* context, const ToolEvent* event)
 {
     PanToolState* state = tool ? (PanToolState*)tool->state : NULL;
     (void)context;
@@ -33,8 +32,7 @@ static int pan_tool_pointer_down(Tool* tool, ToolContext* context,
     return 1;
 }
 
-static void pan_tool_pointer_move(Tool* tool, ToolContext* context,
-                                  const ToolEvent* event)
+static void pan_tool_pointer_move(Tool* tool, ToolContext* context, const ToolEvent* event)
 {
     PanToolState* state = tool ? (PanToolState*)tool->state : NULL;
     if (!state || !context || !event || !state->panning) {
@@ -43,8 +41,7 @@ static void pan_tool_pointer_move(Tool* tool, ToolContext* context,
     canvas_view_pan_screen_delta(context->canvas, event->delta_screen);
 }
 
-static void pan_tool_pointer_up(Tool* tool, ToolContext* context,
-                                const ToolEvent* event)
+static void pan_tool_pointer_up(Tool* tool, ToolContext* context, const ToolEvent* event)
 {
     PanToolState* state = tool ? (PanToolState*)tool->state : NULL;
     (void)context;
@@ -65,23 +62,23 @@ static void pan_tool_key_down(Tool* tool, ToolContext* context, int key, int mod
 }
 
 static const ToolDescriptor g_pan_tool_descriptor = {
-    TOOL_ID_PAN,             /* id */
-    "Hand",                  /* name */
-    "tool.pan",              /* command_id */
-    "Pan canvas view",       /* tooltip */
-    "Hand",                  /* icon */
-    "H",                     /* default_shortcut */
-    0,                       /* requires_editable_layer */
+    TOOL_ID_PAN,       /* id */
+    "Hand",            /* name */
+    "tool.pan",        /* command_id */
+    "Pan canvas view", /* tooltip */
+    "Hand",            /* icon */
+    "H",               /* default_shortcut */
+    0,                 /* requires_editable_layer */
     pan_tool_create,
     default_tool_destroy,
-    NULL,                    /* activate */
+    NULL, /* activate */
     pan_tool_deactivate,
     pan_tool_pointer_down,
     pan_tool_pointer_move,
     pan_tool_pointer_up,
     pan_tool_key_down,
     default_draw_overlay,
-    NULL                     /* user_data */
+    NULL /* user_data */
 };
 
 int register_pan_tool(void)
