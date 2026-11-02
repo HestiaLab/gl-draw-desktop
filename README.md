@@ -1,13 +1,26 @@
 # GL Draw Desktop
 
-基于 OpenGL 3.3 与 Nuklear 即时模式 GUI 的画布绘图编辑器。仓库名与远程地址为
-`gl-draw-desktop`，构建产物与安装目录使用 `gldrawdesktop` 命名空间。
+A C11 desktop canvas drawing editor built on OpenGL 3.3 and Nuklear, with Chinese-only UI.
 
-本项目只提供中文文档与中文界面，不再维护英文版本。
+用 C11 + OpenGL 3.3 + Nuklear 写成的桌面画布绘图编辑器：直线、矩形、椭圆、图层、检查器、三套内置主题与外部主题、JSON 保存、PNG 导出、命令式撤销重做，界面与文档全中文。仓库名与远程地址为 `gl-draw-desktop`，构建产物与安装目录使用 `gldrawdesktop` 命名空间。
 
-![界面预览](assets/preview-zh.png)
+**状态**：v3.0.0（2026-10-23）· MIT · 中文界面/文档 · Windows / Linux 预编译包（macOS 源码构建）
+
+[![CI](https://github.com/HestiaLab/gl-draw-desktop/actions/workflows/ci.yml/badge.svg)](https://github.com/HestiaLab/gl-draw-desktop/actions/workflows/ci.yml)
+[![Static Analysis](https://github.com/HestiaLab/gl-draw-desktop/actions/workflows/static-analysis.yml/badge.svg)](https://github.com/HestiaLab/gl-draw-desktop/actions/workflows/static-analysis.yml)
+[![Release Smoke](https://github.com/HestiaLab/gl-draw-desktop/actions/workflows/release-smoke.yml/badge.svg)](https://github.com/HestiaLab/gl-draw-desktop/actions/workflows/release-smoke.yml)
+[![Release](https://img.shields.io/badge/release-v3.0.0-blue)](https://github.com/HestiaLab/gl-draw-desktop/releases/tag/v3.0.0)
+[![License](https://img.shields.io/github/license/HestiaLab/gl-draw-desktop)](LICENSE)
+
+[下载 v3.0.0](https://github.com/HestiaLab/gl-draw-desktop/releases/tag/v3.0.0) · [快速开始](#快速开始) · [文档](#文档) · [贡献](CONTRIBUTING.md) · [许可](LICENSE)
+
+![GL Draw Desktop 中文界面：菜单、工具栏、网格画布、检查器与图层、中文状态栏](assets/preview-zh.png)
+
+本项目只提供中文文档与中文界面，不维护英文版本。
 
 ## 快速开始
+
+前置：CMake 3.21+、Ninja、C11 编译器（MSVC、GCC、Clang 或 AppleClang）、支持 OpenGL 3.3 的显卡驱动；首次 configure 需要网络拉取 GLFW 3.3.9（离线可用 `FETCHCONTENT_SOURCE_DIR_GLFW`）。Linux 还需要 OpenGL 与 X11 开发包，macOS 需要 Xcode Command Line Tools。详见[环境配置](docs/guides/environment.md)。
 
 首次检出先运行 bootstrap，它会检查工具链并完成一次 configure：
 
@@ -41,11 +54,34 @@ cmake --build --preset ninja-debug
 ctest --preset ninja-debug --output-on-failure
 ```
 
+本机实测（Windows 11 + MSYS2 UCRT64 GCC 16.2.0 + CMake 4.3.3 + Ninja 1.13.2）：
+
+```console
+$ ./build/ninja-debug/bin/gl-draw-desktop.exe --version
+gl-draw-desktop 3.0.0
+
+$ ctest --preset ninja-debug --output-on-failure
+100% tests passed, 0 tests failed out of 18
+
+Label Time Summary:
+architecture     =   1.99 sec*proc (4 tests)
+documentation    =   0.24 sec*proc (1 test)
+unit             =   0.18 sec*proc (13 tests)
+```
+
+（`ctest` 的 `Test project` 行包含本机路径，已省略。）
+
 运行应用：
 
 ```sh
+# Windows
+./build/ninja-debug/bin/gl-draw-desktop.exe
+
+# Linux/macOS
 ./build/ninja-debug/bin/gl-draw-desktop
 ```
+
+运行后应看到标题为 `GL Draw Desktop 画布编辑器` 的 1440×900 窗口，包含菜单、工具栏、网格画布、检查器与图层、中文状态栏。
 
 命令行参数：
 
@@ -91,6 +127,8 @@ tools/                      发布打包脚本
 [assets/fonts/README.md](assets/fonts/README.md)。
 
 ## 安装
+
+预编译包见 [Releases v3.0.0](https://github.com/HestiaLab/gl-draw-desktop/releases/tag/v3.0.0)：Windows 安装包/zip、Linux AppImage/tar.gz；macOS 需从源码构建。从源码安装：
 
 ```sh
 cmake --preset ninja-release
